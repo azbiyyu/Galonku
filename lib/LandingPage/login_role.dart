@@ -3,6 +3,7 @@ import 'package:galonku/LoginPage/mitra_login.dart';
 import 'package:galonku/LoginPage/user_login.dart';
 
 class LoginRole extends StatelessWidget {
+  static const nameRoute = '/loginrole';
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -34,11 +35,9 @@ class LoginRole extends StatelessWidget {
                   overflow: TextOverflow.visible,
                 ),
               ),
-
-                Expanded(
-                  child: Image.asset("images/role.png"),
-                ),
-              
+              Expanded(
+                child: Image.asset("images/role.png"),
+              ),
               Container(
                 padding: EdgeInsets.only(bottom: 30),
                 width: double.infinity,
@@ -59,11 +58,7 @@ class LoginRole extends StatelessWidget {
                           ),
                         ),
                         onPressed: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => MitraLogin()),
-                          );
+                          Navigator.pushNamed(context, MitraLogin.nameRoute);
                         },
                         child: Text(
                           "Mitra Galonku",
@@ -92,11 +87,7 @@ class LoginRole extends StatelessWidget {
                           ),
                         ),
                         onPressed: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => UserLogin()),
-                          );
+                          Navigator.pushNamed(context, UserLogin.nameRoute);
                         },
                         child: Text(
                           "Pelanggan",

@@ -8,6 +8,7 @@ import 'package:galonku/LoginPage/verifikasi.dart';
 
 class UserLogin extends StatefulWidget {
   const UserLogin({super.key});
+  static const nameRoute = '/userlogin';
 
   @override
   State<UserLogin> createState() => _UserLoginState();
@@ -103,10 +104,7 @@ class _UserLoginState extends State<UserLogin> {
                     child: InkWell(
                       onTap: () {
                         // aksi yang dijalankan saat teks diklik
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(builder: (context) => LoginRole()),
-                        );
+                        // Navigator.pushNamed(context, routeName);
                       },
                       child: Text(
                         "lupa sandi ?",
@@ -124,10 +122,7 @@ class _UserLoginState extends State<UserLogin> {
                   child: BtnPrimary(
                     text: "Masuk",
                     onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (context) => VerifOTP()),
-                      );
+                      // Navigator.pushNamed(context, routeName);
                     },
                   ),
                 ),
@@ -145,11 +140,7 @@ class _UserLoginState extends State<UserLogin> {
                       InkWell(
                         onTap: () {
                           // aksi yang dijalankan saat teks diklik
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => UserSignIn()),
-                          );
+                          Navigator.pushNamed(context, UserSignIn.nameRoute);
                         },
                         child: Text(
                           "daftar",

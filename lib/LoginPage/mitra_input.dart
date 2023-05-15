@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 class MitraInput extends StatefulWidget {
   const MitraInput({super.key});
+  static const nameRoute = '/mitrainput';
 
   @override
   State<MitraInput> createState() => _MitraInputState();

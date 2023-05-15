@@ -8,6 +8,7 @@ import 'package:galonku/DesignSystem/_button_sinkronise.dart';
 
 class MitraLogin extends StatefulWidget {
   const MitraLogin({super.key});
+  static const nameRoute = '/mitralogin';
 
   @override
   State<MitraLogin> createState() => _MitraLoginState();

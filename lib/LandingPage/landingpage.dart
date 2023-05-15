@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:galonku/DesignSystem/_card_carousel.dart';
 
 class LandingPage extends StatefulWidget {
+  static const nameRoute = '/landingpage';
   @override
   State<StatefulWidget> createState() {
     return _LandingPageState();
@@ -37,21 +38,23 @@ class _LandingPageState extends State<LandingPage> {
 
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-      child: Container(
-        padding: EdgeInsets.only(top: 50),
-        child: SingleChildScrollView(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: [
-              kontenLanding(context),
-              SizedBox(
-                height: 30,
-              ),
-              Container(
-                child: lewati(context),
-              ),
-            ],
+    return Scaffold(
+      body: SafeArea(
+        child: Container(
+          padding: EdgeInsets.only(top: 50),
+          child: SingleChildScrollView(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                kontenLanding(context),
+                SizedBox(
+                  height: 30,
+                ),
+                Container(
+                  child: lewati(context),
+                ),
+              ],
+            ),
           ),
         ),
       ),
@@ -131,11 +134,7 @@ class _LandingPageState extends State<LandingPage> {
             alignment: Alignment.bottomRight,
             child: InkWell(
               onTap: () {
-                // aksi yang dijalankan saat teks diklik
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => LoginRole()),
-                );
+                Navigator.pushNamed(context, LoginRole.nameRoute);
               },
               child: Row(
                 children: [

@@ -8,6 +8,7 @@ import 'package:galonku/LoginPage/verifikasi.dart';
 
 class MitraSignIn extends StatefulWidget {
   const MitraSignIn({super.key});
+  static const nameRoute = '/mitrasignin';
 
   @override
   State<MitraSignIn> createState() => _MitraSignInState();
@@ -114,10 +115,7 @@ class _MitraSignInState extends State<MitraSignIn> {
                   ),
                   GroupSyaratKetentuan(
                     onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (context) => MitraLogin()),
-                      );
+                      // Navigator.pushNamed(context, routeName);
                     },
                   ),
                   Container(
@@ -127,7 +125,11 @@ class _MitraSignInState extends State<MitraSignIn> {
                       onPressed: () {
                         Navigator.push(
                           context,
-                          MaterialPageRoute(builder: (context) => VerifOTP()),
+                          MaterialPageRoute(
+                            builder: (context) => Verifikasi(
+                              isFromUserSignIn: false,
+                            ),
+                          ),
                         );
                       },
                     ),
@@ -146,11 +148,7 @@ class _MitraSignInState extends State<MitraSignIn> {
                         InkWell(
                           onTap: () {
                             // aksi yang dijalankan saat teks diklik
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => MitraLogin()),
-                            );
+                            Navigator.pushNamed(context, MitraLogin.nameRoute);
                           },
                           child: Text(
                             "masuk",
