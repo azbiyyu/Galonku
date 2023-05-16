@@ -12,6 +12,7 @@ import 'package:galonku/LoginPage/user_signin.dart';
 
 void main() {
   runApp(MyApp());
+  // ini adalah komentar
 }
 
 class MyApp extends StatelessWidget {
