@@ -4,7 +4,6 @@ import 'package:galonku/DesignSystem/_group_syarat_ketentuan.dart';
 import 'package:galonku/DesignSystem/_heading.dart';
 import 'package:galonku/LoginPage/mitra_login.dart';
 import 'package:galonku/DesignSystem/_button_sinkronise.dart';
-import 'package:galonku/LoginPage/user_login.dart';
 import 'package:galonku/LoginPage/verifikasi.dart';
 
 class UserSignIn extends StatefulWidget {
