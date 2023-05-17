@@ -7,8 +7,6 @@ import 'package:galonku/LoginPage/mitra_login.dart';
 import 'package:galonku/LoginPage/mitra_signin.dart';
 import 'package:galonku/LoginPage/user_login.dart';
 import 'package:galonku/LoginPage/user_signin.dart';
-// import 'package:galonku/LoginPage/verifikasi.dart';
-// import 'package:galonku/try.dart';
 
 void main() {
   runApp(MyApp());
