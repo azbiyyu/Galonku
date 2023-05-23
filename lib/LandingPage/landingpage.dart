@@ -1,7 +1,7 @@
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:galonku/LandingPage/login_role.dart';
 import 'package:flutter/material.dart';
-import 'package:galonku/DesignSystem/_card_carousel.dart';
+import 'package:galonku/Models/_card_carousel.dart';
 
 class LandingPage extends StatefulWidget {
   static const nameRoute = '/landingpage';

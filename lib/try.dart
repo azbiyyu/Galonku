@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:galonku/DesignSystem/_button_try.dart';
+import 'package:galonku/Models/_button_try.dart';
 // import 'package:galonku/LandingPage/landingpage.dart';
 import 'package:galonku/LandingPage/login_role.dart';
 

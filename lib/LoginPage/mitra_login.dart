@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:galonku/DesignSystem/_button_primary.dart';
-import 'package:galonku/DesignSystem/_heading.dart';
+import 'package:galonku/Models/_button_primary.dart';
+import 'package:galonku/Models/_heading.dart';
 import 'package:galonku/LandingPage/login_role.dart';
 import 'package:galonku/LoginPage/mitra_signin.dart';
-import 'package:galonku/DesignSystem/_button_sinkronise.dart';
+import 'package:galonku/Models/_button_sinkronise.dart';
 
 
 class MitraLogin extends StatefulWidget {

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:galonku/DesignSystem/_heading.dart';
-import 'package:galonku/DesignSystem/_image_upload.dart';
+import 'package:galonku/Models/_heading.dart';
+import 'package:galonku/Models/_image_upload.dart';
 
 class MitraInput extends StatefulWidget {
   const MitraInput({super.key});
