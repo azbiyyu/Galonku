@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:galonku/LandingPage/login_role.dart';
+import 'package:galonku/DepotPage/home_page_user.dart';
 import 'package:galonku/LoginPage/mitra_input.dart';
-
 
 class Verifikasi extends StatefulWidget {
   final bool isFromUserSignIn;
@@ -71,7 +70,7 @@ class _VerifikasiState extends State<Verifikasi> {
                                     Navigator.pushReplacement(
                                       context,
                                       MaterialPageRoute(
-                                          builder: (context) => LoginRole()),
+                                          builder: (context) => HomePageUser()),
                                     );
                                   } else {
                                     Navigator.pushReplacement(
