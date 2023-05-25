@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:galonku/DepotPage/home_page_user.dart';
 import 'package:galonku/Models/_button_primary.dart';
 import 'package:galonku/Models/_heading.dart';
 import 'package:galonku/LandingPage/login_role.dart';
 import 'package:galonku/LoginPage/mitra_signin.dart';
 import 'package:galonku/Models/_button_sinkronise.dart';
-
 
 class MitraLogin extends StatefulWidget {
   const MitraLogin({super.key});
@@ -102,10 +102,7 @@ class _MitraLoginState extends State<MitraLogin> {
                     child: InkWell(
                       onTap: () {
                         // aksi yang dijalankan saat teks diklik
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(builder: (context) => LoginRole()),
-                        );
+                        Navigator.pushNamed(context, LoginRole.nameRoute);
                       },
                       child: Text(
                         "lupa sandi ?",
@@ -123,10 +120,7 @@ class _MitraLoginState extends State<MitraLogin> {
                   child: BtnPrimary(
                     text: "Masuk",
                     onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (context) => LoginRole()),
-                      );
+                      Navigator.pushNamed(context, HomePageUser.nameRoute);
                     },
                   ),
                 ),

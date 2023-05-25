@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:galonku/DepotPage/chat_user.dart';
 
 class HomePageUser extends StatefulWidget {
   const HomePageUser({super.key});
@@ -28,10 +29,7 @@ class _HomePageUserState extends State<HomePageUser> {
       ),
     ),
     Center(
-      child: Text(
-        "Pesan",
-        style: TextStyle(fontSize: 50),
-      ),
+      child: ChatUser(),
     ),
     Center(
       child: Text(
@@ -53,30 +51,34 @@ class _HomePageUserState extends State<HomePageUser> {
         ],
       ),
       body: widgetPage[index],
-      bottomNavigationBar: BottomNavigationBar(
-        currentIndex: index, // set up index berapa yang mau muncul duluan
-        selectedItemColor: Colors.blue[400], // set up kalau lagi aktif
-        unselectedItemColor:
-            Color.fromARGB(255, 0, 0, 0), // set up kalau lagi ga aktif
-        iconSize: 30, //default 24
-        onTap: (value) {
-          setState(() {
-            index = value;
-          });
-        },
-        backgroundColor: Color.fromARGB(151, 174, 174, 174),
-        items: [
-          BottomNavigationBarItem(
-              icon: Image.asset('images/Icon_HomePage.png'), label: 'Home'),
-          BottomNavigationBarItem(
-              icon: Image.asset('images/Icon_Pesanan.png'), label: "Pesanan"),
-          BottomNavigationBarItem(
-              icon: Image.asset('images/Icon_Maps.png'), label: "Maps"),
-          BottomNavigationBarItem(
-              icon: Image.asset('images/Icon_Pesan.png'), label: "Pesan"),
-          BottomNavigationBarItem(
-              icon: Image.asset('images/Icon_Setting.png'), label: "Setting"),
-        ],
+      bottomNavigationBar: SizedBox(
+        height: 95,
+        child: BottomNavigationBar(
+          currentIndex: index, // set up index berapa yang mau muncul duluan
+          selectedItemColor: Colors.blue[400], // set up kalau lagi aktif
+          unselectedIconTheme: IconThemeData(color: Colors.black26),
+          unselectedItemColor:
+              Color.fromARGB(255, 0, 0, 0), // set up kalau lagi ga aktif
+          iconSize: 30, //default 24
+          onTap: (value) {
+            setState(() {
+              index = value;
+            });
+          },
+          backgroundColor: Color.fromARGB(151, 174, 174, 174),
+          items: [
+            BottomNavigationBarItem(
+                icon: Image.asset('images/Icon_HomePage.png'), label: 'Home'),
+            BottomNavigationBarItem(
+                icon: Image.asset('images/Icon_Pesanan.png'), label: "Pesanan"),
+            BottomNavigationBarItem(
+                icon: Image.asset('images/Icon_Maps.png'), label: "Maps"),
+            BottomNavigationBarItem(
+                icon: Image.asset('images/Icon_Pesan.png'), label: "Pesan"),
+            BottomNavigationBarItem(
+                icon: Image.asset('images/Icon_Setting.png'), label: "Setting"),
+          ],
+        ),
       ),
     );
   }
