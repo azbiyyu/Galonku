@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "483002032406",
+    "firebase_url": "https://galonku-afe22-default-rtdb.asia-southeast1.firebasedatabase.app",
+    "project_id": "galonku-afe22",
+    "storage_bucket": "galonku-afe22.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:483002032406:android:3ce1cc8c44d8ea69923037",
+        "android_client_info": {
+          "package_name": "com.example.galonku"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "483002032406-8kphtqhn9ht5gruv6e4ijft6smbghb6v.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.galonku",
+            "certificate_hash": "f298ed1bfb70fa5270c2b7cd965c459ec05dab1b"
+          }
+        },
+        {
+          "client_id": "483002032406-ql301uk0u3088g32cf1dpd1i4idkbltb.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCIJyTl0pLbSV-ch3dwlpP5RchhKBu_JUY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "483002032406-0ior8fnlcls8a56vaqfcb88kh3c17leh.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "483002032406-3nrl80gt7npk98r4pt3bs6pm466rvi0m.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.galonku"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
