@@ -9,6 +9,7 @@ environment:
   sdk: ">=2.18.4 <3.0.0"
 
 dependencies:
+  firebase_auth: ^4.6.3
   carousel_slider: ^4.0.0
   english_words: ^4.0.0
   faker: ^2.1.0

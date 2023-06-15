@@ -5,6 +5,10 @@ import 'package:galonku/Models/_heading.dart';
 import 'package:galonku/LoginPage/mitra_login.dart';
 import 'package:galonku/Models/_button_sinkronise.dart';
 import 'package:galonku/LoginPage/verifikasi.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+
+import '../Controllers/auth.dart';
+
 
 class MitraSignIn extends StatefulWidget {
   const MitraSignIn({super.key});
@@ -16,6 +20,42 @@ class MitraSignIn extends StatefulWidget {
 
 class _MitraSignInState extends State<MitraSignIn> {
   bool _obscureText = true;
+
+  // string error
+  String? errorMessage = ' ';
+  // cek apakah sudah login atau tidak
+  bool isLogin = true;
+  // controller edit
+  final TextEditingController _controllerEmail = TextEditingController();
+  final TextEditingController _controllerPassword = TextEditingController();
+  
+  // method untuk sign in
+  Future<void> signInwithEmailAndPassword() async {
+    try {
+      await Auth().SignWithEmailAndPassword(
+        email: _controllerEmail.text,
+        password: _controllerPassword.text,
+      );
+    } on FirebaseAuthException catch (e) {
+      setState(() {
+        errorMessage = e.message;
+      });
+    }
+  }
+  // method create user
+  Future<void> createUserWithEmailAndPassword() async {
+    try {
+      await Auth().CreateUserWithEmailAndPassword(
+        email: _controllerEmail.text,
+        password: _controllerPassword.text
+      );
+    } on FirebaseAuthException catch (e) {
+      setState(() {
+        errorMessage = e.message;
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -72,24 +112,30 @@ class _MitraSignInState extends State<MitraSignIn> {
                   ),
                   Container(
                     padding: EdgeInsets.only(top: 20),
-                    child: TextField(
-                      keyboardType: TextInputType.emailAddress,
-                      cursorColor: Colors.blue[600],
-                      decoration: InputDecoration(
-                        labelText: 'Email',
-                        labelStyle: TextStyle(color: Colors.black),
-                        hintText: "masukkan email",
-                        border: OutlineInputBorder(
-                          borderSide: BorderSide(
-                            color: Color.fromARGB(66, 37, 37, 37),
+                    child: Column(
+                      children: [
+                        TextField(
+                          controller: _controllerEmail,
+                          keyboardType: TextInputType.emailAddress,
+                          cursorColor: Colors.blue[600],
+                          decoration: InputDecoration(
+                            labelText: 'Email',
+                            labelStyle: TextStyle(color: Colors.black),
+                            hintText: "masukkan email",
+                            border: OutlineInputBorder(
+                              borderSide: BorderSide(
+                                color: Color.fromARGB(66, 37, 37, 37),
+                              ),
+                            ),
                           ),
                         ),
-                      ),
+                      ],
                     ),
                   ),
                   Container(
                     padding: EdgeInsets.only(top: 10),
                     child: TextField(
+                      controller: _controllerPassword,
                       obscureText: _obscureText,
                       decoration: InputDecoration(
                         labelText: "Password",
@@ -123,6 +169,8 @@ class _MitraSignInState extends State<MitraSignIn> {
                     child: BtnPrimary(
                       text: "Daftar",
                       onPressed: () {
+                        isLogin ? signInwithEmailAndPassword() : createUserWithEmailAndPassword();
+                        isLogin = !isLogin;
                         Navigator.push(
                           context,
                           MaterialPageRoute(

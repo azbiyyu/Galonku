@@ -1,10 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:galonku/Controllers/auth.dart';
 import 'package:galonku/DepotPage/home_page_user.dart';
 import 'package:galonku/Models/_button_primary.dart';
 import 'package:galonku/Models/_heading.dart';
 import 'package:galonku/LandingPage/login_role.dart';
 import 'package:galonku/LoginPage/mitra_signin.dart';
 import 'package:galonku/Models/_button_sinkronise.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+// import 'package:firebase_auth_project/auth.dart';
+
 
 class MitraLogin extends StatefulWidget {
   const MitraLogin({super.key});
@@ -16,6 +20,7 @@ class MitraLogin extends StatefulWidget {
 
 class _MitraLoginState extends State<MitraLogin> {
   bool _obscureText = true;
+  
   @override
   Widget build(BuildContext context) {
     return Scaffold(
