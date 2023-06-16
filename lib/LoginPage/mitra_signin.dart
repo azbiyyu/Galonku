@@ -23,7 +23,7 @@ class _MitraSignInState extends State<MitraSignIn> {
   // string error
   String? errorMessage = ' ';
   // cek apakah sudah login atau tidak
-  bool isLogin = false;
+  bool isLogin = true;
   // controller edit
   final TextEditingController _controllerEmail = TextEditingController();
   final TextEditingController _controllerPassword = TextEditingController();

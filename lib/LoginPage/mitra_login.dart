@@ -7,6 +7,7 @@ import 'package:galonku/LandingPage/login_role.dart';
 import 'package:galonku/LoginPage/mitra_signin.dart';
 import 'package:galonku/Models/_button_sinkronise.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:galonku/Pop_up/Pop_up.dart';
 // import 'package:firebase_auth_project/auth.dart';
 
 
@@ -23,7 +24,7 @@ class _MitraLoginState extends State<MitraLogin> {
 
   // string pesan error dan cek user login
   String? errorMessage = ' ';
-  bool isLogin = false;
+  bool isLogin = true;
 
   // controller email dan password untuk tampungan data
   final TextEditingController _controllerEmail = TextEditingController();
@@ -82,6 +83,7 @@ class _MitraLoginState extends State<MitraLogin> {
                 Container(
                   padding: EdgeInsets.only(top: 20),
                   child: TextField(
+                    controller: _controllerEmail,
                     keyboardType: TextInputType.emailAddress,
                     cursorColor: Colors.blue[600],
                     decoration: InputDecoration(
@@ -99,6 +101,7 @@ class _MitraLoginState extends State<MitraLogin> {
                 Container(
                   padding: EdgeInsets.only(top: 10),
                   child: TextField(
+                    controller: _controllerPassword,
                     obscureText: _obscureText,
                     decoration: InputDecoration(
                       labelText: "Password",
@@ -129,7 +132,11 @@ class _MitraLoginState extends State<MitraLogin> {
                     child: InkWell(
                       onTap: () {
                         // aksi yang dijalankan saat teks diklik
-                        Navigator.pushNamed(context, LoginRole.nameRoute);
+                        if(isLogin == false){
+                          Navigator.pushNamed(context, LoginRole.nameRoute);
+                        }else{
+                          Popup();
+                        }
                       },
                       child: Text(
                         "lupa sandi ?",
