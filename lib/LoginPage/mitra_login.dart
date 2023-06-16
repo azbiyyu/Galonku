@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:galonku/Controllers/auth.dart';
 import 'package:galonku/DepotPage/home_page_user.dart';
 import 'package:galonku/Models/_button_primary.dart';
 import 'package:galonku/Models/_heading.dart';
@@ -19,6 +20,28 @@ class MitraLogin extends StatefulWidget {
 
 class _MitraLoginState extends State<MitraLogin> {
   bool _obscureText = true;
+
+  // string pesan error dan cek user login
+  String? errorMessage = ' ';
+  bool isLogin = false;
+
+  // controller email dan password untuk tampungan data
+  final TextEditingController _controllerEmail = TextEditingController();
+  final TextEditingController _controllerPassword = TextEditingController();
+
+  // method sign inn email dan passwprd
+  Future<void> signInWithEmailAndPassword() async {
+    try {
+      await Auth().SignWithEmailAndPassword(
+        email: _controllerEmail.text,
+        password: _controllerPassword.text
+      );
+    } on FirebaseAuthException catch (e) {
+      setState(() {
+        errorMessage = e.message;
+      });
+    }
+  }
   
   @override
   Widget build(BuildContext context) {
