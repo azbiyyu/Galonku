@@ -6,6 +6,7 @@ import 'package:galonku/LoginPage/mitra_login.dart';
 import 'package:galonku/Models/_button_sinkronise.dart';
 import 'package:galonku/LoginPage/verifikasi.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import '../Controllers/auth.dart';
 
 
 class UserSignIn extends StatefulWidget {
@@ -18,6 +19,42 @@ class UserSignIn extends StatefulWidget {
 
 class _UserSignInState extends State<UserSignIn> {
   bool _obscureText = true;
+
+    // string error
+  String? errorMessage = ' ';
+  // cek apakah sudah login atau tidak
+  bool isLogin = false;
+  // controller edit
+  final TextEditingController _controllerEmail = TextEditingController();
+  final TextEditingController _controllerPassword = TextEditingController();
+  
+  // method untuk sign in
+  Future<void> signInwithEmailAndPassword() async {
+    try {
+      await Auth().SignWithEmailAndPassword(
+        email: _controllerEmail.text,
+        password: _controllerPassword.text,
+      );
+    } on FirebaseAuthException catch (e) {
+      setState(() {
+        errorMessage = e.message;
+      });
+    }
+  }
+  // method create user
+  Future<void> createUserWithEmailAndPassword() async {
+    try {
+      await Auth().CreateUserWithEmailAndPassword(
+        email: _controllerEmail.text,
+        password: _controllerPassword.text
+      );
+    } on FirebaseAuthException catch (e) {
+      setState(() {
+        errorMessage = e.message;
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -75,6 +112,7 @@ class _UserSignInState extends State<UserSignIn> {
                   Container(
                     padding: EdgeInsets.only(top: 20),
                     child: TextField(
+                      controller: _controllerEmail,
                       keyboardType: TextInputType.emailAddress,
                       cursorColor: Colors.blue[600],
                       decoration: InputDecoration(
@@ -92,6 +130,7 @@ class _UserSignInState extends State<UserSignIn> {
                   Container(
                     padding: EdgeInsets.only(top: 10),
                     child: TextField(
+                      controller: _controllerPassword,
                       obscureText: _obscureText,
                       decoration: InputDecoration(
                         labelText: "Password",
@@ -125,6 +164,8 @@ class _UserSignInState extends State<UserSignIn> {
                     child: BtnPrimary(
                       text: "Daftar",
                       onPressed: () {
+                         isLogin ? signInwithEmailAndPassword() : createUserWithEmailAndPassword();
+                        isLogin = !isLogin;
                         Navigator.push(
                           context,
                           MaterialPageRoute(

@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:galonku/Controllers/auth.dart';
 import 'package:galonku/DepotPage/home_page_user.dart';
 import 'package:galonku/Models/_button_primary.dart';
 import 'package:galonku/Models/_heading.dart';

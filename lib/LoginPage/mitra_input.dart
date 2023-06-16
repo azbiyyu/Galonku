@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:galonku/Models/_heading.dart';
 import 'package:galonku/Models/_image_upload.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 
 
 class MitraInput extends StatefulWidget {
