@@ -1,7 +1,6 @@
 // import 'package:faker/faker.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'package:galonku/Controllers/auth.dart';
 import 'package:galonku/DepotPage/home_page_user.dart';
 import 'package:galonku/LandingPage/landingpage.dart';
 import 'package:galonku/LandingPage/login_role.dart';
@@ -10,6 +9,7 @@ import 'package:galonku/LoginPage/mitra_login.dart';
 import 'package:galonku/LoginPage/mitra_signin.dart';
 import 'package:galonku/LoginPage/user_login.dart';
 import 'package:galonku/LoginPage/user_signin.dart';
+import 'package:galonku/LoginPage/verifikasi.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 void main() async {
@@ -63,6 +63,7 @@ class _MyAppState extends State<MyApp> {
         MitraLogin.nameRoute: (context) => MitraLogin(),
         MitraInput.nameRoute: (context) => MitraInput(),
         HomePageUser.nameRoute: (context) => HomePageUser(),
+        Verifikasi.nameRoute: (context) => Verifikasi(isFromUserSignIn: true, ),
       },
     );
   }

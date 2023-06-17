@@ -4,6 +4,7 @@ import 'package:galonku/LoginPage/mitra_input.dart';
 
 class Verifikasi extends StatefulWidget {
   final bool isFromUserSignIn;
+  static const nameRoute = '/verifikasi';
 
   const Verifikasi({Key? key, required this.isFromUserSignIn})
       : super(key: key);

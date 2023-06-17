@@ -36,11 +36,23 @@ class _UserSignInState extends State<UserSignIn> {
         email: _controllerEmail.text,
         password: _controllerPassword.text,
       );
+      // ignore: use_build_context_synchronously
+      Navigator.push(
+        context, MaterialPageRoute(
+        builder: (context) => Verifikasi(isFromUserSignIn: true)),
+      );
     } on FirebaseAuthException catch (e) {
-      setState(() {
+      if(e.code == 'user-not-found'){
+        setState(() {
         PopupButton();
         errorMessage = e.message;
       });
+      }else{
+        setState(() {
+        PopupButton();
+        errorMessage = e.message;
+      });
+      }
     }
   }
   // method create user
@@ -50,10 +62,23 @@ class _UserSignInState extends State<UserSignIn> {
         email: _controllerEmail.text,
         password: _controllerPassword.text
       );
+      // ignore: use_build_context_synchronously
+      Navigator.push(
+        context, MaterialPageRoute(
+        builder: (context) => Verifikasi(isFromUserSignIn: true)),
+      );
     } on FirebaseAuthException catch (e) {
-      setState(() {
+      if (e.code == 'email-already-in-use') {
+        setState(() {
+          PopupButton();
+          errorMessage = e.message;
+        });
+      }else{
+        setState(() {
+        PopupButton();
         errorMessage = e.message;
       });
+      }
     }
   }
 
@@ -168,12 +193,6 @@ class _UserSignInState extends State<UserSignIn> {
                       onPressed: () {
                         isLogin ? signInwithEmailAndPassword() : createUserWithEmailAndPassword();
                         isLogin = !isLogin;
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) =>
-                                  Verifikasi(isFromUserSignIn: true)),
-                        );
                       },
                     ),
                   ),

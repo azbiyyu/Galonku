@@ -38,6 +38,7 @@ class _MitraLoginState extends State<MitraLogin> {
         email: _controllerEmail.text,
         password: _controllerPassword.text,
       );
+      // ignore: use_build_context_synchronously
       Navigator.pushNamed(context, HomePageUser.nameRoute);
     } on FirebaseAuthException catch (e) {
       if(e.code == 'user-not-found'){

@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:galonku/DepotPage/home_page_user.dart';
-import 'package:galonku/LandingPage/login_role.dart';
 import 'package:galonku/Models/_button_primary.dart';
 import 'package:galonku/Models/_button_sinkronise.dart';
 import 'package:galonku/Models/_heading.dart';
@@ -38,6 +37,7 @@ class _UserLoginState extends State<UserLogin> {
         email: _controllerEmail.text,
         password: _controllerPassword.text,
       );
+      // ignore: use_build_context_synchronously
       Navigator.pushNamed(context, HomePageUser.nameRoute);
     } on FirebaseAuthException catch (e) {
       if(e.code == 'user-not-found'){
