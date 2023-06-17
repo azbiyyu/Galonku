@@ -6,6 +6,7 @@ import 'package:galonku/LoginPage/mitra_login.dart';
 import 'package:galonku/Models/_button_sinkronise.dart';
 import 'package:galonku/LoginPage/verifikasi.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:galonku/Pop_up/Pop_up.dart';
 import '../Controllers/auth.dart';
 
 
@@ -37,6 +38,7 @@ class _UserSignInState extends State<UserSignIn> {
       );
     } on FirebaseAuthException catch (e) {
       setState(() {
+        PopupButton();
         errorMessage = e.message;
       });
     }

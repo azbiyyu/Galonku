@@ -4,6 +4,7 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 class GoogleMapPage extends StatefulWidget {
   @override
+  // ignore: library_private_types_in_public_api
   _GoogleMapPageState createState() => _GoogleMapPageState();
 }
 

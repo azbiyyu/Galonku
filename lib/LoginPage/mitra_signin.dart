@@ -6,6 +6,7 @@ import 'package:galonku/LoginPage/mitra_login.dart';
 import 'package:galonku/Models/_button_sinkronise.dart';
 import 'package:galonku/LoginPage/verifikasi.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:galonku/Pop_up/Pop_up.dart';
 import '../Controllers/auth.dart';
 
 
@@ -23,7 +24,7 @@ class _MitraSignInState extends State<MitraSignIn> {
   // string error
   String? errorMessage = ' ';
   // cek apakah sudah login atau tidak
-  bool isLogin = true;
+  bool isLogin = false;
   // controller edit
   final TextEditingController _controllerEmail = TextEditingController();
   final TextEditingController _controllerPassword = TextEditingController();
@@ -37,6 +38,7 @@ class _MitraSignInState extends State<MitraSignIn> {
       );
     } on FirebaseAuthException catch (e) {
       setState(() {
+        PopupButton();
         errorMessage = e.message;
       });
     }
@@ -170,14 +172,16 @@ class _MitraSignInState extends State<MitraSignIn> {
                       onPressed: () {
                         isLogin ? signInwithEmailAndPassword() : createUserWithEmailAndPassword();
                         isLogin = !isLogin;
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => Verifikasi(
-                              isFromUserSignIn: false,
+                        if(isLogin == true){
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => Verifikasi(
+                                isFromUserSignIn: false,
+                              ),
                             ),
-                          ),
-                        );
+                          );
+                        }
                       },
                     ),
                   ),

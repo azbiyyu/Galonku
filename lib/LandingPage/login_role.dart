@@ -4,6 +4,9 @@ import 'package:galonku/LoginPage/user_login.dart';
 
 class LoginRole extends StatelessWidget {
   static const nameRoute = '/loginrole';
+  final Function(bool) updateLoginStatus;
+  LoginRole(this.updateLoginStatus);
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -58,6 +61,8 @@ class LoginRole extends StatelessWidget {
                           ),
                         ),
                         onPressed: () {
+                          // set status login
+                          updateLoginStatus(true);
                           Navigator.pushNamed(context, MitraLogin.nameRoute);
                         },
                         child: Text(
@@ -87,6 +92,7 @@ class LoginRole extends StatelessWidget {
                           ),
                         ),
                         onPressed: () {
+                          updateLoginStatus(true);
                           Navigator.pushNamed(context, UserLogin.nameRoute);
                         },
                         child: Text(

@@ -14,6 +14,7 @@ class MitraInput extends StatefulWidget {
 class _MitraInputState extends State<MitraInput> {
   bool _isROSelected = false;
   bool _isMineralSelected = false;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
