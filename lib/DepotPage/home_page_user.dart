@@ -35,6 +35,7 @@ class _HomePageUserState extends State<HomePageUser> {
         style: TextStyle(fontSize: 50),
       ),
     ),
+    
   ];
   int index = 0;
 

@@ -19,7 +19,7 @@ class Auth {
         email: email,
         password: password
       );
-    }
+  }
   
   // method untuk membuat user untuk dimasukkan kedalam firebase
   Future<void> CreateUserWithEmailAndPassword(
