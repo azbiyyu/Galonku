@@ -21,7 +21,7 @@ class UserSignIn extends StatefulWidget {
 class _UserSignInState extends State<UserSignIn> {
   bool _obscureText = true;
 
-    // string error
+  // string error
   String? errorMessage = ' ';
   // cek apakah sudah login atau tidak
   bool isLogin = true;
@@ -166,7 +166,7 @@ class _UserSignInState extends State<UserSignIn> {
                     child: BtnPrimary(
                       text: "Daftar",
                       onPressed: () {
-                         isLogin ? signInwithEmailAndPassword() : createUserWithEmailAndPassword();
+                        isLogin ? signInwithEmailAndPassword() : createUserWithEmailAndPassword();
                         isLogin = !isLogin;
                         Navigator.push(
                           context,

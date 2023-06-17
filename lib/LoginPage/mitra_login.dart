@@ -21,26 +21,37 @@ class MitraLogin extends StatefulWidget {
 
 class _MitraLoginState extends State<MitraLogin> {
   bool _obscureText = true;
+  bool isLogged = true;
 
-  // string pesan error dan cek user login
+  // string error
   String? errorMessage = ' ';
+  // cek apakah sudah login atau tidak
   bool isLogin = true;
-
-  // controller email dan password untuk tampungan data
+  // controller edit
   final TextEditingController _controllerEmail = TextEditingController();
   final TextEditingController _controllerPassword = TextEditingController();
-
-  // method sign inn email dan passwprd
-  Future<void> signInWithEmailAndPassword() async {
+  
+  // method untuk sign in
+  Future<void> signInwithEmailAndPassword() async {
     try {
       await Auth().SignWithEmailAndPassword(
         email: _controllerEmail.text,
-        password: _controllerPassword.text
+        password: _controllerPassword.text,
       );
+      Navigator.pushNamed(context, HomePageUser.nameRoute);
     } on FirebaseAuthException catch (e) {
-      setState(() {
+      if(e.code == 'user-not-found'){
+        setState(() {
+        PopupButton();
         errorMessage = e.message;
       });
+      }else{
+        setState(() {
+        PopupButton();
+        errorMessage = e.message;
+      });
+      }
+      
     }
   }
   
@@ -154,7 +165,7 @@ class _MitraLoginState extends State<MitraLogin> {
                   child: BtnPrimary(
                     text: "Masuk",
                     onPressed: () {
-                      Navigator.pushNamed(context, HomePageUser.nameRoute);
+                      signInwithEmailAndPassword();
                     },
                   ),
                 ),
