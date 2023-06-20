@@ -62,11 +62,6 @@ class _UserSignInState extends State<UserSignIn> {
         email: _controllerEmail.text,
         password: _controllerPassword.text
       );
-      // ignore: use_build_context_synchronously
-      Navigator.push(
-        context, MaterialPageRoute(
-        builder: (context) => Verifikasi(isFromUserSignIn: true)),
-      );
     } on FirebaseAuthException catch (e) {
       if (e.code == 'email-already-in-use') {
         setState(() {
@@ -80,6 +75,11 @@ class _UserSignInState extends State<UserSignIn> {
       });
       }
     }
+    // ignore: use_build_context_synchronously
+    Navigator.push(
+      context, MaterialPageRoute(
+      builder: (context) => Verifikasi(isFromUserSignIn: true)),
+    );
   }
 
   @override

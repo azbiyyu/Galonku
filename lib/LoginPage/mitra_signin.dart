@@ -63,11 +63,6 @@ class _MitraSignInState extends State<MitraSignIn> {
         email: _controllerEmail.text,
         password: _controllerPassword.text
       );
-      // ignore: use_build_context_synchronously
-      Navigator.push(
-        context, MaterialPageRoute(
-        builder: (context) => Verifikasi(isFromUserSignIn: true)),
-      );
     } on FirebaseAuthException catch (e) {
       if (e.code == 'email-already-in-use') {
         setState(() {
@@ -81,6 +76,11 @@ class _MitraSignInState extends State<MitraSignIn> {
       });
       }
     }
+    // ignore: use_build_context_synchronously
+    Navigator.push(
+      context, MaterialPageRoute(
+      builder: (context) => Verifikasi(isFromUserSignIn: true)),
+    );
   }
 
   @override
