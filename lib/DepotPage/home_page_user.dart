@@ -1,6 +1,10 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:galonku/DepotPage/chat_user.dart';
+import 'package:galonku/LandingPage/login_role.dart';
 import '../GoogleMaps/GoogleMaps.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+
 
 class HomePageUser extends StatefulWidget {
   const HomePageUser({Key? key}) : super(key: key);
@@ -30,12 +34,27 @@ class _HomePageUserState extends State<HomePageUser> {
       child: ChatUser(),
     ),
     Center(
-      child: Text(
-        "Settings",
-        style: TextStyle(fontSize: 50),
-      ),
+      child: Builder(
+    builder: (BuildContext context) {
+      return ElevatedButton(
+        onPressed: () async {
+          SharedPreferences prefs = await SharedPreferences.getInstance();
+          await prefs.remove('email');
+          await prefs.remove('password');
+
+          // Navigasi ke halaman login atau halaman lain yang sesuai
+          // ignore: use_build_context_synchronously
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => LoginRole((p0) => false)),
+            
+          );
+        },
+        child: Text('Logout'),
+      );
+    },
+  ),
     ),
-    
   ];
   int index = 0;
 
@@ -83,5 +102,4 @@ class _HomePageUserState extends State<HomePageUser> {
     );
   }
 }
-
 
