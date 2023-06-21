@@ -9,8 +9,12 @@ class LoginRole extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: SafeArea(
+    return WillPopScope(
+      onWillPop: () async {
+        return false;
+      },
+      child: Scaffold(
+        body: SafeArea(
         child: Container(
           padding: EdgeInsets.all(30),
           child: Column(
@@ -111,6 +115,7 @@ class LoginRole extends StatelessWidget {
           ),
         ),
       ),
-    );
+    )
+  );
   }
 }

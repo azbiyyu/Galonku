@@ -5,7 +5,6 @@ import 'package:galonku/Models/_button_sinkronise.dart';
 import 'package:galonku/Models/_heading.dart';
 import 'package:galonku/LoginPage/user_signin.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-
 import '../Controllers/auth.dart';
 import '../Pop_up/Pop_up.dart';
 
