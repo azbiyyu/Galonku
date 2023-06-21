@@ -2,6 +2,7 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:galonku/DepotPage/home_page_user.dart';
+import 'package:galonku/DepotPage/pesanan_user.dart';
 import 'package:galonku/LandingPage/landingpage.dart';
 import 'package:galonku/LandingPage/login_role.dart';
 import 'package:galonku/LoginPage/mitra_input.dart';
@@ -64,6 +65,7 @@ class _MyAppState extends State<MyApp> {
         MitraInput.nameRoute: (context) => MitraInput(),
         HomePageUser.nameRoute: (context) => HomePageUser(),
         Verifikasi.nameRoute: (context) => Verifikasi(isFromUserSignIn: true, ),
+        PesananUser.nameRoute:(context) => PesananUser(),
       },
     );
   }

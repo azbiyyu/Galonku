@@ -24,7 +24,7 @@ class _HomePageUserState extends State<HomePageUser> {
       ),
     ),
     Center(
-      child: pesanan_user(),
+      child: PesananUser(),
     ),
     GoogleMapPage(),
     Center(
