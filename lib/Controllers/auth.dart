@@ -10,6 +10,7 @@ class Auth {
   
   
   //method untuk sign in dengan email
+   // ignore: non_constant_identifier_names
    Future<void> SignWithEmailAndPassword(
     {
       required String email,
@@ -22,6 +23,7 @@ class Auth {
   }
   
   // method untuk membuat user untuk dimasukkan kedalam firebase
+  // ignore: non_constant_identifier_names
   Future<void> CreateUserWithEmailAndPassword(
     {
       required String email,
