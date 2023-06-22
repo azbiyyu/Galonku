@@ -45,7 +45,7 @@ class _HomePageUserState extends State<HomePageDepot> {
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                    builder: (context) => LoginRole((p0) => false)),
+                    builder: (context) => LoginRole()),
               );
             },
             child: Text('Logout'),

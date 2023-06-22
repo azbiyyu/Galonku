@@ -39,7 +39,7 @@ class _UserSignInState extends State<UserSignIn> {
       // ignore: use_build_context_synchronously
       Navigator.push(
         context, MaterialPageRoute(
-        builder: (context) => Verifikasi(isFromUserSignIn: true)),
+        builder: (context) => Verifikasi(isFromUserSignIn: false)),
       );
     } on FirebaseAuthException catch (e) {
       if(e.code == 'user-not-found'){
@@ -78,7 +78,7 @@ class _UserSignInState extends State<UserSignIn> {
     // ignore: use_build_context_synchronously
     Navigator.push(
       context, MaterialPageRoute(
-      builder: (context) => Verifikasi(isFromUserSignIn: true)),
+      builder: (context) => Verifikasi(isFromUserSignIn: false)),
     );
   }
 

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:galonku/DepotPage/home_page_depot.dart';
 import 'package:galonku/DepotPage/home_page_user.dart';
 import 'package:galonku/LoginPage/mitra_input.dart';
 
@@ -44,7 +45,7 @@ class _VerifikasiState extends State<Verifikasi> {
                         ),
                         SizedBox(height: 16.0),
                         Text(
-                          "Masukkan kode OTP yang telah kami kirim ke nomor telepon anda:",
+                          "Masukkan kode OTP yang telah kami kirim ke email anda:",
                           style: TextStyle(
                             fontSize: 16.0,
                           ),
@@ -71,13 +72,13 @@ class _VerifikasiState extends State<Verifikasi> {
                                     Navigator.pushReplacement(
                                       context,
                                       MaterialPageRoute(
-                                          builder: (context) => HomePageUser()),
+                                          builder: (context) => MitraInput()),
                                     );
                                   } else {
                                     Navigator.pushReplacement(
                                       context,
                                       MaterialPageRoute(
-                                          builder: (context) => MitraInput()),
+                                          builder: (context) => HomePageUser()),
                                     );
                                   }
                                 }

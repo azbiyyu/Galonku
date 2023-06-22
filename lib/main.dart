@@ -29,39 +29,21 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-  bool isLoggedIn = false;
+  bool isLoggedIn = true;
 
   @override
   void initState() {
     super.initState();
-    checkLoginStatus();
-  }
-
-  void checkLoginStatus() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    bool loggedIn = prefs.getBool('isLoggedIn') ?? false;
-    setState(() {
-      isLoggedIn = loggedIn;
-    });
-  }
-
-  void updateLoginStatus(bool loggedIn) async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    await prefs.setBool('isLoggedIn', loggedIn);
-    setState(() {
-      isLoggedIn = loggedIn;
-    });
   }
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      home: isLoggedIn ? HomePageUser() : LoginRole(updateLoginStatus),
       initialRoute: LandingPage.nameRoute,
       routes: {
         LandingPage.nameRoute: (context) => LandingPage(),
-        LoginRole.nameRoute: (context) => LoginRole(updateLoginStatus),
+        LoginRole.nameRoute: (context) => LoginRole(),
         UserSignIn.nameRoute: (context) => UserSignIn(),
         UserLogin.nameRoute: (context) => UserLogin(),
         MitraSignIn.nameRoute: (context) => MitraSignIn(),

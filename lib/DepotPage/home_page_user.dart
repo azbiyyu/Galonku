@@ -43,7 +43,7 @@ class _HomePageUserState extends State<HomePageUser> {
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                    builder: (context) => LoginRole((p0) => false)),
+                    builder: (context) => LoginRole()),
               );
             },
             child: Text('Logout'),
