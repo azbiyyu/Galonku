@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:faker/faker.dart';
 
-class PesananUser extends StatefulWidget {
-  static const nameRoute = '/PesananUser';
+class PesananDepot extends StatefulWidget {
+  static const nameRoute = '/PesananDepot';
 
   @override
-  State<PesananUser> createState() => _PesananUserState();
+  State<PesananDepot> createState() => _PesananDepotState();
 }
 
-class _PesananUserState extends State<PesananUser> {
+class _PesananDepotState extends State<PesananDepot> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -22,7 +22,7 @@ class _PesananUserState extends State<PesananUser> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text(
-                    "Riwayat",
+                    "Pesanan",
                     style: TextStyle(fontSize: 20),
                   ),
                   CircleAvatar(

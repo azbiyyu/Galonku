@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:galonku/Controllers/auth.dart';
+import 'package:galonku/DepotPage/home_page_depot.dart';
 import 'package:galonku/DepotPage/home_page_user.dart';
 import 'package:galonku/Models/_button_primary.dart';
 import 'package:galonku/Models/_heading.dart';
@@ -9,7 +10,6 @@ import 'package:galonku/Models/_button_sinkronise.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:galonku/Pop_up/Pop_up.dart';
 // import 'package:firebase_auth_project/auth.dart';
-
 
 class MitraLogin extends StatefulWidget {
   const MitraLogin({super.key});
@@ -30,7 +30,7 @@ class _MitraLoginState extends State<MitraLogin> {
   // controller edit
   final TextEditingController _controllerEmail = TextEditingController();
   final TextEditingController _controllerPassword = TextEditingController();
-  
+
   // method untuk sign in
   Future<void> signInwithEmailAndPassword() async {
     try {
@@ -39,23 +39,22 @@ class _MitraLoginState extends State<MitraLogin> {
         password: _controllerPassword.text,
       );
       // ignore: use_build_context_synchronously
-      Navigator.pushNamed(context, HomePageUser.nameRoute);
+      Navigator.pushNamed(context, HomePageDepot.nameRoute);
     } on FirebaseAuthException catch (e) {
-      if(e.code == 'user-not-found'){
+      if (e.code == 'user-not-found') {
         setState(() {
-        PopupButton();
-        errorMessage = e.message;
-      });
-      }else{
+          PopupButton();
+          errorMessage = e.message;
+        });
+      } else {
         setState(() {
-        PopupButton();
-        errorMessage = e.message;
-      });
+          PopupButton();
+          errorMessage = e.message;
+        });
       }
-      
     }
   }
-  
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -144,9 +143,9 @@ class _MitraLoginState extends State<MitraLogin> {
                     child: InkWell(
                       onTap: () {
                         // aksi yang dijalankan saat teks diklik
-                        if(isLogin == false){
+                        if (isLogin == false) {
                           Navigator.pushNamed(context, LoginRole.nameRoute);
-                        }else{
+                        } else {
                           Popup();
                         }
                       },

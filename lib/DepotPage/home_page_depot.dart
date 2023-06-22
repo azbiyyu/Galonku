@@ -1,6 +1,8 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:galonku/DepotPage/chat_depot.dart';
 import 'package:galonku/DepotPage/chat_user.dart';
+import 'package:galonku/DepotPage/home_depot.dart';
 import 'package:galonku/DepotPage/home_user.dart';
 import 'package:galonku/DepotPage/pesanan_depot.dart';
 import 'package:galonku/DepotPage/pesanan_user.dart';
@@ -8,26 +10,26 @@ import 'package:galonku/LandingPage/login_role.dart';
 import '../GoogleMaps/GoogleMaps.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-class HomePageUser extends StatefulWidget {
-  const HomePageUser({Key? key}) : super(key: key);
+class HomePageDepot extends StatefulWidget {
+  const HomePageDepot({Key? key}) : super(key: key);
 
-  static const nameRoute = '/homepageuser';
+  static const nameRoute = '/homepagedepot';
 
   @override
-  State<HomePageUser> createState() => _HomePageUserState();
+  State<HomePageDepot> createState() => _HomePageUserState();
 }
 
-class _HomePageUserState extends State<HomePageUser> {
+class _HomePageUserState extends State<HomePageDepot> {
   List<Widget> widgetPage = [
     Center(
-      child: HomeUser(),
+      child: HomeDepot(),
     ),
     Center(
-      child: PesananUser(),
+      child: PesananDepot(),
     ),
     GoogleMapPage(),
     Center(
-      child: ChatUser(),
+      child: CHatDepot(),
     ),
     Center(
       child: Builder(
@@ -58,7 +60,7 @@ class _HomePageUserState extends State<HomePageUser> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Center(child: Text("Cari Depot")),
+        title: Center(child: Text("Mitra Galonku")),
         backgroundColor: Color.fromARGB(255, 52, 83, 209),
         actions: <Widget>[
           IconButton(onPressed: () {}, icon: Icon(Icons.search)),

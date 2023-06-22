@@ -1,7 +1,10 @@
 // import 'package:faker/faker.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:galonku/DepotPage/home_page_depot.dart';
 import 'package:galonku/DepotPage/home_page_user.dart';
+import 'package:galonku/DepotPage/home_user.dart';
+import 'package:galonku/DepotPage/pesanan_depot.dart';
 import 'package:galonku/DepotPage/pesanan_user.dart';
 import 'package:galonku/LandingPage/landingpage.dart';
 import 'package:galonku/LandingPage/login_role.dart';
@@ -18,6 +21,7 @@ void main() async {
   await Firebase.initializeApp();
   runApp(MyApp());
 }
+
 class MyApp extends StatefulWidget {
   @override
   // ignore: library_private_types_in_public_api
@@ -64,8 +68,13 @@ class _MyAppState extends State<MyApp> {
         MitraLogin.nameRoute: (context) => MitraLogin(),
         MitraInput.nameRoute: (context) => MitraInput(),
         HomePageUser.nameRoute: (context) => HomePageUser(),
-        Verifikasi.nameRoute: (context) => Verifikasi(isFromUserSignIn: true, ),
+        HomePageDepot.nameRoute:(context) => HomePageDepot(),
+        Verifikasi.nameRoute: (context) => Verifikasi(
+              isFromUserSignIn: true,
+            ),
+        PesananDepot.nameRoute: (context) => PesananDepot(),
         PesananUser.nameRoute:(context) => PesananUser(),
+        HomeUser.nameRoute:(context) => HomeUser(),
       },
     );
   }

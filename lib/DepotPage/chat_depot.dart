@@ -2,30 +2,31 @@ import 'package:flutter/material.dart';
 import 'package:faker/faker.dart';
 import 'package:galonku/LoginPage/user_signin.dart';
 
-class ChatUser extends StatefulWidget {
-  const ChatUser({super.key});
-   static const nameRoute = '/chatuser';
+class CHatDepot extends StatefulWidget {
+  const CHatDepot({super.key});
+  static const nameRoute = '/chatdepot';
 
   @override
-  State<ChatUser> createState() => _ChatUserState();
+  State<CHatDepot> createState() => _CHatDepotState();
 }
 
-class _ChatUserState extends State<ChatUser> {
+class _CHatDepotState extends State<CHatDepot> {
   var faker = Faker();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        body: ListView.builder(
-      itemCount: 50,
-      itemBuilder: (context, index) {
-        return ChatItem(
-          imageUrl: "https://picsum.photos/id/$index/200/300",
-          title: faker.person.name(),
-          subtitle: faker.lorem.sentence(),
-          trailing: faker.date.justTime(),
-        );
-      },
-    ));
+      body: ListView.builder(
+        itemCount: 50,
+        itemBuilder: (context, index) {
+          return ChatItem(
+            imageUrl: "https://picsum.photos/id/$index/200/300",
+            title: faker.person.name(),
+            subtitle: faker.lorem.sentence(),
+            trailing: faker.date.justTime(),
+          );
+        },
+      ),
+    );
   }
 }
 
