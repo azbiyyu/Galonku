@@ -46,6 +46,9 @@ class _GoogleMapPageState extends State<GoogleMapPage> {
         infoWindow: InfoWindow(title: 'Lokasi Saat Ini'),
       );
     });
+
+    final GoogleMapController controller = await _controller.future;
+    controller.animateCamera(CameraUpdate.newCameraPosition(_currentPosition));
   }
 
   @override
