@@ -6,6 +6,8 @@ class LoginRole extends StatelessWidget {
   static const nameRoute = '/loginrole';
   var isLoggedIn;
 
+  LoginRole(void Function(bool loggedIn) updateLoginStatus);
+
   @override
   Widget build(BuildContext context) {
     return WillPopScope(

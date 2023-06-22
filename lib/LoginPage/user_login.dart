@@ -49,7 +49,7 @@ class _UserLoginState extends State<UserLogin> {
         errorMessage = e.message;
       });
       // ignore: avoid_types_as_parameter_names, non_constant_identifier_names
-      Navigator.pushNamedAndRemoveUntil(context, HomePageUser.nameRoute, (Route) => false);
+      Navigator.pushNamedAndRemoveUntil(context, HomePageUser.nameRoute, (Route) => true);
       }
       
     }

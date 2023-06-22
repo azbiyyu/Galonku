@@ -1,4 +1,3 @@
-// import 'package:faker/faker.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:galonku/DepotPage/home_page_depot.dart';
@@ -29,34 +28,52 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-  bool isLoggedIn = true;
+  bool isLoggedIn = false;
 
   @override
   void initState() {
     super.initState();
+    checkLoginStatus();
+  }
+
+  void checkLoginStatus() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    bool loggedIn = prefs.getBool('isLoggedIn') ?? false;
+    setState(() {
+      isLoggedIn = loggedIn;
+    });
+  }
+
+  void updateLoginStatus(bool loggedIn) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    await prefs.setBool('isLoggedIn', loggedIn);
+    setState(() {
+      isLoggedIn = loggedIn;
+    });
   }
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
+      home: isLoggedIn ? HomePageUser() : LandingPage(),
       initialRoute: LandingPage.nameRoute,
       routes: {
         LandingPage.nameRoute: (context) => LandingPage(),
-        LoginRole.nameRoute: (context) => LoginRole(),
+        LoginRole.nameRoute: (context) => LoginRole(updateLoginStatus),
         UserSignIn.nameRoute: (context) => UserSignIn(),
         UserLogin.nameRoute: (context) => UserLogin(),
         MitraSignIn.nameRoute: (context) => MitraSignIn(),
         MitraLogin.nameRoute: (context) => MitraLogin(),
         MitraInput.nameRoute: (context) => MitraInput(),
         HomePageUser.nameRoute: (context) => HomePageUser(),
-        HomePageDepot.nameRoute:(context) => HomePageDepot(),
+        HomePageDepot.nameRoute: (context) => HomePageDepot(),
         Verifikasi.nameRoute: (context) => Verifikasi(
               isFromUserSignIn: true,
             ),
         PesananDepot.nameRoute: (context) => PesananDepot(),
-        PesananUser.nameRoute:(context) => PesananUser(),
-        HomeUser.nameRoute:(context) => HomeUser(),
+        PesananUser.nameRoute: (context) => PesananUser(),
+        HomeUser.nameRoute: (context) => HomeUser(),
       },
     );
   }
