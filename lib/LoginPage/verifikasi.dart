@@ -204,7 +204,8 @@ class _VerifikasiState extends State<Verifikasi> {
                               ElevatedButton(
                                 onPressed: _otpCode.length == 6
                                     ? () {
-                                        _signInWithPhoneNumber();
+                                        // _signInWithPhoneNumber();
+                                        Navigator.pushNamed(context, MitraInput.nameRoute);
                                       }
                                     : null,
                                 style: ElevatedButton.styleFrom(

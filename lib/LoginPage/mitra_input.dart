@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:galonku/Models/_heading.dart';
 import 'package:galonku/Models/_image_upload.dart';
+import 'package:geolocator/geolocator.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
+
 
 
 class MitraInput extends StatefulWidget {
@@ -14,6 +17,41 @@ class MitraInput extends StatefulWidget {
 class _MitraInputState extends State<MitraInput> {
   bool _isROSelected = false;
   bool _isMineralSelected = false;
+
+  LatLng _selectedLocation = LatLng(0, 0);
+  Set<Marker> _markers = {};
+  GoogleMapController? _mapController;
+  CameraPosition _initialCameraPosition = CameraPosition(target: LatLng(0, 0), zoom: 14);
+  
+  void _onCameraMove(CameraPosition position) {
+    setState(() {
+      _initialCameraPosition = position;
+    });
+  }
+  void _onMapCreated(GoogleMapController controller) {
+    // Set initial marker based on selected location
+    setState(() {
+      _markers.add(
+        Marker(
+          markerId: MarkerId('selected_location'),
+          position: _selectedLocation, 
+        ),
+      );
+    });
+  }
+
+  void _onMapTap(LatLng location) {
+    setState(() {
+      _selectedLocation = location;
+      _markers.clear();
+      _markers.add(
+        Marker(
+          markerId: MarkerId('selected_location'),
+          position: _selectedLocation,
+        ),
+      );
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -175,6 +213,18 @@ class _MitraInputState extends State<MitraInput> {
                   padding: EdgeInsets.only(top: 20),
                   child: ImageUploadCard(),
                 ),
+                SizedBox(
+                  height: 200,
+                  child: GoogleMap(
+                    onMapCreated: (controller) {
+                      _onMapCreated(controller);
+                    },
+                    initialCameraPosition: _initialCameraPosition,
+                    markers: _markers,
+                    onTap: _onMapTap,
+                    onCameraMove: _onCameraMove,
+                    ),
+                  ),
               ],
             ),
           ),
