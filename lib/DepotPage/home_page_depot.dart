@@ -4,9 +4,7 @@ import 'package:galonku/DepotPage/chat_depot.dart';
 import 'package:galonku/DepotPage/home_depot.dart';
 import 'package:galonku/DepotPage/pesanan_depot.dart';
 import 'package:galonku/DepotPage/settings_depot.dart';
-import 'package:galonku/LandingPage/login_role.dart';
 import '../GoogleMaps/GoogleMaps.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 class HomePageDepot extends StatefulWidget {
   const HomePageDepot({Key? key}) : super(key: key);

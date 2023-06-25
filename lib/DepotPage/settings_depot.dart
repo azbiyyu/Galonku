@@ -82,11 +82,8 @@ class _SettingDepotState extends State<SettingsDepot> {
                 await prefs.remove('role');
                 prefs.setBool('isLoggedIn', false);
                 // Navigasi ke halaman login atau halaman lain yang sesuai
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => LoginRole((p0) => true)),
-                );
+                // ignore: use_build_context_synchronously
+                Navigator.pushNamed(context, LoginRole.nameRoute);
               },
               child: Text('Logout'),
             ),

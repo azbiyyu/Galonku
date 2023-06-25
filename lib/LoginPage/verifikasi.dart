@@ -45,7 +45,7 @@ class _VerifikasiState extends State<Verifikasi> {
                         ),
                         SizedBox(height: 16.0),
                         Text(
-                          "Masukkan kode OTP yang telah kami kirim ke email anda:",
+                          "Masukkan kode OTP yang telah kami kirim ke nomor anda:",
                           style: TextStyle(
                             fontSize: 16.0,
                           ),
