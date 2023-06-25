@@ -1,15 +1,23 @@
 import 'package:flutter/material.dart';
 import 'package:galonku/LoginPage/mitra_login.dart';
 import 'package:galonku/LoginPage/user_login.dart';
+import 'package:galonku/main.dart';
+import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+
 
 class LoginRole extends StatelessWidget {
   static const nameRoute = '/loginrole';
   var isLoggedIn;
 
+
   LoginRole(void Function(bool loggedIn) updateLoginStatus);
+  
+
 
   @override
   Widget build(BuildContext context) {
+    //final myAppState = Provider.of<MyAppState>(context, listen: false);
     return WillPopScope(
       onWillPop: () async {
         return false;
@@ -65,7 +73,12 @@ class LoginRole extends StatelessWidget {
                               BorderSide(color: Colors.blue),
                             ),
                           ),
-                          onPressed: () {
+                          onPressed: () async {
+                            SharedPreferences prefs = await SharedPreferences.getInstance();
+                            await prefs.setString('role', "mitra");
+                            // myAppState.updateLoginStatus(true); // Metode yang mengarahkan pengguna ke halaman beranda (login berhasil)
+                            // myAppState.updateRole("mitra"); // Metode yang mengupdate nilai role di MyApp
+
                             Navigator.pushNamed(context, MitraLogin.nameRoute, arguments: {isLoggedIn : true});
                           },
                           child: Text(
@@ -94,7 +107,11 @@ class LoginRole extends StatelessWidget {
                               BorderSide(color: Colors.blue),
                             ),
                           ),
-                          onPressed: () {
+                          onPressed: () async {
+                            SharedPreferences prefs = await SharedPreferences.getInstance();
+                            await prefs.setString('role', "user");
+                            // myAppState.updateLoginStatus(true); // Metode yang mengarahkan pengguna ke halaman beranda (login berhasil)
+                            // myAppState.updateRole("user"); // Metode yang mengupdate nilai role di MyApp
                             Navigator.pushNamed(context, UserLogin.nameRoute, arguments: {isLoggedIn : false});
                           },
                           child: Text(
@@ -117,3 +134,5 @@ class LoginRole extends StatelessWidget {
     );
   }
 }
+
+

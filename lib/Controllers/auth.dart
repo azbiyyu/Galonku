@@ -1,4 +1,5 @@
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class Auth {
   // dapatkan instance firebase
@@ -20,6 +21,11 @@ class Auth {
         email: email,
         password: password
       );
+      // Mendapatkan instance SharedPreferences
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      // Menyimpan email dan password
+      prefs.setString('email', email);
+      prefs.setString('password', password);
   }
   
   // method untuk membuat user untuk dimasukkan kedalam firebase
@@ -33,10 +39,24 @@ class Auth {
         email: email,
         password: password
       );
+      // Mendapatkan instance SharedPreferences
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      // Menyimpan email dan password
+      prefs.setString('email', email);
+      prefs.setString('password', password);
     }
   
   // method sign out
-  Future<void> signOut() async {
+  Future<void> signOut(
+  {
+    required String email,
+    required String password,
+  }) async {
     await _firebaseAuth.signOut();
+    // Mendapatkan instance SharedPreferences
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      // Menyimpan email dan password
+      prefs.setString('email', email);
+      prefs.setString('password', password);
   }
 }

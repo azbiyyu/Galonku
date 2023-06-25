@@ -79,6 +79,8 @@ class _SettingDepotState extends State<SettingsDepot> {
                 SharedPreferences prefs = await SharedPreferences.getInstance();
                 await prefs.remove('email');
                 await prefs.remove('password');
+                await prefs.remove('role');
+                prefs.setBool('isLoggedIn', false);
                 // Navigasi ke halaman login atau halaman lain yang sesuai
                 Navigator.push(
                   context,

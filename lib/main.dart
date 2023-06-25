@@ -15,6 +15,9 @@ import 'package:galonku/LoginPage/user_login.dart';
 import 'package:galonku/LoginPage/user_signin.dart';
 import 'package:galonku/LoginPage/verifikasi.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:provider/provider.dart';
+
+
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -28,15 +31,40 @@ class MyApp extends StatefulWidget {
   _MyAppState createState() => _MyAppState();
 }
 
-class _MyAppState extends State<MyApp> {
+class _MyAppState extends State<MyApp>{
   bool isLoggedIn = false;
+  String role = '';
 
   @override
   void initState() {
     super.initState();
     checkLoginStatus();
+    checkRole();
+  }
+  void checkRole() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String userRole = prefs.getString('role') ?? '';
+    setState(() {
+      role = userRole;
+    });
+  }
+  void updateRole(String userRole) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    await prefs.setString('role', userRole);
+    setState(() {
+      role = userRole;
+    });
   }
 
+  Widget getHomePage() {
+    if (role == 'user') {
+      return HomePageUser();
+    } else if (role == 'mitra') {
+      return HomePageDepot();
+    } else {
+      return LandingPage();
+    }
+  }
   void checkLoginStatus() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     bool loggedIn = prefs.getBool('isLoggedIn') ?? false;
@@ -57,7 +85,7 @@ class _MyAppState extends State<MyApp> {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      home: isLoggedIn ? HomePageUser() : LandingPage(),
+      home: isLoggedIn ? getHomePage() : LandingPage(),
       initialRoute: LandingPage.nameRoute,
       routes: {
         LandingPage.nameRoute: (context) => LandingPage(),
