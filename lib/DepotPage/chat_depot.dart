@@ -2,15 +2,15 @@ import 'package:flutter/material.dart';
 import 'package:faker/faker.dart';
 import 'package:galonku/LoginPage/user_signin.dart';
 
-class CHatDepot extends StatefulWidget {
-  const CHatDepot({super.key});
+class ChatDepot extends StatefulWidget {
+  const ChatDepot({super.key});
   static const nameRoute = '/chatdepot';
 
   @override
-  State<CHatDepot> createState() => _CHatDepotState();
+  State<ChatDepot> createState() => _CHatDepotState();
 }
 
-class _CHatDepotState extends State<CHatDepot> {
+class _CHatDepotState extends State<ChatDepot> {
   var faker = Faker();
   @override
   Widget build(BuildContext context) {

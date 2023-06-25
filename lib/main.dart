@@ -5,6 +5,7 @@ import 'package:galonku/DepotPage/home_page_user.dart';
 import 'package:galonku/DepotPage/home_user.dart';
 import 'package:galonku/DepotPage/pesanan_depot.dart';
 import 'package:galonku/DepotPage/pesanan_user.dart';
+import 'package:galonku/DepotPage/settings_depot.dart';
 import 'package:galonku/LandingPage/landingpage.dart';
 import 'package:galonku/LandingPage/login_role.dart';
 import 'package:galonku/LoginPage/mitra_input.dart';
@@ -74,6 +75,7 @@ class _MyAppState extends State<MyApp> {
         PesananDepot.nameRoute: (context) => PesananDepot(),
         PesananUser.nameRoute: (context) => PesananUser(),
         HomeUser.nameRoute: (context) => HomeUser(),
+        SettingsDepot.nameRoute: (context) => SettingsDepot(),
       },
     );
   }

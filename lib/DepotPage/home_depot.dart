@@ -9,76 +9,169 @@ class HomeDepot extends StatefulWidget {
 }
 
 class _HomeDepotState extends State<HomeDepot> {
+  bool isROSelected = false;
+  bool isMineralSelected = false;
+  bool isBukaTutup = false;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: SafeArea(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.start,
-          children: [
-            Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(
-                    "Pesanan",
-                    style: TextStyle(fontSize: 20),
-                  ),
-                  CircleAvatar(
-                    // backgroundImage: NetworkImage('URL_FOTO_PROFIL'),
-                    radius: 20,
-                  ),
-                ],
+        child: SingleChildScrollView(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: [
+              Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      "Pesanan",
+                      style: TextStyle(fontSize: 20),
+                    ),
+                    CircleAvatar(
+                      backgroundImage: AssetImage('images/page_1.png'),
+                      radius: 20,
+                    ),
+                  ],
+                ),
               ),
-            ),
-            Container(
-              padding: EdgeInsets.all(16.0),
-              child: Row(
-                children: [
-                  Image.asset('images/Depot_Uang.png'),
-                  SizedBox(width: 10),
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
+              Container(
+                padding: EdgeInsets.all(16.0),
+                child: Row(
+                  children: [
+                    Image.asset('images/Depot_Uang.png'),
+                    SizedBox(width: 10),
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text('Pendapatan saat ini'),
+                        Text(
+                          'Rp.5.542.000',
+                          style: TextStyle(
+                            fontSize: 20,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        Text('1 Juli- 25 Juli'),
+                      ],
+                    ),
+                    Spacer(),
+                    Switch(
+                      value: isBukaTutup,
+                      onChanged: (value) {
+                        setState(() {
+                          isBukaTutup = value;
+                        });
+                        // Logika ketika tombol RO diubah
+                      },
+                      activeColor: Colors.blue,
+                    ),
+                  ],
+                ),
+              ),
+              Align(
+                alignment: Alignment.topLeft,
+                child: Padding(
+                  padding: EdgeInsets.only(left: 16.0),
+                  child: Text(
+                    "Stock Ready.",
+                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                  ),
+                ),
+              ),
+              Container(
+                child: Row(
+                  children: [
+                    Switch(
+                      value: isROSelected,
+                      onChanged: (value) {
+                        setState(() {
+                          isROSelected = value;
+                        });
+                        // Logika ketika tombol RO diubah
+                      },
+                      activeColor: Colors.blue,
+                    ),
+                    Text('RO'),
+                    SizedBox(width: 10),
+                    Switch(
+                      value: isMineralSelected,
+                      onChanged: (value) {
+                        setState(() {
+                          isMineralSelected = value;
+                        });
+                        // Logika ketika tombol Mineral diubah
+                      },
+                      activeColor: Colors.orange,
+                    ),
+                    Text('Mineral'),
+                  ],
+                ),
+              ),
+              Card(
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                child: Image.asset('images/grafik_profit.png'),
+              ),
+              Card(
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                child: Padding(
+                  padding: EdgeInsets.all(15),
+                  child: Column(
                     children: [
-                      Text('Teks 1'),
-                      Text('Teks 2'),
-                      Text('Teks 3'),
+                      Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Image.asset('images/rata_pendapatan.png'),
+                          SizedBox(width: 10),
+                          Text("Rata-rata pendapatan/bulan"),
+                        ],
+                      ),
+                      SizedBox(height: 10),
+                      Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            "RP.",
+                            style: TextStyle(fontSize: 40),
+                          ),
+                          Text(
+                            "6.820.000",
+                            style: TextStyle(fontSize: 40),
+                          ),
+                        ],
+                      ),
+                      Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Image.asset('images/arrow_profit.png'),
+                          Text('10% dari 6.138.000, 30 hari sebelumnya'),
+                        ],
+                      ),
                     ],
                   ),
-                  Spacer(),
-                  Switch(
-                    value: true,
-                    onChanged: (value) {
-                      // logika ketika switch button diubah
-                    },
-                  ),
-                ],
-              ),
-            ),
-            Expanded(
-              child: ClipRRect(
-                borderRadius: BorderRadius.only(
-                  topLeft: Radius.circular(30),
-                  topRight: Radius.circular(30),
-                ),
-                child: Container(
-                  color: Color.fromARGB(108, 231, 229, 221),
-                  child: ListView.builder(
-                    itemCount: 10,
-                    itemBuilder: (context, index) {
-                      return ChatItem(
-                        imageUrl: "https://picsum.photos/id/$index/200/300",
-                        title: faker.person.name(),
-                        subtitle: faker.lorem.sentence(),
-                        trailing: faker.date.justTime(),
-                      );
-                    },
-                  ),
                 ),
               ),
-            ),
-          ],
+              ListView.builder(
+                shrinkWrap: true,
+                physics: NeverScrollableScrollPhysics(),
+                itemCount: 10,
+                itemBuilder: (context, index) {
+                  return ChatItem(
+                    imageUrl: "https://picsum.photos/id/$index/200/300",
+                    title: faker.person.name(),
+                    subtitle: faker.lorem.sentence(),
+                    trailing: faker.date.justTime(),
+                  );
+                },
+              ),
+            ],
+          ),
         ),
       ),
     );

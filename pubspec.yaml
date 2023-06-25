@@ -23,6 +23,7 @@ dependencies:
   provider: ^6.0.0
   cupertino_icons: ^1.0.2
   shared_preferences: ^2.0.10
+  flutter_switch: ^0.3.2
 
 dev_dependencies:
   flutter_lints: ^2.0.0
@@ -47,3 +48,7 @@ flutter:
     - images/Icon_Pesanan.png
     - images/Icon_Setting.png
     - images/Depot_Uang.png
+    - images/grafik_profit.png
+    - images/rata_pendapatan.png
+    - images/arrow_profit.png
+    - images/test_foto.png
