@@ -8,7 +8,6 @@ import 'package:firebase_auth/firebase_auth.dart';
 import '../Controllers/auth.dart';
 import '../Pop_up/Pop_up.dart';
 
-
 class UserLogin extends StatefulWidget {
   const UserLogin({super.key});
   static const nameRoute = '/userlogin';
@@ -28,7 +27,7 @@ class _UserLoginState extends State<UserLogin> {
   // controller edit
   final TextEditingController _controllerEmail = TextEditingController();
   final TextEditingController _controllerPassword = TextEditingController();
-  
+
   // method untuk sign in
   Future<void> signInwithEmailAndPassword() async {
     try {
@@ -38,20 +37,20 @@ class _UserLoginState extends State<UserLogin> {
       );
       // ignore: use_build_context_synchronously
     } on FirebaseAuthException catch (e) {
-      if(e.code == 'user-not-found'){
+      if (e.code == 'user-not-found') {
         setState(() {
-        PopupButton();
-        errorMessage = e.message;
-      });
-      }else{
+          PopupButton();
+          errorMessage = e.message;
+        });
+      } else {
         setState(() {
-        PopupButton();
-        errorMessage = e.message;
-      });
-      // ignore: avoid_types_as_parameter_names, non_constant_identifier_names
-      Navigator.pushNamedAndRemoveUntil(context, HomePageUser.nameRoute, (Route) => true);
+          PopupButton();
+          errorMessage = e.message;
+        });
+        // ignore: avoid_types_as_parameter_names, non_constant_identifier_names
+        Navigator.pushNamedAndRemoveUntil(
+            context, HomePageUser.nameRoute, (Route) => true);
       }
-      
     }
   }
 

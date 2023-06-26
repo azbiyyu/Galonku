@@ -45,26 +45,13 @@ class _PesananUserState extends State<PesananUser> {
                       Padding(
                         padding: const EdgeInsets.all(16.0),
                         child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             Text(
                               "Hari ini",
                               style: TextStyle(
                                 fontSize: 18,
                                 fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                            GestureDetector(
-                              onTap: () {
-                                // Navigasi ke halaman riwayat
-                                // Navigator.push(context, MaterialPageRoute(builder: (context) => RiwayatPage()));
-                              },
-                              child: Text(
-                                "Cek riwayat",
-                                style: TextStyle(
-                                  fontSize: 16,
-                                  color: Colors.blue,
-                                ),
                               ),
                             ),
                           ],
@@ -120,15 +107,19 @@ class ChatItem extends StatelessWidget {
     IconData iconDataNo = Icons.clear;
     Color iconColorYes = Colors.green;
     Color iconColorNo = Colors.red;
+    Color hexToColor(String code) {
+      return Color(int.parse(code.substring(1, 7), radix: 16) + 0xFF000000);
+    }
 
+    Color succes_label = hexToColor("#2AA746");
     return InkWell(
       onTap: () {
         // Handle item click event here
       },
       child: Container(
         decoration: BoxDecoration(
-          color: Color.fromARGB(
-              45, 33, 75, 243), // Ganti warna background sesuai kebutuhan
+          color: succes_label
+              .withOpacity(0.2), // Ganti warna background sesuai kebutuhan
           borderRadius:
               BorderRadius.circular(10), // Atur border radius sesuai kebutuhan
         ),
