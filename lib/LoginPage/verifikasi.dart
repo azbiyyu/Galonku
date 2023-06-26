@@ -1,5 +1,3 @@
-// ignore_for_file: use_build_context_synchronously
-
 import 'dart:async';
 
 import 'package:flutter/material.dart';
@@ -11,8 +9,7 @@ class Verifikasi extends StatefulWidget {
   final bool isFromUserSignIn;
   static const nameRoute = '/verifikasi';
 
-  const Verifikasi({Key? key, required this.isFromUserSignIn})
-      : super(key: key);
+  const Verifikasi({Key? key, required this.isFromUserSignIn}) : super(key: key);
 
   @override
   State<Verifikasi> createState() => _VerifikasiState();
@@ -26,22 +23,19 @@ class _VerifikasiState extends State<Verifikasi> {
   Timer? _timer;
   Duration _timerDuration = const Duration(minutes: 2);
   bool _isOtpCodeInputted = false;
-
+  bool _isResendDisabled = false;
 
   Future<void> _verifyPhoneNumber() async {
-    // ignore: prefer_function_declarations_over_variables
     PhoneVerificationCompleted verificationCompleted =
         (PhoneAuthCredential credential) async {
       await FirebaseAuth.instance.signInWithCredential(credential);
 
       if (widget.isFromUserSignIn) {
-        // ignore: use_build_context_synchronously
         Navigator.pushReplacement(
           context,
           MaterialPageRoute(builder: (context) => MitraInput()),
         );
       } else {
-        // ignore: use_build_context_synchronously
         Navigator.pushReplacement(
           context,
           MaterialPageRoute(builder: (context) => HomePageUser()),
@@ -49,7 +43,6 @@ class _VerifikasiState extends State<Verifikasi> {
       }
     };
 
-    // ignore: prefer_function_declarations_over_variables
     PhoneVerificationFailed verificationFailed = (FirebaseAuthException e) {
       print(
           'Phone number verification failed. Code: ${e.code}. Message: ${e.message}');
@@ -58,36 +51,35 @@ class _VerifikasiState extends State<Verifikasi> {
       );
     };
 
-    // ignore: prefer_function_declarations_over_variables
     PhoneCodeSent codeSent = (String verificationId, int? resendToken) async {
       setState(() {
         _verificationId = verificationId;
         _timerDuration = const Duration(minutes: 2); // Reset ulang durasi
       });
     };
-    _timer?.cancel(); //jika timer sudah berjalan
-    // Mulai timer untuk pengiriman ulang kode
-  _timer = Timer(_timerDuration, () {
-    // Lakukan tindakan yang Anda inginkan saat waktu pengiriman ulang berakhir
-    // Contoh: Menampilkan dialog atau memberi tahu pengguna untuk meminta pengiriman ulang kode.
-    showDialog(
-      context: context,
-      builder: (BuildContext context) => AlertDialog(
-        title: Text("Resend OTP"),
-        content: Text("The OTP code has expired. Do you want to resend the verification code?"),
-        actions: [
-          TextButton(
-            onPressed: () {
-              Navigator.of(context).pop(); // Tutup dialog
-              _verifyPhoneNumber(); // Kirim ulang kode verifikasi
-              },
+    _timer?.cancel();
+    _timer = Timer(_timerDuration, () {
+      showDialog(
+        context: context,
+        builder: (BuildContext context) => AlertDialog(
+          title: Text("Resend OTP"),
+          content: Text(
+              "The OTP code has expired. Do you want to resend the verification code?"),
+          actions: [
+            TextButton(
+              onPressed: _isResendDisabled
+                  ? null
+                  : () {
+                      Navigator.of(context).pop();
+                      _verifyPhoneNumber();
+                    },
               child: Text("Resend"),
             ),
           ],
         ),
       );
     });
-    // ignore: prefer_function_declarations_over_variables
+
     PhoneCodeAutoRetrievalTimeout codeAutoRetrievalTimeout =
         (String verificationId) {
       setState(() {
@@ -97,12 +89,12 @@ class _VerifikasiState extends State<Verifikasi> {
 
     try {
       await FirebaseAuth.instance.verifyPhoneNumber(
-    phoneNumber: _phoneNumber,
-    verificationCompleted: verificationCompleted,
-    verificationFailed: verificationFailed,
-    codeSent: codeSent,
-    codeAutoRetrievalTimeout: codeAutoRetrievalTimeout,
-    timeout: const Duration(minutes: 2), // Ubah durasi sesi menjadi 5 menit
+        phoneNumber: _phoneNumber,
+        verificationCompleted: verificationCompleted,
+        verificationFailed: verificationFailed,
+        codeSent: codeSent,
+        codeAutoRetrievalTimeout: codeAutoRetrievalTimeout,
+        timeout: const Duration(minutes: 2),
       );
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -187,19 +179,30 @@ class _VerifikasiState extends State<Verifikasi> {
                         SizedBox(height: 16.0),
                         ElevatedButton(
                           onPressed: () {
-                            if (_phoneNumber.isNotEmpty) {
-                              setState(() {
-                                _isPhoneNumberInputted = true;
-                              });
-                              _verifyPhoneNumber();
-                            } else {
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                SnackBar(
-                                    content:
-                                        Text('Please enter a phone number')),
-                              );
-                            }
-                          },
+                            if (widget.isFromUserSignIn) {
+                                Navigator.pushReplacement(
+                                  context,
+                                  MaterialPageRoute(builder: (context) => MitraInput()),
+                                );
+                              } else {
+                                Navigator.pushReplacement(
+                                  context,
+                                  MaterialPageRoute(builder: (context) => HomePageUser()),
+                                );
+                              }
+                                  // if (_phoneNumber.isNotEmpty) {
+                                  //   setState(() {
+                                  //     _isPhoneNumberInputted = true;
+                                  //   });
+                                  //   _verifyPhoneNumber();
+                                  // } else {
+                                  //   ScaffoldMessenger.of(context).showSnackBar(
+                                  //     SnackBar(
+                                  //         content: Text(
+                                  //             'Please enter a phone number')),
+                                  //   );
+                                  // }
+                                },
                           style: ElevatedButton.styleFrom(
                             backgroundColor: Color.fromARGB(255, 52, 83, 209),
                           ),
@@ -207,7 +210,7 @@ class _VerifikasiState extends State<Verifikasi> {
                         ),
                         SizedBox(height: 16.0),
                         Visibility(
-                          visible: _isPhoneNumberInputted,
+                          visible: _isPhoneNumberInputted && !_isResendDisabled,
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.stretch,
                             children: [
@@ -228,7 +231,7 @@ class _VerifikasiState extends State<Verifikasi> {
                                 onChanged: (value) {
                                   setState(() {
                                     _otpCode = value;
-                                    _isOtpCodeInputted = value.length == 6; // Set nilai _isOtpCodeInputted berdasarkan panjang kode OTP
+                                    _isOtpCodeInputted = value.length == 6;
                                   });
                                 },
                               ),
@@ -236,17 +239,31 @@ class _VerifikasiState extends State<Verifikasi> {
                               ElevatedButton(
                                 onPressed: _isOtpCodeInputted
                                     ? () {
-                                        // _signInWithPhoneNumber();
-                                        Navigator.pushNamed(context, MitraInput.nameRoute);
+                                        _signInWithPhoneNumber();
                                       }
                                     : null,
                                 style: ElevatedButton.styleFrom(
-                                  backgroundColor:
-                                      Color.fromARGB(255, 52, 83, 209),
+                                  backgroundColor: Color.fromARGB(255, 52, 83, 209),
                                 ),
                                 child: Text("Verify OTP"),
                               ),
                             ],
+                          ),
+                        ),
+                        Visibility(
+                          visible: !_isResendDisabled,
+                          child: ElevatedButton(
+                            onPressed: () {
+                              setState(() {
+                                _isResendDisabled = true;
+                              });
+                              _verifyPhoneNumber();
+                            },
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor:
+                                  Color.fromARGB(255, 52, 83, 209),
+                            ),
+                            child: Text("Resend OTP"),
                           ),
                         ),
                       ],

@@ -22,10 +22,11 @@ class _MitraSignInState extends State<MitraSignIn> {
   bool _obscureText = true;
 
   // string error
-  String? errorMessage = ' ';
+  String? errorMessage = '';
   // cek apakah sudah login atau tidak
   bool isLogin = false;
   // controller edit
+  String username = '';
   final TextEditingController _controllerEmail = TextEditingController();
   final TextEditingController _controllerPassword = TextEditingController();
   
