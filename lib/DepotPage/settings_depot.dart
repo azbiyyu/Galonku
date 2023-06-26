@@ -1,5 +1,4 @@
 import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:galonku/LandingPage/login_role.dart';
@@ -21,23 +20,69 @@ class _SettingDepotState extends State<SettingsDepot> {
     'images/test_foto.png',
   ];
 
-  bool isEditing = false; // State untuk menentukan apakah sedang dalam mode editing
+  bool isEditing = false;
 
-  void toggleEditing() {
+  TextEditingController _usernameController = TextEditingController();
+  TextEditingController _emailController = TextEditingController();
+  TextEditingController _alamatController = TextEditingController();
+  TextEditingController _produkController = TextEditingController();
+  TextEditingController _bukaController = TextEditingController();
+  TextEditingController _tutupController = TextEditingController();
+
+  @override
+  void initState() {
+    super.initState();
+    loadUserData();
+  }
+
+  void loadUserData() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
     setState(() {
-      isEditing = !isEditing; // Toggle state editing saat tombol diklik
+      _usernameController.text = prefs.getString('username') ?? '';
+      _emailController.text = prefs.getString('email') ?? '';
+      _alamatController.text = prefs.getString('alamat') ?? '';
+      _produkController.text = prefs.getString('produk') ?? '';
+      _bukaController.text = prefs.getString('buka') ?? '';
+      _tutupController.text = prefs.getString('tutup') ?? '';
+    });
+  }
+
+  void toggleEditing() async {
+    if (isEditing) {
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      String username = _usernameController.text;
+      String email = _emailController.text;
+      String alamat = _alamatController.text;
+      String produk = _produkController.text;
+      String buka = _bukaController.text;
+      String tutup = _tutupController.text;
+
+      await prefs.setString('username', username);
+      await prefs.setString('email', email);
+      await prefs.setString('alamat', alamat);
+      await prefs.setString('produk', produk);
+      await prefs.setString('buka', buka);
+      await prefs.setString('tutup', tutup);
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Data berhasil disimpan')),
+      );
+    }
+
+    setState(() {
+      isEditing = !isEditing;
     });
   }
 
   void addImage(String imagePath) {
     setState(() {
-      images.add(imagePath); // Tambahkan gambar baru ke daftar gambar
+      images.add(imagePath);
     });
   }
 
   Future<void> pickImage() async {
     final picker = ImagePicker();
-    final pickedImage = await picker.getImage(source: ImageSource.gallery);
+    final pickedImage = await picker.pickImage(source: ImageSource.gallery);
 
     if (pickedImage != null) {
       File imageFile = File(pickedImage.path);
@@ -72,11 +117,9 @@ class _SettingDepotState extends State<SettingsDepot> {
                 child: Align(
                   alignment: Alignment.topRight,
                   child: InkWell(
-                    onTap: toggleEditing, // Mengubah state saat tombol diklik
+                    onTap: toggleEditing,
                     child: Text(
-                      isEditing
-                          ? "Simpan"
-                          : "Edit Data", // Ubah teks tombol sesuai dengan state editing
+                      isEditing ? "Simpan" : "Edit Data",
                       style: TextStyle(
                         fontWeight: FontWeight.bold,
                         fontSize: 12,
@@ -92,47 +135,47 @@ class _SettingDepotState extends State<SettingsDepot> {
                 child: Column(
                   children: [
                     TextFormField(
+                      controller: _usernameController,
                       decoration: InputDecoration(
                         labelText: 'Username',
                         border: OutlineInputBorder(
                           borderSide: BorderSide(color: Colors.grey),
                         ),
                       ),
-                      enabled:
-                          isEditing, // Aktifkan atau nonaktifkan input field sesuai dengan state editing
+                      enabled: isEditing,
                     ),
                     SizedBox(height: 10),
                     TextFormField(
+                      controller: _emailController,
                       decoration: InputDecoration(
                         labelText: 'Email',
                         border: OutlineInputBorder(
                           borderSide: BorderSide(color: Colors.grey),
                         ),
                       ),
-                      enabled:
-                          isEditing, // Aktifkan atau nonaktifkan input field sesuai dengan state editing
+                      enabled: isEditing,
                     ),
                     SizedBox(height: 10),
                     TextFormField(
+                      controller: _alamatController,
                       decoration: InputDecoration(
                         labelText: 'Alamat',
                         border: OutlineInputBorder(
                           borderSide: BorderSide(color: Colors.grey),
                         ),
                       ),
-                      enabled:
-                          isEditing, // Aktifkan atau nonaktifkan input field sesuai dengan state editing
+                      enabled: isEditing,
                     ),
                     SizedBox(height: 10),
                     TextFormField(
+                      controller: _produkController,
                       decoration: InputDecoration(
                         labelText: 'Produk',
                         border: OutlineInputBorder(
                           borderSide: BorderSide(color: Colors.grey),
                         ),
                       ),
-                      enabled:
-                          isEditing, // Aktifkan atau nonaktifkan input field sesuai dengan state editing
+                      enabled: isEditing,
                     ),
                   ],
                 ),
@@ -144,27 +187,27 @@ class _SettingDepotState extends State<SettingsDepot> {
                   children: [
                     Expanded(
                       child: TextFormField(
+                        controller: _bukaController,
                         decoration: InputDecoration(
                           labelText: 'Buka',
                           border: OutlineInputBorder(
                             borderSide: BorderSide(color: Colors.grey),
                           ),
                         ),
-                        enabled:
-                            isEditing, // Aktifkan atau nonaktifkan input field sesuai dengan state editing
+                        enabled: isEditing,
                       ),
                     ),
                     SizedBox(width: 10),
                     Expanded(
                       child: TextFormField(
+                        controller: _tutupController,
                         decoration: InputDecoration(
                           labelText: 'Tutup',
                           border: OutlineInputBorder(
                             borderSide: BorderSide(color: Colors.grey),
                           ),
                         ),
-                        enabled:
-                            isEditing, // Aktifkan atau nonaktifkan input field sesuai dengan state editing
+                        enabled: isEditing,
                       ),
                     ),
                   ],
@@ -187,11 +230,9 @@ class _SettingDepotState extends State<SettingsDepot> {
                       );
                     },
                   ),
-                  // Tambahkan widget "Tambah Foto" pada Carousel Slider
                   InkWell(
                     onTap: () {
-                      // Tambahkan logika ketika "Tambah Foto" diklik
-                      pickImage(); // Buka galeri untuk memilih foto
+                      pickImage();
                     },
                     child: Container(
                       margin: EdgeInsets.all(5.0),
@@ -233,7 +274,7 @@ class _SettingDepotState extends State<SettingsDepot> {
                   child: Container(
                     width: double.infinity,
                     alignment: Alignment.center,
-                    child: Text('Logout'),
+                    child: Text(isEditing ? 'Simpan' : 'Logout'),
                   ),
                 ),
               ),
