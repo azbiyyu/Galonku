@@ -17,6 +17,10 @@ class MitraInput extends StatefulWidget {
 class _MitraInputState extends State<MitraInput> {
   bool _isROSelected = false;
   bool _isMineralSelected = false;
+  final usernameController = TextEditingController();
+  final alamatController = TextEditingController();
+  
+
 
   LatLng _selectedLocation = LatLng(0, 0);
   Set<Marker> _markers = {};
@@ -78,6 +82,7 @@ class _MitraInputState extends State<MitraInput> {
                 Container(
                   padding: EdgeInsets.only(top: 20),
                   child: TextField(
+                    controller: usernameController,
                     keyboardType: TextInputType.name,
                     cursorColor: Colors.blue[600],
                     decoration: InputDecoration(
@@ -95,6 +100,7 @@ class _MitraInputState extends State<MitraInput> {
                 Container(
                   padding: EdgeInsets.only(top: 20),
                   child: TextField(
+                    controller: alamatController,
                     keyboardType: TextInputType.streetAddress,
                     cursorColor: Colors.blue[600],
                     decoration: InputDecoration(
@@ -220,9 +226,9 @@ class _MitraInputState extends State<MitraInput> {
                       _onMapCreated(controller);
                     },
                     initialCameraPosition: _initialCameraPosition,
+                    onCameraMove: _onCameraMove,
                     markers: _markers,
                     onTap: _onMapTap,
-                    onCameraMove: _onCameraMove,
                     ),
                   ),
               ],

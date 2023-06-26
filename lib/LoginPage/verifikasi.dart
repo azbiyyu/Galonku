@@ -1,5 +1,7 @@
 // ignore_for_file: use_build_context_synchronously
 
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:galonku/DepotPage/home_page_user.dart';
@@ -21,6 +23,8 @@ class _VerifikasiState extends State<Verifikasi> {
   String _otpCode = "";
   String _verificationId = "";
   bool _isPhoneNumberInputted = false;
+  Timer? _timer;
+  Duration _timerDuration = const Duration(minutes: 2);
 
   Future<void> _verifyPhoneNumber() async {
     // ignore: prefer_function_declarations_over_variables
@@ -56,9 +60,31 @@ class _VerifikasiState extends State<Verifikasi> {
     PhoneCodeSent codeSent = (String verificationId, int? resendToken) async {
       setState(() {
         _verificationId = verificationId;
+        _timerDuration = const Duration(minutes: 2); // Reset ulang durasi
       });
     };
-
+    _timer?.cancel(); //jika timer sudah berjalan
+    // Mulai timer untuk pengiriman ulang kode
+  _timer = Timer(_timerDuration, () {
+    // Lakukan tindakan yang Anda inginkan saat waktu pengiriman ulang berakhir
+    // Contoh: Menampilkan dialog atau memberi tahu pengguna untuk meminta pengiriman ulang kode.
+    showDialog(
+      context: context,
+      builder: (BuildContext context) => AlertDialog(
+        title: Text("Resend OTP"),
+        content: Text("The OTP code has expired. Do you want to resend the verification code?"),
+        actions: [
+          TextButton(
+            onPressed: () {
+              Navigator.of(context).pop(); // Tutup dialog
+              _verifyPhoneNumber(); // Kirim ulang kode verifikasi
+              },
+              child: Text("Resend"),
+            ),
+          ],
+        ),
+      );
+    });
     // ignore: prefer_function_declarations_over_variables
     PhoneCodeAutoRetrievalTimeout codeAutoRetrievalTimeout =
         (String verificationId) {
@@ -69,11 +95,12 @@ class _VerifikasiState extends State<Verifikasi> {
 
     try {
       await FirebaseAuth.instance.verifyPhoneNumber(
-        phoneNumber: _phoneNumber,
-        verificationCompleted: verificationCompleted,
-        verificationFailed: verificationFailed,
-        codeSent: codeSent,
-        codeAutoRetrievalTimeout: codeAutoRetrievalTimeout,
+    phoneNumber: _phoneNumber,
+    verificationCompleted: verificationCompleted,
+    verificationFailed: verificationFailed,
+    codeSent: codeSent,
+    codeAutoRetrievalTimeout: codeAutoRetrievalTimeout,
+    timeout: const Duration(minutes: 2), // Ubah durasi sesi menjadi 5 menit
       );
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(

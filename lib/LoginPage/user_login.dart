@@ -36,6 +36,7 @@ class _UserLoginState extends State<UserLogin> {
         password: _controllerPassword.text,
       );
       // ignore: use_build_context_synchronously
+        Navigator.pushNamed(context, HomePageUser.nameRoute);
     } on FirebaseAuthException catch (e) {
       if (e.code == 'user-not-found') {
         setState(() {
@@ -48,8 +49,6 @@ class _UserLoginState extends State<UserLogin> {
           errorMessage = e.message;
         });
         // ignore: avoid_types_as_parameter_names, non_constant_identifier_names
-        Navigator.pushNamedAndRemoveUntil(
-            context, HomePageUser.nameRoute, (Route) => true);
       }
     }
   }
