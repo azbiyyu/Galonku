@@ -111,14 +111,14 @@ class ChatItem extends StatelessWidget {
       return Color(int.parse(code.substring(1, 7), radix: 16) + 0xFF000000);
     }
 
-    Color succes_label = hexToColor("#2AA746");
+    Color succesLabel = hexToColor("#2AA746");
     return InkWell(
       onTap: () {
         // Handle item click event here
       },
       child: Container(
         decoration: BoxDecoration(
-          color: succes_label
+          color: succesLabel
               .withOpacity(0.2), // Ganti warna background sesuai kebutuhan
           borderRadius:
               BorderRadius.circular(10), // Atur border radius sesuai kebutuhan
