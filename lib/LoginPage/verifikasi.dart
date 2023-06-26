@@ -25,6 +25,8 @@ class _VerifikasiState extends State<Verifikasi> {
   bool _isPhoneNumberInputted = false;
   Timer? _timer;
   Duration _timerDuration = const Duration(minutes: 2);
+  bool _isOtpCodeInputted = false;
+
 
   Future<void> _verifyPhoneNumber() async {
     // ignore: prefer_function_declarations_over_variables
@@ -226,16 +228,16 @@ class _VerifikasiState extends State<Verifikasi> {
                                 onChanged: (value) {
                                   setState(() {
                                     _otpCode = value;
+                                    _isOtpCodeInputted = value.length == 6; // Set nilai _isOtpCodeInputted berdasarkan panjang kode OTP
                                   });
                                 },
                               ),
                               SizedBox(height: 16.0),
                               ElevatedButton(
-                                onPressed: _otpCode.length == 6
+                                onPressed: _isOtpCodeInputted
                                     ? () {
-                                        _signInWithPhoneNumber();
-                                        Navigator.pushNamed(
-                                            context, MitraInput.nameRoute);
+                                        // _signInWithPhoneNumber();
+                                        Navigator.pushNamed(context, MitraInput.nameRoute);
                                       }
                                     : null,
                                 style: ElevatedButton.styleFrom(
