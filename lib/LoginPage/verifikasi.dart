@@ -44,17 +44,16 @@ class _VerifikasiState extends State<Verifikasi> {
     };
 
     // ignore: prefer_function_declarations_over_variables
-    PhoneVerificationFailed verificationFailed =
-        (FirebaseAuthException e) {
-      print('Phone number verification failed. Code: ${e.code}. Message: ${e.message}');
+    PhoneVerificationFailed verificationFailed = (FirebaseAuthException e) {
+      print(
+          'Phone number verification failed. Code: ${e.code}. Message: ${e.message}');
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Phone number verification failed')),
       );
     };
 
     // ignore: prefer_function_declarations_over_variables
-    PhoneCodeSent codeSent =
-        (String verificationId, int? resendToken) async {
+    PhoneCodeSent codeSent = (String verificationId, int? resendToken) async {
       setState(() {
         _verificationId = verificationId;
       });
@@ -104,7 +103,8 @@ class _VerifikasiState extends State<Verifikasi> {
       }
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Failed to sign in with phone number. Error: $e')),
+        SnackBar(
+            content: Text('Failed to sign in with phone number. Error: $e')),
       );
     }
   }
@@ -165,7 +165,9 @@ class _VerifikasiState extends State<Verifikasi> {
                               _verifyPhoneNumber();
                             } else {
                               ScaffoldMessenger.of(context).showSnackBar(
-                                SnackBar(content: Text('Please enter a phone number')),
+                                SnackBar(
+                                    content:
+                                        Text('Please enter a phone number')),
                               );
                             }
                           },
@@ -204,12 +206,14 @@ class _VerifikasiState extends State<Verifikasi> {
                               ElevatedButton(
                                 onPressed: _otpCode.length == 6
                                     ? () {
-                                        // _signInWithPhoneNumber();
-                                        Navigator.pushNamed(context, MitraInput.nameRoute);
+                                        _signInWithPhoneNumber();
+                                        Navigator.pushNamed(
+                                            context, MitraInput.nameRoute);
                                       }
                                     : null,
                                 style: ElevatedButton.styleFrom(
-                                  backgroundColor: Color.fromARGB(255, 52, 83, 209),
+                                  backgroundColor:
+                                      Color.fromARGB(255, 52, 83, 209),
                                 ),
                                 child: Text("Verify OTP"),
                               ),

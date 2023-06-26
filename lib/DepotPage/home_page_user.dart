@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:galonku/DepotPage/chat_user.dart';
 import 'package:galonku/DepotPage/home_user.dart';
 import 'package:galonku/DepotPage/pesanan_user.dart';
+import 'package:galonku/DepotPage/settings_depot.dart';
+import 'package:galonku/DepotPage/settings_user.dart';
 import 'package:galonku/LandingPage/login_role.dart';
 import '../GoogleMaps/GoogleMaps.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -29,23 +31,26 @@ class _HomePageUserState extends State<HomePageUser> {
       child: ChatUser(),
     ),
     Center(
-      child: Builder(
-        builder: (BuildContext context) {
-          return ElevatedButton(
-            onPressed: () async {
-              SharedPreferences prefs = await SharedPreferences.getInstance();
-              await prefs.remove('email');
-              await prefs.remove('password');
-
-              // Navigasi ke halaman login atau halaman lain yang sesuai
-              // ignore: use_build_context_synchronously
-              Navigator.pushNamed(context, LoginRole.nameRoute);
-            },
-            child: Text('Logout'),
-          );
-        },
-      ),
+      child: SettingsUser(),
     ),
+    // Center(
+    //   child: Builder(
+    //     builder: (BuildContext context) {
+    //       return ElevatedButton(
+    //         onPressed: () async {
+    //           SharedPreferences prefs = await SharedPreferences.getInstance();
+    //           await prefs.remove('email');
+    //           await prefs.remove('password');
+
+    //           // Navigasi ke halaman login atau halaman lain yang sesuai
+    //           // ignore: use_build_context_synchronously
+    //           Navigator.pushNamed(context, LoginRole.nameRoute);
+    //         },
+    //         child: Text('Logout'),
+    //       );
+    //     },
+    //   ),
+    // ),
   ];
   int index = 0;
 
