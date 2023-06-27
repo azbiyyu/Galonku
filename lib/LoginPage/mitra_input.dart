@@ -2,12 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:galonku/DepotPage/home_page_depot.dart';
 import 'package:galonku/Models/_heading.dart';
 import 'package:galonku/Models/_image_upload.dart';
-import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class MitraInput extends StatefulWidget {
-  const MitraInput({super.key});
+  const MitraInput({Key? key}) : super(key: key);
   static const nameRoute = '/mitrainput';
 
   @override
@@ -21,12 +20,12 @@ class _MitraInputState extends State<MitraInput> {
   final alamatController = TextEditingController();
   final bukaController = TextEditingController();
   final tutupController = TextEditingController();
-  
-  
+
   LatLng _selectedLocation = LatLng(0, 0);
   Set<Marker> _markers = {};
   GoogleMapController? _mapController;
-  CameraPosition _initialCameraPosition = CameraPosition(target: LatLng(0, 0), zoom: 14);
+  CameraPosition _initialCameraPosition =
+      CameraPosition(target: LatLng(0, 0), zoom: 14);
 
   void _onCameraMove(CameraPosition position) {
     setState(() {
@@ -40,7 +39,7 @@ class _MitraInputState extends State<MitraInput> {
       _markers.add(
         Marker(
           markerId: MarkerId('selected_location'),
-          position: _selectedLocation, 
+          position: _selectedLocation,
         ),
       );
     });
@@ -59,32 +58,59 @@ class _MitraInputState extends State<MitraInput> {
     });
   }
 
-  void _saveData() async {
-  String namaDepot = usernameController.text;
-  String alamatDepot = alamatController.text;
-  String bukaDepot = bukaController.text;
-  String tutupDepot = tutupController.text;
-
-  final docUser = FirebaseFirestore.instance.collection('user').doc('id');
-  final json = {
-    'username': namaDepot,
-    'alamat': alamatDepot,
-    'buka': bukaDepot,
-    'tutup': tutupDepot,
-    'lokasi': GeoPoint(_selectedLocation.latitude, _selectedLocation.longitude),
-    'Mineral': _isROSelected,
-    'RO': _isMineralSelected,
-  };
-
-  try {
-    await docUser.set(json);
-    Navigator.pushReplacementNamed(context, HomePageDepot.nameRoute);
-  } catch (error) {
-    print("Failed to save data: $error");
-    // Show error message or handle error accordingly
+  bool _isDataComplete() {
+    return usernameController.text.isNotEmpty &&
+        alamatController.text.isNotEmpty &&
+        bukaController.text.isNotEmpty &&
+        tutupController.text.isNotEmpty;
   }
-}
 
+  void _saveData() async {
+    if (_isDataComplete()) {
+      String namaDepot = usernameController.text;
+      String alamatDepot = alamatController.text;
+      String bukaDepot = bukaController.text;
+      String tutupDepot = tutupController.text;
+
+      final docUser = FirebaseFirestore.instance.collection('user').doc('id');
+      final json = {
+        'username': namaDepot,
+        'alamat': alamatDepot,
+        'buka': bukaDepot,
+        'tutup': tutupDepot,
+        'lokasi':
+            GeoPoint(_selectedLocation.latitude, _selectedLocation.longitude),
+        'Mineral': _isROSelected,
+        'RO': _isMineralSelected,
+      };
+
+      try {
+        await docUser.set(json);
+        Navigator.pushReplacementNamed(context, HomePageDepot.nameRoute);
+      } catch (error) {
+        print("Failed to save data: $error");
+        // Show error message or handle error accordingly
+      }
+    } else {
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: Text("Data Incomplete"),
+            content: Text("Please fill in all the fields."),
+            actions: [
+              TextButton(
+                child: Text("OK"),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+              ),
+            ],
+          );
+        },
+      );
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -131,7 +157,7 @@ class _MitraInputState extends State<MitraInput> {
                   child: TextField(
                     controller: alamatController,
                     keyboardType: TextInputType.streetAddress,
-                    cursorColor: Colors.blue[600],
+                    cursorColor: Color.fromARGB(255, 252, 189, 0),
                     decoration: InputDecoration(
                       labelText: 'Alamat',
                       labelStyle: TextStyle(color: Colors.black),
@@ -222,7 +248,7 @@ class _MitraInputState extends State<MitraInput> {
                       Expanded(
                         child: Container(
                           decoration: BoxDecoration(
-                            color: Color.fromARGB(255, 255, 153, 0),
+                            color: Color.fromARGB(255, 52, 83, 209),
                             borderRadius: BorderRadius.circular(30),
                           ),
                           child: CheckboxListTile(
@@ -245,26 +271,32 @@ class _MitraInputState extends State<MitraInput> {
                     ],
                   ),
                 ),
-                Container(
-                  padding: EdgeInsets.only(top: 20),
-                  child: ImageUploadCard(),
+                SizedBox(height: 20),
+                Text(
+                  "Lokasi Depot",
+                  style: TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
-                SizedBox(
+                SizedBox(height: 10),
+                Container(
                   height: 200,
                   child: GoogleMap(
-                    onMapCreated: (controller) {
-                      _onMapCreated(controller);
-                    },
+                    onMapCreated: _onMapCreated,
+                    onTap: _onMapTap,
+                    markers: _markers,
                     initialCameraPosition: _initialCameraPosition,
                     onCameraMove: _onCameraMove,
-                    markers: _markers,
-                    onTap: _onMapTap,
                   ),
                 ),
                 SizedBox(height: 20),
                 ElevatedButton(
                   onPressed: _saveData,
-                  child: Text('Save'),
+                  child: Text(
+                    "Simpan",
+                    style: TextStyle(fontSize: 16),
+                  ),
                 ),
               ],
             ),

@@ -1,198 +1,180 @@
+import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:carousel_slider/carousel_slider.dart';
+import 'package:galonku/LandingPage/login_role.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class SettingsUser extends StatefulWidget {
-  const SettingsUser({Key? key}) : super(key: key);
+  const SettingsUser({Key? key});
   static const nameRoute = '/SettingsUser';
 
   @override
-  State<SettingsUser> createState() => _SettingsUserState();
+  State<SettingsUser> createState() => _SettingDepotState();
 }
 
-class _SettingsUserState extends State<SettingsUser> {
+class _SettingDepotState extends State<SettingsUser> {
+  bool isEditing = false;
+
+  TextEditingController _usernameController = TextEditingController();
+  TextEditingController _emailController = TextEditingController();
+  TextEditingController _alamatController = TextEditingController();
+  TextEditingController _produkController = TextEditingController();
+  TextEditingController _bukaController = TextEditingController();
+  TextEditingController _tutupController = TextEditingController();
+
+  @override
+  void initState() {
+    super.initState();
+    loadUserData();
+  }
+
+  void loadUserData() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    setState(() {
+      _usernameController.text = prefs.getString('username') ?? '';
+      _emailController.text = prefs.getString('email') ?? '';
+      _alamatController.text = prefs.getString('alamat') ?? '';
+      _produkController.text = prefs.getString('produk') ?? '';
+      _bukaController.text = prefs.getString('buka') ?? '';
+      _tutupController.text = prefs.getString('tutup') ?? '';
+    });
+  }
+
+  void toggleEditing() async {
+    if (isEditing) {
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      String username = _usernameController.text;
+      String email = _emailController.text;
+      String alamat = _alamatController.text;
+      String produk = _produkController.text;
+      String buka = _bukaController.text;
+      String tutup = _tutupController.text;
+
+      await prefs.setString('username', username);
+      await prefs.setString('email', email);
+      await prefs.setString('alamat', alamat);
+      await prefs.setString('produk', produk);
+      await prefs.setString('buka', buka);
+      await prefs.setString('tutup', tutup);
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Data berhasil disimpan')),
+      );
+    }
+
+    setState(() {
+      isEditing = !isEditing;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Column(
-        children: [
-          Container(
-            width: double.infinity,
-            height: 200.0,
-            decoration: BoxDecoration(
-              color: Colors.blue,
-              borderRadius: BorderRadius.only(
-                bottomLeft: Radius.circular(20.0),
-                bottomRight: Radius.circular(20.0),
-              ),
-            ),
-            padding: EdgeInsets.all(16.0),
-            child: Align(
-              alignment: Alignment.center,
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  CircleAvatar(
-                    radius: 60.0,
-                    backgroundImage: AssetImage('images/page_1.png'),
-                  ),
-                  SizedBox(width: 16.0),
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Text(
-                        'Nama Pengguna',
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 24.0,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                      SizedBox(height: 8.0),
-                      Text(
-                        'email@example.com',
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 18.0,
-                        ),
-                      ),
-                    ],
-                  ),
-                ],
-              ),
-            ),
-          ),
-          SizedBox(height: 16.0),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+      body: SafeArea(
+        child: SingleChildScrollView(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Expanded(
-                child: Container(
-                  width: 150.0, // Atur lebar Container
-                  height: 200.0, // Atur tinggi Container
-                  child: Card(
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10.0),
-                    ),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Text(
-                          'Bulan ini',
-                          style: TextStyle(
-                            fontSize: 18.0,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                        SizedBox(height: 8.0),
-                        Image.asset(
-                          'images/galon.png',
-                          width: 80.0,
-                          height: 80.0,
-                        ),
-                        SizedBox(height: 8.0),
-                        Text(
-                          'X galon',
-                          style: TextStyle(
-                            fontSize: 16.0,
-                          ),
-                        ),
-                      ],
+              GestureDetector(
+                onTap: () {
+                  // Logika ketika tombol edit foto ditekan
+                },
+                child: CircleAvatar(
+                  radius: 80,
+                  backgroundColor: Colors.grey,
+                  child: Icon(
+                    Icons.edit,
+                    color: Colors.white,
+                  ),
+                ),
+              ),
+              SizedBox(height: 20),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 20),
+                child: Align(
+                  alignment: Alignment.topRight,
+                  child: InkWell(
+                    onTap: toggleEditing,
+                    child: Text(
+                      isEditing ? "Simpan" : "Edit Data",
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 12,
+                        color: Colors.blue[700],
+                      ),
                     ),
                   ),
                 ),
               ),
-              SizedBox(width: 16.0),
-              Expanded(
-                child: Container(
-                  width: 150.0, // Atur lebar Container
-                  height: 200.0, // Atur tinggi Container
-                  child: Card(
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10.0),
+              SizedBox(height: 20),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 20),
+                child: Column(
+                  children: [
+                    TextFormField(
+                      controller: _usernameController,
+                      decoration: InputDecoration(
+                        labelText: 'Username',
+                        border: OutlineInputBorder(
+                          borderSide: BorderSide(color: Colors.grey),
+                        ),
+                      ),
+                      enabled: isEditing,
                     ),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Text(
-                          'Level',
-                          style: TextStyle(
-                            fontSize: 18.0,
-                            fontWeight: FontWeight.bold,
-                          ),
+                    SizedBox(height: 10),
+                    TextFormField(
+                      controller: _emailController,
+                      decoration: InputDecoration(
+                        labelText: 'Email',
+                        border: OutlineInputBorder(
+                          borderSide: BorderSide(color: Colors.grey),
                         ),
-                        SizedBox(height: 8.0),
-                        Image.asset(
-                          'images/piala.png',
-                          width: 80.0,
-                          height: 80.0,
-                        ),
-                        SizedBox(height: 8.0),
-                        Text(
-                          'Beli 3 galon lagi untuk dapat emas',
-                          textAlign: TextAlign.center,
-                          style: TextStyle(
-                            fontSize: 15.0,
-                          ),
-                        ),
-                      ],
+                      ),
+                      enabled: isEditing,
                     ),
+                    SizedBox(height: 10),
+                    TextFormField(
+                      controller: _alamatController,
+                      decoration: InputDecoration(
+                        labelText: 'Alamat',
+                        border: OutlineInputBorder(
+                          borderSide: BorderSide(color: Colors.grey),
+                        ),
+                      ),
+                      enabled: isEditing,
+                    ),
+                    SizedBox(height: 10),
+                  ],
+                ),
+              ),
+              SizedBox(height: 20),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16),
+                child: ElevatedButton(
+                  onPressed: () async {
+                    SharedPreferences prefs =
+                        await SharedPreferences.getInstance();
+                    await prefs.remove('email');
+                    await prefs.remove('password');
+                    await prefs.remove('role');
+                    prefs.setBool('isLoggedIn', false);
+                    Navigator.pushNamed(context, LoginRole.nameRoute);
+                  },
+                  style: ElevatedButton.styleFrom(
+                    padding: EdgeInsets.symmetric(vertical: 16),
+                  ),
+                  child: Container(
+                    width: double.infinity,
+                    alignment: Alignment.center,
+                    child: Text(isEditing ? 'Simpan' : 'Logout'),
                   ),
                 ),
               ),
+              SizedBox(height: 20),
             ],
           ),
-          SizedBox(height: 16.0),
-          Expanded(
-            child: Card(
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(10.0),
-              ),
-              child: Column(
-                children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Padding(
-                        padding: EdgeInsets.all(8.0),
-                        child: Text(
-                          'Promosi',
-                          style: TextStyle(
-                            fontSize: 16.0,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                      ),
-                      Padding(
-                        padding: EdgeInsets.all(8.0),
-                        child: InkWell(
-                          onTap: () {
-                            // Action when "Lihat Lainya" is clicked
-                          },
-                          child: Text(
-                            'Lihat Lainya',
-                            style: TextStyle(
-                              fontSize: 16.0,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.blue,
-                            ),
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                  Expanded(
-                    child: ClipRRect(
-                      borderRadius: BorderRadius.circular(10.0),
-                      child: Image.asset(
-                        'images/promo.png',
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ),
-        ],
+        ),
       ),
     );
   }
