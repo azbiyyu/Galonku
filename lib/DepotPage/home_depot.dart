@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:faker/faker.dart';
+import 'package:galonku/DesignSystem/_appBar.dart';
 
 class HomeDepot extends StatefulWidget {
   static const nameRoute = '/homedepot';
@@ -16,6 +17,7 @@ class _HomeDepotState extends State<HomeDepot> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: CustomAppBar(title: "Cari Depot"),
       body: SafeArea(
         child: SingleChildScrollView(
           child: Column(

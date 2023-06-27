@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:faker/faker.dart';
+import 'package:galonku/DesignSystem/_appBar.dart';
 import 'package:galonku/LoginPage/user_signin.dart';
 
 class ChatUser extends StatefulWidget {
@@ -15,6 +16,7 @@ class _ChatUserState extends State<ChatUser> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: CustomAppBar(title: "Cari Depot"),
         body: ListView.builder(
       itemCount: 50,
       itemBuilder: (context, index) {

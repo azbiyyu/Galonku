@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:faker/faker.dart';
+import 'package:galonku/DesignSystem/_appBar.dart';
 
 class PesananDepot extends StatefulWidget {
   static const nameRoute = '/PesananDepot';
@@ -12,6 +13,7 @@ class _PesananDepotState extends State<PesananDepot> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: CustomAppBar(title: "Mitra Galonku"),
       body: SafeArea(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
