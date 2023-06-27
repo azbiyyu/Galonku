@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:galonku/DesignSystem/_appBar.dart';
 
 class HomeUser extends StatefulWidget {
   const HomeUser({super.key});
@@ -12,6 +13,7 @@ class _HomeUserState extends State<HomeUser> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: CustomAppBar(title: "Cari Depot"),
       body: Column(
         children: [
           Container(

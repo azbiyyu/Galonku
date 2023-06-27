@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:carousel_slider/carousel_slider.dart';
+import 'package:galonku/DesignSystem/_appBar.dart';
 import 'package:galonku/LandingPage/login_role.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -71,6 +72,7 @@ class _SettingDepotState extends State<SettingsUser> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: CustomAppBar(title: "Cari Depot"),
       body: SafeArea(
         child: SingleChildScrollView(
           child: Column(

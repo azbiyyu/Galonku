@@ -57,13 +57,13 @@ class _HomePageUserState extends State<HomePageUser> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Center(child: Text("Cari Depot")),
-        backgroundColor: Color.fromARGB(255, 52, 83, 209),
-        actions: <Widget>[
-          IconButton(onPressed: () {}, icon: Icon(Icons.search)),
-        ],
-      ),
+      // appBar: AppBar(
+      //   title: Center(child: Text("Cari Depot")),
+      //   backgroundColor: Color.fromARGB(255, 52, 83, 209),
+      //   actions: <Widget>[
+      //     IconButton(onPressed: () {}, icon: Icon(Icons.search)),
+      //   ],
+      // ),
       body: widgetPage[index],
       bottomNavigationBar: SizedBox(
         height: 95,
