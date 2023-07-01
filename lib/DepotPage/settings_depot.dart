@@ -6,6 +6,7 @@ import 'package:galonku/LandingPage/login_role.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 
 
 class SettingsDepot extends StatefulWidget {
@@ -22,6 +23,7 @@ class _SettingDepotState extends State<SettingsDepot> {
     'images/test_foto.png',
     'images/test_foto.png',
   ];
+  
 
   bool isEditing = false;
 
@@ -33,6 +35,7 @@ class _SettingDepotState extends State<SettingsDepot> {
   TextEditingController _tutupController = TextEditingController();
 
   String depotDocumentId = '';
+  String imageUrl = '';
 
   @override
   void initState() {
@@ -74,6 +77,7 @@ class _SettingDepotState extends State<SettingsDepot> {
         'tutup': _tutupController.text,
       });
 
+      // ignore: use_build_context_synchronously
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Data berhasil disimpan')),
       );
@@ -84,21 +88,33 @@ class _SettingDepotState extends State<SettingsDepot> {
     });
   }
 
-  void addImage(String imagePath) {
-    setState(() {
-      images.add(imagePath);
-    });
-  }
 
   Future<void> pickImage() async {
-    final picker = ImagePicker();
-    final pickedImage = await picker.pickImage(source: ImageSource.gallery);
+    ImagePicker imagePicker = ImagePicker();
+    XFile? file = await imagePicker.pickImage(source: ImageSource.gallery);
+    if(file == null) return;
+    String uniqueFileName = DateTime.now().millisecondsSinceEpoch.toString();
 
-    if (pickedImage != null) {
-      File imageFile = File(pickedImage.path);
-      addImage(imageFile.path);
+
+
+    Reference referenceRoot = FirebaseStorage.instance.ref();
+    Reference referenceDirImages = referenceRoot.child('images');
+    Reference referenceImageToUpload = referenceDirImages.child(uniqueFileName);
+
+    try {
+      await referenceImageToUpload.putFile(File(file!.path));
+      imageUrl = await referenceImageToUpload.getDownloadURL();
+      print(imageUrl);
+    // ignore: empty_catches
+    } catch (e) {
+      print(e);
     }
-  }
+    
+
+    
+    }
+
+  
 
   @override
   Widget build(BuildContext context) {
@@ -110,8 +126,8 @@ class _SettingDepotState extends State<SettingsDepot> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               GestureDetector(
-                onTap: () {
-                  // Logika ketika tombol edit foto ditekan
+                onLongPress: () {
+                  pickImage();
                 },
                 child: CircleAvatar(
                   radius: 80,
