@@ -1,4 +1,3 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:galonku/DepotPage/home_page_depot.dart';
@@ -17,7 +16,6 @@ import 'package:galonku/LoginPage/user_login.dart';
 import 'package:galonku/LoginPage/user_signin.dart';
 import 'package:galonku/LoginPage/verifikasi.dart';
 import 'package:provider/provider.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'Controllers/shared_preferences_helper.dart';
 
 void main() async {
@@ -31,6 +29,7 @@ void main() async {
   );
 }
 
+// ignore: must_be_immutable
 class MyApp extends StatefulWidget {
   bool isLoggedIn = false;
   @override

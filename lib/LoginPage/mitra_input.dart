@@ -23,7 +23,6 @@ class _MitraInputState extends State<MitraInput> {
 
   LatLng _selectedLocation = LatLng(0, 0);
   Set<Marker> _markers = {};
-  GoogleMapController? _mapController;
   CameraPosition _initialCameraPosition =
       CameraPosition(target: LatLng(0, 0), zoom: 14);
 
@@ -71,9 +70,11 @@ class _MitraInputState extends State<MitraInput> {
       String alamatDepot = alamatController.text;
       String bukaDepot = bukaController.text;
       String tutupDepot = tutupController.text;
+      String emailfield = '';
 
       final docUser = FirebaseFirestore.instance.collection('user').doc('id');
       final json = {
+        'email': emailfield,
         'username': namaDepot,
         'alamat': alamatDepot,
         'buka': bukaDepot,
@@ -86,6 +87,7 @@ class _MitraInputState extends State<MitraInput> {
 
       try {
         await docUser.set(json);
+        // ignore: use_build_context_synchronously
         Navigator.pushReplacementNamed(context, HomePageDepot.nameRoute);
       } catch (error) {
         print("Failed to save data: $error");
@@ -96,8 +98,8 @@ class _MitraInputState extends State<MitraInput> {
         context: context,
         builder: (BuildContext context) {
           return AlertDialog(
-            title: Text("Data Incomplete"),
-            content: Text("Please fill in all the fields."),
+            title: Text("Data Kosong"),
+            content: Text("Tolong Isi Semua Data."),
             actions: [
               TextButton(
                 child: Text("OK"),

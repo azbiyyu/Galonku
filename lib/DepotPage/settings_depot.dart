@@ -5,6 +5,8 @@ import 'package:galonku/DesignSystem/_appBar.dart';
 import 'package:galonku/LandingPage/login_role.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+
 
 class SettingsDepot extends StatefulWidget {
   const SettingsDepot({Key? key});
@@ -30,6 +32,8 @@ class _SettingDepotState extends State<SettingsDepot> {
   TextEditingController _bukaController = TextEditingController();
   TextEditingController _tutupController = TextEditingController();
 
+  String depotDocumentId = '';
+
   @override
   void initState() {
     super.initState();
@@ -38,32 +42,37 @@ class _SettingDepotState extends State<SettingsDepot> {
 
   void loadUserData() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    setState(() {
-      _usernameController.text = prefs.getString('username') ?? '';
-      _emailController.text = prefs.getString('email') ?? '';
-      _alamatController.text = prefs.getString('alamat') ?? '';
-      _produkController.text = prefs.getString('produk') ?? '';
-      _bukaController.text = prefs.getString('buka') ?? '';
-      _tutupController.text = prefs.getString('tutup') ?? '';
-    });
+    String email = prefs.getString('email') ?? '';
+
+    QuerySnapshot depotSnapshot = await FirebaseFirestore.instance.collection('user').where('email', isEqualTo: email).get();
+    if (depotSnapshot.docs.isNotEmpty) {
+      DocumentSnapshot depotDocument = depotSnapshot.docs.first;
+    Map<String, dynamic>? depotData = depotDocument.data() as Map<String, dynamic>?;
+    if (depotData != null) {
+      setState(() {
+        depotDocumentId = depotDocument.id;
+        _usernameController.text = depotData['username'] ?? '';
+        _emailController.text = depotData['email'] ?? '';
+        _alamatController.text = depotData['alamat'] ?? '';
+        _produkController.text = depotData['produk'] ?? '';
+        _bukaController.text = depotData['buka'] ?? '';
+        _tutupController.text = depotData['tutup'] ?? '';
+      });
+    }
+  }
   }
 
   void toggleEditing() async {
     if (isEditing) {
-      SharedPreferences prefs = await SharedPreferences.getInstance();
-      String username = _usernameController.text;
-      String email = _emailController.text;
-      String alamat = _alamatController.text;
-      String produk = _produkController.text;
-      String buka = _bukaController.text;
-      String tutup = _tutupController.text;
-
-      await prefs.setString('username', username);
-      await prefs.setString('email', email);
-      await prefs.setString('alamat', alamat);
-      await prefs.setString('produk', produk);
-      await prefs.setString('buka', buka);
-      await prefs.setString('tutup', tutup);
+      // Mengupdate data depot di Firebase Firestore
+      await FirebaseFirestore.instance.collection('user').doc(depotDocumentId).update({
+        'username': _usernameController.text,
+        'email': _emailController.text,
+        'alamat': _alamatController.text,
+        'produk': _produkController.text,
+        'buka': _bukaController.text,
+        'tutup': _tutupController.text,
+      });
 
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Data berhasil disimpan')),
