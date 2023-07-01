@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:galonku/LoginPage/verifikasi.dart';
 
 class LupaSandi extends StatefulWidget {
   static const nameRoute = '/LupaSandi';
@@ -43,7 +44,7 @@ class _LupaSandiState extends State<LupaSandi> {
             ElevatedButton(
               onPressed: () {
                 // Perform your desired action here
-                Navigator.pushNamed(context, '/HalamanLain');
+                Navigator.pushNamed(context, Verifikasi.nameRoute);
               },
               child: Text('Konfirmasi'),
             ),
