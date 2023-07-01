@@ -7,6 +7,8 @@ import 'package:galonku/DepotPage/pesanan_depot.dart';
 import 'package:galonku/DepotPage/pesanan_user.dart';
 import 'package:galonku/DepotPage/settings_depot.dart';
 import 'package:galonku/DepotPage/settings_user.dart';
+import 'package:galonku/DesignSystem/_lupa_sandi.dart';
+import 'package:galonku/DesignSystem/_syarat_ketentuan.dart';
 import 'package:galonku/LandingPage/landingpage.dart';
 import 'package:galonku/LandingPage/login_role.dart';
 import 'package:galonku/LoginPage/mitra_input.dart';
@@ -65,6 +67,8 @@ class _MyAppState extends State<MyApp> {
         HomeUser.nameRoute: (context) => HomeUser(),
         SettingsDepot.nameRoute: (context) => SettingsDepot(),
         SettingsUser.nameRoute: (context) => SettingsUser(),
+        LupaSandi.nameRoute:(context) => LupaSandi(),
+        SyaratKetentuan.nameRoute:(context) => SyaratKetentuan(),
       },
       onGenerateRoute: (settings) {
         if(settings.name == '/landingpage'){
