@@ -268,6 +268,7 @@ class _SettingDepotState extends State<SettingsDepot> {
                     await prefs.remove('password');
                     await prefs.remove('role');
                     prefs.setBool('isLoggedIn', false);
+                    // ignore: use_build_context_synchronously
                     Navigator.pushNamed(context, LoginRole.nameRoute);
                   },
                   style: ElevatedButton.styleFrom(

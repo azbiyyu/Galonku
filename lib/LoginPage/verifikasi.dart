@@ -45,7 +45,7 @@ class _VerifikasiState extends State<Verifikasi> {
 
     PhoneVerificationFailed verificationFailed = (FirebaseAuthException e) {
       print(
-          'Phone number verification failed. Code: ${e.code}. Message: ${e.message}');
+          'Nomor Verifikasi Gagal. Code: ${e.code}. Message: ${e.message}');
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Phone number verification failed')),
       );

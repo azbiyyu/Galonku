@@ -1,18 +1,38 @@
+import 'dart:ffi';
+
 import 'package:flutter/material.dart';
 import 'package:galonku/LoginPage/mitra_login.dart';
 import 'package:galonku/LoginPage/user_login.dart';
-import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import '../Controllers/shared_preferences_helper.dart';
 
+import '../DepotPage/home_page_depot.dart';
+import '../DepotPage/home_page_user.dart';
 
-// ignore: must_be_immutable
-class LoginRole extends StatelessWidget {
+class LoginRole extends StatefulWidget {
   static const nameRoute = '/loginrole';
-  // ignore: prefer_typing_uninitialized_variables
-  var isLoggedIn;
-  
 
+  @override
+  _LoginRoleState createState() => _LoginRoleState();
+}
+
+class _LoginRoleState extends State<LoginRole> {
+  late bool isLoggedIn;
+
+  @override
+  void initState() {
+    super.initState();
+    checkLoggedIn();
+  }
+
+  void checkLoggedIn() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String? role = prefs.getString('role');
+    if (role != null) {
+      setState(() {
+        isLoggedIn = true;
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -72,13 +92,10 @@ class LoginRole extends StatelessWidget {
                             ),
                           ),
                           onPressed: () async {
-                            SharedPreferences prefs = await SharedPreferences.getInstance();
-                            await prefs.setString('role', "mitra");
-                            SharedPreferencesHelper.updateLoginStatus(true); // Metode yang mengarahkan pengguna ke halaman beranda (login berhasil)
-                            SharedPreferencesHelper.updateRole("mitra"); // Metode yang mengupdate nilai role di MyApp
-
-                            // ignore: use_build_context_synchronously
-                            Navigator.pushNamed(context, MitraLogin.nameRoute, arguments: {isLoggedIn : true});
+                            setState(() {
+                              isLoggedIn = true;
+                            });
+                            Navigator.pushNamed(context, MitraLogin.nameRoute);
                           },
                           child: Text(
                             "Mitra Galonku",
@@ -107,12 +124,10 @@ class LoginRole extends StatelessWidget {
                             ),
                           ),
                           onPressed: () async {
-                            SharedPreferences prefs = await SharedPreferences.getInstance();
-                            await prefs.setString('role', "user");
-                            SharedPreferencesHelper.updateLoginStatus(true); // Metode yang mengarahkan pengguna ke halaman beranda (login berhasil)
-                            SharedPreferencesHelper.updateRole("user"); // Metode yang mengupdate nilai role di MyApp
-                            // ignore: use_build_context_synchronously
-                            Navigator.pushNamed(context, UserLogin.nameRoute, arguments: {isLoggedIn : false});
+                            setState(() {
+                              isLoggedIn = false;
+                            });
+                            Navigator.pushNamed(context,UserLogin.nameRoute);
                           },
                           child: Text(
                             "Pelanggan",
@@ -134,5 +149,3 @@ class LoginRole extends StatelessWidget {
     );
   }
 }
-
-

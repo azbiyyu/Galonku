@@ -5,6 +5,7 @@ import 'package:galonku/Models/_button_sinkronise.dart';
 import 'package:galonku/Models/_heading.dart';
 import 'package:galonku/LoginPage/user_signin.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../Controllers/auth.dart';
 import '../Pop_up/Pop_up.dart';
 
@@ -31,7 +32,7 @@ class _UserLoginState extends State<UserLogin> {
   // method untuk sign in
   Future<void> signInwithEmailAndPassword() async {
     try {
-      await Auth().SignWithEmailAndPassword(
+      await Auth(updateLoggedInStatus: (bool ) => true).SignWithEmailAndPassword(
         email: _controllerEmail.text,
         password: _controllerPassword.text,
       );
@@ -160,7 +161,10 @@ class _UserLoginState extends State<UserLogin> {
                   padding: EdgeInsets.only(top: 10),
                   child: BtnPrimary(
                     text: "Masuk",
-                    onPressed: () {
+                    onPressed: () async {
+                      final SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
+                      sharedPreferences.setString('email', _controllerEmail.text);
+                      sharedPreferences.setString('role', 'user');
                       signInwithEmailAndPassword();
                     },
                   ),

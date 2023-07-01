@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:galonku/DepotPage/home_page_depot.dart';
@@ -31,53 +32,24 @@ void main() async {
 }
 
 class MyApp extends StatefulWidget {
+  bool isLoggedIn = false;
   @override
   // ignore: library_private_types_in_public_api
   _MyAppState createState() => _MyAppState();
 }
 
 class _MyAppState extends State<MyApp> {
-  bool isLoggedIn = false;
-  String role = '';
-
   @override
   void initState() {
     super.initState();
-    checkLoginStatus();
-    checkRole();
   }
-
-  void checkRole() async {
-    String userRole = await SharedPreferencesHelper.getRole();
-    setState(() {
-      role = userRole;
-    });
-  }
-
-  Widget getHomePage() {
-    if (role == 'user') {
-      return HomePageUser();
-    } else if (role == 'mitra') {
-      return HomePageDepot();
-    } else {
-      return LandingPage();
-    }
-  }
-
-  void checkLoginStatus() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    bool loggedIn = prefs.getBool('isLoggedIn') ?? false;
-    setState(() {
-      isLoggedIn = loggedIn;
-    });
-  }
-
+  
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      home: isLoggedIn ? getHomePage() : LandingPage(),
-      initialRoute: LandingPage.nameRoute,
+      home: LandingPage(),
+      initialRoute: '/',
       routes: {
         LandingPage.nameRoute: (context) => LandingPage(),
         LoginRole.nameRoute: (context) => LoginRole(),
@@ -88,14 +60,18 @@ class _MyAppState extends State<MyApp> {
         MitraInput.nameRoute: (context) => MitraInput(),
         HomePageUser.nameRoute: (context) => HomePageUser(),
         HomePageDepot.nameRoute: (context) => HomePageDepot(),
-        Verifikasi.nameRoute: (context) => Verifikasi(
-              isFromUserSignIn: true,
-            ),
+        Verifikasi.nameRoute: (context) => Verifikasi(isFromUserSignIn: true,),
         PesananDepot.nameRoute: (context) => PesananDepot(),
         PesananUser.nameRoute: (context) => PesananUser(),
         HomeUser.nameRoute: (context) => HomeUser(),
         SettingsDepot.nameRoute: (context) => SettingsDepot(),
         SettingsUser.nameRoute: (context) => SettingsUser(),
+      },
+      onGenerateRoute: (settings) {
+        if(settings.name == '/landingpage'){
+          return MaterialPageRoute(builder: (context) => LoginRole());
+        }
+        return null;
       },
     );
   }

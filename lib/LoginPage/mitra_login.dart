@@ -7,6 +7,7 @@ import 'package:galonku/LandingPage/login_role.dart';
 import 'package:galonku/LoginPage/mitra_signin.dart';
 import 'package:galonku/Models/_button_sinkronise.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:galonku/Pop_up/Pop_up.dart';
 // import 'package:firebase_auth_project/auth.dart';
 
@@ -33,7 +34,7 @@ class _MitraLoginState extends State<MitraLogin> {
   // method untuk sign in
   Future<void> signInwithEmailAndPassword() async {
     try {
-      await Auth().SignWithEmailAndPassword(
+      await Auth(updateLoggedInStatus: (bool ) => true).SignWithEmailAndPassword(
         email: _controllerEmail.text,
         password: _controllerPassword.text,
       );
@@ -163,7 +164,10 @@ class _MitraLoginState extends State<MitraLogin> {
                   padding: EdgeInsets.only(top: 10),
                   child: BtnPrimary(
                     text: "Masuk",
-                    onPressed: () {
+                    onPressed: () async {
+                      final SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
+                      sharedPreferences.setString('email', _controllerEmail.text);
+                      sharedPreferences.setString('role', 'mitra');
                       signInwithEmailAndPassword();
                     },
                   ),

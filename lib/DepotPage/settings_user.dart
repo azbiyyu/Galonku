@@ -155,11 +155,9 @@ class _SettingDepotState extends State<SettingsUser> {
                 padding: const EdgeInsets.symmetric(horizontal: 16),
                 child: ElevatedButton(
                   onPressed: () async {
-                    SharedPreferences prefs =
-                        await SharedPreferences.getInstance();
-                    await prefs.remove('email');
-                    await prefs.remove('password');
-                    await prefs.remove('role');
+                    SharedPreferences prefs = await SharedPreferences.getInstance();
+                    prefs.remove('email');
+                    prefs.remove('role');
                     prefs.setBool('isLoggedIn', false);
                     Navigator.pushNamed(context, LoginRole.nameRoute);
                   },

@@ -7,6 +7,7 @@ import 'package:galonku/Models/_button_sinkronise.dart';
 import 'package:galonku/LoginPage/verifikasi.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:galonku/Pop_up/Pop_up.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../Controllers/auth.dart';
 
 
@@ -20,6 +21,7 @@ class MitraSignIn extends StatefulWidget {
 
 class _MitraSignInState extends State<MitraSignIn> {
   bool _obscureText = true;
+  late SharedPreferences _preferences;
 
   // string error
   String? errorMessage = '';
@@ -30,13 +32,35 @@ class _MitraSignInState extends State<MitraSignIn> {
   final TextEditingController _controllerEmail = TextEditingController();
   final TextEditingController _controllerPassword = TextEditingController();
   
+
+  @override
+  void initState() {
+  super.initState();
+  initializeSharedPreferences();
+
+  
+}
+
+Future<void> initializeSharedPreferences() async {
+  _preferences = await SharedPreferences.getInstance();
+  // Retrieve email and password from SharedPreferences
+  final savedEmail = _preferences.getString('email');
+  final savedPassword = _preferences.getString('password');
+
+  _controllerEmail.text = savedEmail ?? '';
+  _controllerPassword.text = savedPassword ?? '';
+}
+
  // method untuk sign in
   Future<void> signInwithEmailAndPassword() async {
     try {
-      await Auth().SignWithEmailAndPassword(
+      await Auth(updateLoggedInStatus: (bool ) => true).SignWithEmailAndPassword(
         email: _controllerEmail.text,
         password: _controllerPassword.text,
       );
+      // Save email and password to SharedPreferences
+      _preferences.setString('email', _controllerEmail.text);
+      _preferences.setString('password', _controllerPassword.text);
       // ignore: use_build_context_synchronously
       Navigator.push(
         context, MaterialPageRoute(
@@ -60,10 +84,13 @@ class _MitraSignInState extends State<MitraSignIn> {
   // method create user
   Future<void> createUserWithEmailAndPassword() async {
     try {
-      await Auth().CreateUserWithEmailAndPassword(
+      await Auth(updateLoggedInStatus: (bool ) => true).CreateUserWithEmailAndPassword(
         email: _controllerEmail.text,
         password: _controllerPassword.text
       );
+      // Save email and password to SharedPreferences
+    _preferences.setString('email', _controllerEmail.text);
+    _preferences.setString('password', _controllerPassword.text);
     } on FirebaseAuthException catch (e) {
       if (e.code == 'email-already-in-use') {
         setState(() {
@@ -121,23 +148,23 @@ class _MitraSignInState extends State<MitraSignIn> {
                     padding: EdgeInsets.only(top: 20),
                     child: Image.asset("images/atau.png"),
                   ),
-                  Container(
-                    padding: EdgeInsets.only(top: 20),
-                    child: TextField(
-                      keyboardType: TextInputType.emailAddress,
-                      cursorColor: Colors.blue[600],
-                      decoration: InputDecoration(
-                        labelText: 'Nama Pengguna',
-                        labelStyle: TextStyle(color: Colors.black),
-                        hintText: "masukkan nama pengguna",
-                        border: OutlineInputBorder(
-                          borderSide: BorderSide(
-                            color: Color.fromARGB(66, 37, 37, 37),
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
+                  // Container(
+                  //   padding: EdgeInsets.only(top: 20),
+                  //   child: TextField(
+                  //     keyboardType: TextInputType.emailAddress,
+                  //     cursorColor: Colors.blue[600],
+                  //     decoration: InputDecoration(
+                  //       labelText: 'Nama Pengguna',
+                  //       labelStyle: TextStyle(color: Colors.black),
+                  //       hintText: "masukkan nama pengguna",
+                  //       border: OutlineInputBorder(
+                  //         borderSide: BorderSide(
+                  //           color: Color.fromARGB(66, 37, 37, 37),
+                  //         ),
+                  //       ),
+                  //     ),
+                  //   ),
+                  // ),
                   Container(
                     padding: EdgeInsets.only(top: 20),
                     child: Column(
@@ -196,7 +223,9 @@ class _MitraSignInState extends State<MitraSignIn> {
                     padding: EdgeInsets.only(top: 10),
                     child: BtnPrimary(
                       text: "Daftar",
-                      onPressed: () {
+                      onPressed: () async {
+                        SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
+                        sharedPreferences.setString('role', 'mitra');
                         isLogin ? signInwithEmailAndPassword() : createUserWithEmailAndPassword();
                         isLogin = !isLogin;
                       },
