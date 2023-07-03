@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:galonku/Controllers/auth.dart';
 import 'package:galonku/DepotPage/home_page_depot.dart';
+import 'package:galonku/DesignSystem/_lupa_sandi.dart';
 import 'package:galonku/Models/_button_primary.dart';
 import 'package:galonku/Models/_heading.dart';
 import 'package:galonku/LandingPage/login_role.dart';
@@ -34,7 +35,7 @@ class _MitraLoginState extends State<MitraLogin> {
   // method untuk sign in
   Future<void> signInwithEmailAndPassword() async {
     try {
-      await Auth(updateLoggedInStatus: (bool ) => true).SignWithEmailAndPassword(
+      await Auth(updateLoggedInStatus: (bool) => true).SignWithEmailAndPassword(
         email: _controllerEmail.text,
         password: _controllerPassword.text,
       );
@@ -143,11 +144,12 @@ class _MitraLoginState extends State<MitraLogin> {
                     child: InkWell(
                       onTap: () {
                         // aksi yang dijalankan saat teks diklik
-                        if (isLogin == false) {
-                          Navigator.pushNamed(context, LoginRole.nameRoute);
-                        } else {
-                          Popup();
-                        }
+                        // if (isLogin == false) {
+                        //   Navigator.pushNamed(context, LoginRole.nameRoute);
+                        // } else {
+                        //   Popup();
+                        // }
+                        Navigator.pushNamed(context, LupaSandi.nameRoute);
                       },
                       child: Text(
                         "lupa sandi ?",
@@ -165,8 +167,10 @@ class _MitraLoginState extends State<MitraLogin> {
                   child: BtnPrimary(
                     text: "Masuk",
                     onPressed: () async {
-                      final SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
-                      sharedPreferences.setString('email', _controllerEmail.text);
+                      final SharedPreferences sharedPreferences =
+                          await SharedPreferences.getInstance();
+                      sharedPreferences.setString(
+                          'email', _controllerEmail.text);
                       sharedPreferences.setString('role', 'mitra');
                       signInwithEmailAndPassword();
                     },

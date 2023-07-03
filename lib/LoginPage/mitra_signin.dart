@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:galonku/DesignSystem/_syarat_ketentuan.dart';
 import 'package:galonku/Models/_button_primary.dart';
 import 'package:galonku/Models/_group_syarat_ketentuan.dart';
 import 'package:galonku/Models/_heading.dart';
@@ -9,7 +10,6 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:galonku/Pop_up/Pop_up.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../Controllers/auth.dart';
-
 
 class MitraSignIn extends StatefulWidget {
   const MitraSignIn({super.key});
@@ -31,30 +31,27 @@ class _MitraSignInState extends State<MitraSignIn> {
   String username = '';
   final TextEditingController _controllerEmail = TextEditingController();
   final TextEditingController _controllerPassword = TextEditingController();
-  
 
   @override
   void initState() {
-  super.initState();
-  initializeSharedPreferences();
+    super.initState();
+    initializeSharedPreferences();
+  }
 
-  
-}
+  Future<void> initializeSharedPreferences() async {
+    _preferences = await SharedPreferences.getInstance();
+    // Retrieve email and password from SharedPreferences
+    final savedEmail = _preferences.getString('email');
+    final savedPassword = _preferences.getString('password');
 
-Future<void> initializeSharedPreferences() async {
-  _preferences = await SharedPreferences.getInstance();
-  // Retrieve email and password from SharedPreferences
-  final savedEmail = _preferences.getString('email');
-  final savedPassword = _preferences.getString('password');
+    _controllerEmail.text = savedEmail ?? '';
+    _controllerPassword.text = savedPassword ?? '';
+  }
 
-  _controllerEmail.text = savedEmail ?? '';
-  _controllerPassword.text = savedPassword ?? '';
-}
-
- // method untuk sign in
+  // method untuk sign in
   Future<void> signInwithEmailAndPassword() async {
     try {
-      await Auth(updateLoggedInStatus: (bool ) => true).SignWithEmailAndPassword(
+      await Auth(updateLoggedInStatus: (bool) => true).SignWithEmailAndPassword(
         email: _controllerEmail.text,
         password: _controllerPassword.text,
       );
@@ -63,51 +60,52 @@ Future<void> initializeSharedPreferences() async {
       _preferences.setString('password', _controllerPassword.text);
       // ignore: use_build_context_synchronously
       Navigator.push(
-        context, MaterialPageRoute(
-        builder: (context) => Verifikasi(isFromUserSignIn: true)),
+        context,
+        MaterialPageRoute(
+            builder: (context) => Verifikasi(isFromUserSignIn: true)),
       );
     } on FirebaseAuthException catch (e) {
-      if(e.code == 'user-not-found'){
+      if (e.code == 'user-not-found') {
         setState(() {
-        PopupButton();
-        errorMessage = e.message;
-      });
-      }else{
+          PopupButton();
+          errorMessage = e.message;
+        });
+      } else {
         setState(() {
-        PopupButton();
-        errorMessage = e.message;
-      });
+          PopupButton();
+          errorMessage = e.message;
+        });
       }
-      
     }
   }
+
   // method create user
   Future<void> createUserWithEmailAndPassword() async {
     try {
-      await Auth(updateLoggedInStatus: (bool ) => true).CreateUserWithEmailAndPassword(
-        email: _controllerEmail.text,
-        password: _controllerPassword.text
-      );
+      await Auth(updateLoggedInStatus: (bool) => true)
+          .CreateUserWithEmailAndPassword(
+              email: _controllerEmail.text, password: _controllerPassword.text);
       // Save email and password to SharedPreferences
-    _preferences.setString('email', _controllerEmail.text);
-    _preferences.setString('password', _controllerPassword.text);
+      _preferences.setString('email', _controllerEmail.text);
+      _preferences.setString('password', _controllerPassword.text);
     } on FirebaseAuthException catch (e) {
       if (e.code == 'email-already-in-use') {
         setState(() {
           PopupButton();
           errorMessage = e.message;
         });
-      }else{
+      } else {
         setState(() {
-        PopupButton();
-        errorMessage = e.message;
-      });
+          PopupButton();
+          errorMessage = e.message;
+        });
       }
     }
     // ignore: use_build_context_synchronously
     Navigator.push(
-      context, MaterialPageRoute(
-      builder: (context) => Verifikasi(isFromUserSignIn: true)),
+      context,
+      MaterialPageRoute(
+          builder: (context) => Verifikasi(isFromUserSignIn: true)),
     );
   }
 
@@ -216,7 +214,7 @@ Future<void> initializeSharedPreferences() async {
                   ),
                   GroupSyaratKetentuan(
                     onTap: () {
-                      // Navigator.pushNamed(context, routeName);
+                      Navigator.pushNamed(context, SyaratKetentuan.nameRoute);
                     },
                   ),
                   Container(
@@ -224,9 +222,12 @@ Future<void> initializeSharedPreferences() async {
                     child: BtnPrimary(
                       text: "Daftar",
                       onPressed: () async {
-                        SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
+                        SharedPreferences sharedPreferences =
+                            await SharedPreferences.getInstance();
                         sharedPreferences.setString('role', 'mitra');
-                        isLogin ? signInwithEmailAndPassword() : createUserWithEmailAndPassword();
+                        isLogin
+                            ? signInwithEmailAndPassword()
+                            : createUserWithEmailAndPassword();
                         isLogin = !isLogin;
                       },
                     ),

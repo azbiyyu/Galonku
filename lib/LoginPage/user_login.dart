@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:galonku/DepotPage/home_page_user.dart';
+import 'package:galonku/DesignSystem/_lupa_sandi.dart';
 import 'package:galonku/Models/_button_primary.dart';
 import 'package:galonku/Models/_button_sinkronise.dart';
 import 'package:galonku/Models/_heading.dart';
@@ -143,8 +144,8 @@ class _UserLoginState extends State<UserLogin> {
                     alignment: Alignment.bottomRight,
                     child: InkWell(
                       onTap: () {
-                        // aksi yang dijalankan saat teks diklik
-                        // Navigator.pushNamed(context, routeName);
+      
+                        Navigator.pushNamed(context, LupaSandi.nameRoute);
                       },
                       child: Text(
                         "lupa sandi ?",
