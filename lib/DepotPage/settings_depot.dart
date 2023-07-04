@@ -1,11 +1,11 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
-import 'package:carousel_slider/carousel_slider.dart';
+// import 'package:carousel_slider/carousel_slider.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-
+// import 'package:flutter/widgets.dart';
 import 'package:galonku/DesignSystem/_appBar.dart';
 import 'package:galonku/LandingPage/login_role.dart';
 
@@ -27,11 +27,19 @@ class _SettingDepotState extends State<SettingsDepot> {
   TextEditingController _bukaController = TextEditingController();
   TextEditingController _tutupController = TextEditingController();
 
+
+  PageController _pageController = PageController();
+  int _currentPage = 0;
   String depotDocumentId = '';
   String imageUrl = '';
+  String imageUrlKatalog = '';
   String currentImageUrl = '';
+  String currentImageUrlKatalog = '';
+  String currentImageUrlKatalog2 = '';
+  String currentImageUrlKatalog3 = '';
   String katalogUrl = '';
   int idx = 0;
+  bool isKatalogUploaded = false;
 
   @override
   void initState() {
@@ -64,6 +72,9 @@ class _SettingDepotState extends State<SettingsDepot> {
           _bukaController.text = depotData['buka'] ?? '';
           _tutupController.text = depotData['tutup'] ?? '';
           currentImageUrl = depotData['images'] ?? imageUrl;
+          currentImageUrlKatalog = depotData['katalog1'] ?? '';
+          currentImageUrlKatalog2 = depotData['katalog2'] ?? '';
+          currentImageUrlKatalog3 = depotData['katalog3'] ?? '';
         });
       }
     }
@@ -84,6 +95,7 @@ class _SettingDepotState extends State<SettingsDepot> {
         'tutup': _tutupController.text,
       });
 
+      // ignore: use_build_context_synchronously
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Data berhasil disimpan')),
       );
@@ -111,16 +123,9 @@ class _SettingDepotState extends State<SettingsDepot> {
     Reference referenceImageToUpload =
         referenceDirImages.child(uniqueFileName);
 
-    Reference referenceKatalog = FirebaseStorage.instance.ref();
-    Reference referenceDirKatalog = referenceKatalog.child('katalog');
-    Reference referenceKatalogUpload =
-        referenceDirKatalog.child(uniqueFileName);
-
     try {
       await referenceImageToUpload.putFile(File(file.path));
-      await referenceKatalogUpload.putFile(File(file.path));
       imageUrl = await referenceImageToUpload.getDownloadURL();
-      katalogUrl = await referenceKatalogUpload.getDownloadURL();
     } catch (e) {
       print('Error: $e');
     }
@@ -130,7 +135,6 @@ class _SettingDepotState extends State<SettingsDepot> {
         .doc(depotDocumentId)
         .update({
       'images': imageUrl,
-      'katalog1': katalogUrl,
     });
 
     setState(() {
@@ -138,69 +142,67 @@ class _SettingDepotState extends State<SettingsDepot> {
     });
   }
 
-  List<String> katalogFields = [
-    'katalog1',
-    'katalog2',
-    'katalog3',
-  ];
 
   Future<void> pickImageKatalog(int index) async {
-    if (currentImageUrl.isNotEmpty) {
-      Reference referenceToDelete =
-          FirebaseStorage.instance.refFromURL(currentImageUrl);
-      await referenceToDelete.delete();
-    }
 
-    ImagePicker imagePicker = ImagePicker();
-    XFile? file = await imagePicker.pickImage(source: ImageSource.gallery);
-    if (file == null) return;
-
-    String uniqueFileName = DateTime.now().millisecondsSinceEpoch.toString();
-    Reference referenceRoot = FirebaseStorage.instance.ref();
-    Reference referenceDirImages = referenceRoot.child('katalog');
-    Reference referenceImageToUpload =
-        referenceDirImages.child(uniqueFileName);
+    List<String> katalog = ['katalog1', 'katalog2', 'katalog3'];
+    ImagePicker imagePicker2 = ImagePicker();
+    XFile? file2 = await imagePicker2.pickImage(source: ImageSource.gallery);
+    if (file2 == null) return;
+    String field = katalog[index];
+    String uniqueFileName2 = DateTime.now().millisecondsSinceEpoch.toString();
+    Reference referenceRootKatalog = FirebaseStorage.instance.ref();
+    Reference referenceDirImagesKatalog = referenceRootKatalog.child('katalog');
+    Reference referenceImageToUploadKatalog =
+      referenceDirImagesKatalog.child(uniqueFileName2);
 
     try {
-      await referenceImageToUpload.putFile(File(file.path));
-      imageUrl = await referenceImageToUpload.getDownloadURL();
+      await referenceImageToUploadKatalog.putFile(File(file2.path));
+        katalogUrl = await referenceImageToUploadKatalog.getDownloadURL();
     } catch (e) {
-      print('Error: $e');
+      print("error : $e");
     }
+    DocumentSnapshot depotSnapshot = await FirebaseFirestore.instance
+      .collection('user')
+      .doc(depotDocumentId)
+      .get();
 
-    if (index < katalogFields.length) {
-      String fieldToUpdate = katalogFields[index];
-      await FirebaseFirestore.instance
-          .collection('user')
-          .doc(depotDocumentId)
-          .update({
-        fieldToUpdate: imageUrl,
-      });
-
-      setState(() {
-        currentImageUrl = imageUrl;
-      });
+    if (depotSnapshot.exists) {
+  Map<String, dynamic>? data = depotSnapshot.data() as Map<String, dynamic>?;
+  if (data != null && data.containsKey(field)) {
+    String fieldValue = data[field];
+    // Check if fieldValue is a valid URL
+    if (fieldValue.startsWith('gs://') || fieldValue.startsWith('https://')) {
+      Reference referenceToDelete = FirebaseStorage.instance.refFromURL(fieldValue);
+      try {
+        await referenceToDelete.delete();
+        print('Data berhasil dihapus dari Firebase Storage');
+      } catch (e) {
+        print('Error saat menghapus data dari Firebase Storage: $e');
+      }
+    } else {
+      print('Invalid URL: $fieldValue');
     }
   }
+}
+    await FirebaseFirestore.instance
+        .collection('user')
+        .doc(depotDocumentId)
+        .update({
+          field : katalogUrl,
+    });
 
-  Widget _buildCarouselItem(String text) {
-    return Container(
-      margin: EdgeInsets.all(5.0),
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(10.0),
-        color: Colors.grey,
-      ),
-      child: Center(
-        child: Text(
-          text,
-          style: TextStyle(
-            color: Colors.white,
-            fontSize: 18,
-          ),
-        ),
-      ),
-    );
+    setState(() {
+      if(index == 0){
+        currentImageUrlKatalog = katalogUrl;
+      }else if(index == 1){
+        currentImageUrlKatalog2 = katalogUrl;
+      }else if(index == 2){
+        currentImageUrlKatalog3 = katalogUrl;
+      }
+    });
   }
+
 
   @override
   Widget build(BuildContext context) {
@@ -327,38 +329,48 @@ class _SettingDepotState extends State<SettingsDepot> {
                 ),
               ),
               SizedBox(height: 20),
-              CarouselSlider(
-                items: [
-                  if (_produkController.text.isNotEmpty)
-                    ...[
-                      _buildCarouselItem(_produkController.text),
-                      _buildCarouselItem(_produkController.text),
-                      _buildCarouselItem(_produkController.text),
-                    ],
-                  InkWell(
-                    onTap: () {
-                      pickImageKatalog(idx);
-                    },
-                    child: Container(
-                      margin: EdgeInsets.all(5.0),
-                      decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(10.0),
-                          color: Colors.grey),
-                      child: Icon(
-                        Icons.add,
-                        color: Colors.white,
+              Column(
+                    children: [
+                      SizedBox(height: 20),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: [
+                          GestureDetector(
+                            onLongPress: () => pickImageKatalog(0),
+                            child: CircleAvatar(
+                              radius: 80,
+                              backgroundColor: Colors.grey,
+                              backgroundImage: currentImageUrlKatalog != '' ? NetworkImage(currentImageUrlKatalog) : null,
+                              child:
+                                currentImageUrlKatalog == '' ? Icon(Icons.edit, color: Colors.white) : null,
+                            ),
+                          ),
+                          GestureDetector(
+                           onLongPress: () => pickImageKatalog(1),
+                            child: CircleAvatar(
+                              radius: 80,
+                              backgroundColor: Colors.grey,
+                              backgroundImage: currentImageUrlKatalog2 != '' ? NetworkImage(currentImageUrlKatalog2) : null,
+                              child:
+                                currentImageUrlKatalog2 == '' ? Icon(Icons.edit, color: Colors.white) : null,
+                            ),
+                          ),
+                          GestureDetector(
+                            onLongPress: () => pickImageKatalog(2),
+                            child: CircleAvatar(
+                              radius: 80,
+                              backgroundColor: Colors.grey,
+                              backgroundImage: currentImageUrlKatalog3 != '' ? NetworkImage(currentImageUrlKatalog3) : null,
+                              child:
+                                currentImageUrlKatalog3 == '' ? Icon(Icons.edit, color: Colors.white) : null,
+                            ),
+                          ),
+                        ],
                       ),
-                    ),
-                  )
-                ],
-                options: CarouselOptions(
-                  height: 200,
-                  autoPlay: true,
-                  enlargeCenterPage: true,
-                  enableInfiniteScroll: true,
-                  viewportFraction: 0.8,
-                ),
-              ),
+                      SizedBox(height: 20),
+                    ],
+                  ),
+
               SizedBox(height: 20),
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 16),
@@ -370,6 +382,7 @@ class _SettingDepotState extends State<SettingsDepot> {
                     await prefs.remove('password');
                     await prefs.remove('role');
                     prefs.setBool('isLoggedIn', false);
+                    // ignore: use_build_context_synchronously
                     Navigator.pushNamed(context, LoginRole.nameRoute);
                   },
                   style: ElevatedButton.styleFrom(
