@@ -27,9 +27,6 @@ class _SettingDepotState extends State<SettingsDepot> {
   TextEditingController _bukaController = TextEditingController();
   TextEditingController _tutupController = TextEditingController();
 
-
-  PageController _pageController = PageController();
-  int _currentPage = 0;
   String depotDocumentId = '';
   String imageUrl = '';
   String imageUrlKatalog = '';
@@ -330,46 +327,87 @@ class _SettingDepotState extends State<SettingsDepot> {
               ),
               SizedBox(height: 20),
               Column(
-                    children: [
-                      SizedBox(height: 20),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        children: [
-                          GestureDetector(
-                            onLongPress: () => pickImageKatalog(0),
-                            child: CircleAvatar(
-                              radius: 80,
-                              backgroundColor: Colors.grey,
-                              backgroundImage: currentImageUrlKatalog != '' ? NetworkImage(currentImageUrlKatalog) : null,
-                              child:
-                                currentImageUrlKatalog == '' ? Icon(Icons.edit, color: Colors.white) : null,
+                children: [
+                  SizedBox(height: 20),
+                  SingleChildScrollView(
+                    scrollDirection: Axis.horizontal,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: [
+                        GestureDetector(
+                          onLongPress: () => pickImageKatalog(0),
+                          child: Container(
+                            width: 160,
+                            height: 160,
+                            decoration: BoxDecoration(
+                              border: Border.all(
+                                color: Colors.black,
+                                width: 2,
+                              ),
+                            ),
+                            child: ClipRRect(
+                              borderRadius: BorderRadius.circular(8.0),
+                              child: currentImageUrlKatalog != ''
+                                  ? Image.network(
+                                      currentImageUrlKatalog,
+                                      fit: BoxFit.cover,
+                                    )
+                                  : Icon(Icons.edit, color: Colors.white),
                             ),
                           ),
-                          GestureDetector(
-                           onLongPress: () => pickImageKatalog(1),
-                            child: CircleAvatar(
-                              radius: 80,
-                              backgroundColor: Colors.grey,
-                              backgroundImage: currentImageUrlKatalog2 != '' ? NetworkImage(currentImageUrlKatalog2) : null,
-                              child:
-                                currentImageUrlKatalog2 == '' ? Icon(Icons.edit, color: Colors.white) : null,
+                        ),
+                        GestureDetector(
+                          onLongPress: () => pickImageKatalog(1),
+                          child: Container(
+                            width: 160,
+                            height: 160,
+                            decoration: BoxDecoration(
+                              border: Border.all(
+                                color: Colors.black,
+                                width: 2,
+                              ),
+                            ),
+                            child: ClipRRect(
+                              borderRadius: BorderRadius.circular(8.0),
+                              child: currentImageUrlKatalog2 != ''
+                                  ? Image.network(
+                                      currentImageUrlKatalog2,
+                                      fit: BoxFit.cover,
+                                    )
+                                  : Icon(Icons.edit, color: Colors.white),
                             ),
                           ),
-                          GestureDetector(
-                            onLongPress: () => pickImageKatalog(2),
-                            child: CircleAvatar(
-                              radius: 80,
-                              backgroundColor: Colors.grey,
-                              backgroundImage: currentImageUrlKatalog3 != '' ? NetworkImage(currentImageUrlKatalog3) : null,
-                              child:
-                                currentImageUrlKatalog3 == '' ? Icon(Icons.edit, color: Colors.white) : null,
+                        ),
+                        GestureDetector(
+                          onLongPress: () => pickImageKatalog(2),
+                          child: Container(
+                            width: 160,
+                            height: 160,
+                            decoration: BoxDecoration(
+                              border: Border.all(
+                                color: Colors.black,
+                                width: 2,
+                              ),
+                            ),
+                            child: ClipRRect(
+                              borderRadius: BorderRadius.circular(8.0),
+                              child: currentImageUrlKatalog3 != ''
+                                  ? Image.network(
+                                      currentImageUrlKatalog3,
+                                      fit: BoxFit.cover,
+                                    )
+                                  : Icon(Icons.edit, color: Colors.white),
                             ),
                           ),
-                        ],
-                      ),
-                      SizedBox(height: 20),
-                    ],
+                        ),
+                      ],
+                    ),
                   ),
+                  SizedBox(height: 20),
+                ],
+              ),
+
+
 
               SizedBox(height: 20),
               Padding(

@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:galonku/DepotPage/home_page_user.dart';
 import 'package:galonku/LoginPage/mitra_input.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
 class Verifikasi extends StatefulWidget {
   final bool isFromUserSignIn;
@@ -44,8 +45,7 @@ class _VerifikasiState extends State<Verifikasi> {
     };
 
     PhoneVerificationFailed verificationFailed = (FirebaseAuthException e) {
-      print(
-          'Nomor Verifikasi Gagal. Code: ${e.code}. Message: ${e.message}');
+      print('Nomor Verifikasi Gagal. Code: ${e.code}. Message: ${e.message}');
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Phone number verification failed')),
       );
@@ -59,24 +59,14 @@ class _VerifikasiState extends State<Verifikasi> {
     };
     _timer?.cancel();
     _timer = Timer(_timerDuration, () {
-      showDialog(
-        context: context,
-        builder: (BuildContext context) => AlertDialog(
-          title: Text("Resend OTP"),
-          content: Text(
-              "The OTP code has expired. Do you want to resend the verification code?"),
-          actions: [
-            TextButton(
-              onPressed: _isResendDisabled
-                  ? null
-                  : () {
-                      Navigator.of(context).pop();
-                      _verifyPhoneNumber();
-                    },
-              child: Text("Resend"),
-            ),
-          ],
-        ),
+      Fluttertoast.showToast(
+        msg: "The OTP code has expired. Do you want to resend the verification code?",
+        toastLength: Toast.LENGTH_LONG,
+        gravity: ToastGravity.BOTTOM,
+        timeInSecForIosWeb: 1,
+        backgroundColor: Colors.red,
+        textColor: Colors.white,
+        fontSize: 16.0,
       );
     });
 
@@ -131,6 +121,12 @@ class _VerifikasiState extends State<Verifikasi> {
   }
 
   @override
+  void dispose() {
+    _timer?.cancel();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return MaterialApp(
       home: Scaffold(
@@ -179,30 +175,18 @@ class _VerifikasiState extends State<Verifikasi> {
                         SizedBox(height: 16.0),
                         ElevatedButton(
                           onPressed: () {
-                            if (widget.isFromUserSignIn) {
-                                Navigator.pushReplacement(
-                                  context,
-                                  MaterialPageRoute(builder: (context) => MitraInput()),
-                                );
-                              } else {
-                                Navigator.pushReplacement(
-                                  context,
-                                  MaterialPageRoute(builder: (context) => HomePageUser()),
-                                );
-                              }
-                                  // if (_phoneNumber.isNotEmpty) {
-                                  //   setState(() {
-                                  //     _isPhoneNumberInputted = true;
-                                  //   });
-                                  //   _verifyPhoneNumber();
-                                  // } else {
-                                  //   ScaffoldMessenger.of(context).showSnackBar(
-                                  //     SnackBar(
-                                  //         content: Text(
-                                  //             'Please enter a phone number')),
-                                  //   );
-                                  // }
-                                },
+                            if (_phoneNumber.isNotEmpty) {
+                              setState(() {
+                                _isPhoneNumberInputted = true;
+                              });
+                              _verifyPhoneNumber();
+                            } else {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(
+                                    content: Text('Please enter a phone number')),
+                              );
+                            }
+                          },
                           style: ElevatedButton.styleFrom(
                             backgroundColor: Color.fromARGB(255, 52, 83, 209),
                           ),
