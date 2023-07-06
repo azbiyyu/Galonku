@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 import 'package:galonku/Controllers/auth.dart';
 import 'package:galonku/DepotPage/home_page_depot.dart';
 import 'package:galonku/DesignSystem/_lupa_sandi.dart';
@@ -84,7 +85,31 @@ class _MitraLoginState extends State<MitraLogin> {
       }
     }
   }
-
+  Future<void> loginWithFacebook() async {
+    try {
+      final LoginResult result = await FacebookAuth.instance.login();
+      final AccessToken? accessToken = await FacebookAuth.instance.accessToken;
+        final userData = await FacebookAuth.instance.getUserData();
+    
+        final String username = userData['name'];
+        SharedPreferences preferences = await SharedPreferences.getInstance();
+        preferences.setString('email', username);
+      
+      if (result.status == LoginStatus.success) {
+        // Login berhasil, lakukan tindakan yang sesuai
+        print('Login dengan Facebook berhasil');
+      } else if (result.status == LoginStatus.cancelled) {
+        // Login dibatalkan oleh pengguna, lakukan tindakan yang sesuai
+        print('Login dengan Facebook dibatalkan');
+      } else {
+        // Login gagal, lakukan tindakan yang sesuai
+        print('Login dengan Facebook gagal');
+      }
+    } catch (e) {
+      // Tangani kesalahan atau lakukan tindakan yang sesuai
+      print('Error: $e');
+    }
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -115,7 +140,7 @@ class _MitraLoginState extends State<MitraLogin> {
                 BtnSinkronise(
                   image: "images/facebook_logo.png",
                   text: "Sinkronasi Dengan Facebook",
-                  onPressed: () {},
+                  onPressed: loginWithFacebook,
                 ),
                 Container(
                   padding: EdgeInsets.only(top: 20),

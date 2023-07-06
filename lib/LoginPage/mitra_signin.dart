@@ -7,6 +7,7 @@ import 'package:galonku/Models/_heading.dart';
 import 'package:galonku/LoginPage/mitra_login.dart';
 import 'package:galonku/Models/_button_sinkronise.dart';
 // import 'package:galonku/LoginPage/verifikasi.dart';
+import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:galonku/Pop_up/Pop_up.dart';
@@ -41,6 +42,43 @@ class _MitraSignInState extends State<MitraSignIn> {
     super.initState();
     initializeSharedPreferences();
   }
+
+  // Fungsi sign-in dengan Facebook
+  Future<void> signInWithFacebook() async {
+    try {
+      final LoginResult result = await FacebookAuth.instance.login();
+
+      // Cek apakah login berhasil
+      if (result.status == LoginStatus.success) {
+        // Dapatkan akses token
+        final AccessToken? accessToken = await FacebookAuth.instance.accessToken;
+        final String token = accessToken!.token;
+        final userData = await FacebookAuth.instance.getUserData();
+
+        // Gunakan akses token untuk autentikasi dengan Firebase
+        final OAuthCredential credential = FacebookAuthProvider.credential(token);
+        final UserCredential userCredential = await FirebaseAuth.instance.signInWithCredential(credential);
+    
+        final String username = userData['name'];
+        SharedPreferences preferences = await SharedPreferences.getInstance();
+        preferences.setString('email', username);
+        // Gunakan akses token untuk autentikasi dengan Firebase
+        //final OAuthCredential credential = FacebookAuthProvider.credential(token);
+        //final UserCredential userCredential = await FirebaseAuth.instance.signInWithCredential(credential);
+
+        // Tambahkan logika yang diinginkan setelah berhasil sign-in dengan Facebook
+        // ignore: use_build_context_synchronously
+        Navigator.pushNamed(context, MitraInput.nameRoute);
+        // Navigasi ke halaman selanjutnya, misalnya HomePage
+      } else {
+        // Login gagal, tangani kesalahan atau tindakan yang sesuai
+      }
+    } catch (e) {
+      // Tangani kesalahan atau tindakan yang sesuai
+    }
+  }
+
+
   Future<void> signInWithGoogle() async {
     try {
       final GoogleSignInAccount? googleSignInAccount = await _googleSignIn.signIn();
@@ -188,7 +226,7 @@ class _MitraSignInState extends State<MitraSignIn> {
                   BtnSinkronise(
                     image: "images/facebook_logo.png",
                     text: "Sinkronasi Dengan Facebook",
-                    onPressed: () {},
+                    onPressed: signInWithFacebook,
                   ),
                   Container(
                     padding: EdgeInsets.only(top: 20),
