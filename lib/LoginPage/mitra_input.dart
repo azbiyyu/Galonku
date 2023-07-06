@@ -4,6 +4,7 @@ import 'package:galonku/Models/_heading.dart';
 import 'package:galonku/Models/_image_upload.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class MitraInput extends StatefulWidget {
   const MitraInput({Key? key}) : super(key: key);
@@ -66,13 +67,15 @@ class _MitraInputState extends State<MitraInput> {
 
   void _saveData() async {
     if (_isDataComplete()) {
+      SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
+      String? mail = sharedPreferences.getString('email');
       String namaDepot = usernameController.text;
       String alamatDepot = alamatController.text;
       String bukaDepot = bukaController.text;
       String tutupDepot = tutupController.text;
-      String emailfield = '';
+      String? emailfield = mail;
 
-      final docUser = FirebaseFirestore.instance.collection('user').doc('id');
+      final collectionUser = FirebaseFirestore.instance.collection('user');
       final json = {
         'email': emailfield,
         'username': namaDepot,
@@ -83,15 +86,39 @@ class _MitraInputState extends State<MitraInput> {
             GeoPoint(_selectedLocation.latitude, _selectedLocation.longitude),
         'Mineral': _isROSelected,
         'RO': _isMineralSelected,
+        'images': '',
+        'katalog1': '',
+        'katalog2': '',
+        'katalog3': '',
       };
 
       try {
-        await docUser.set(json);
+        final docUser = await collectionUser.add(json);
+        String docId = docUser.id;
+        print('New document ID: $docId');
         // ignore: use_build_context_synchronously
         Navigator.pushReplacementNamed(context, HomePageDepot.nameRoute);
       } catch (error) {
         print("Failed to save data: $error");
         // Show error message or handle error accordingly
+          // ignore: use_build_context_synchronously
+          showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return AlertDialog(
+              title: Text("Data Kosong"),
+              content: Text("Tolong Isi Semua Data."),
+              actions: [
+                TextButton(
+                  child: Text("OK"),
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                ),
+              ],
+            );
+        },
+      );
       }
     } else {
       showDialog(

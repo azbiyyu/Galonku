@@ -1,15 +1,46 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:galonku/DesignSystem/_appBar.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class HomeUser extends StatefulWidget {
   const HomeUser({super.key});
   static const nameRoute = '/homeuser';
+  
 
   @override
   State<HomeUser> createState() => _HomeUserState();
 }
 
 class _HomeUserState extends State<HomeUser> {
+  String _usernameState = '';
+  String _emailState = '';
+
+  @override
+  void initState() {
+    super.initState();
+    loadUserData();
+  }
+  void loadUserData() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String email = prefs.getString('email') ?? '';
+    QuerySnapshot snapshot = await FirebaseFirestore.instance
+        .collection('user')
+        .where('email', isEqualTo: email)
+        .get();
+
+    if (snapshot.docs.isNotEmpty) {
+      DocumentSnapshot document = snapshot.docs.first;
+      Map<String, dynamic>? data = document.data() as Map<String, dynamic>?;
+
+      if (data != null) {
+        setState(() {
+          _usernameState = data['username'] ?? '';
+          _emailState = data['email'] ?? '';
+        });
+      }
+    }
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -42,7 +73,7 @@ class _HomeUserState extends State<HomeUser> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Text(
-                        'Nama Pengguna',
+                        _usernameState,
                         style: TextStyle(
                           color: Colors.white,
                           fontSize: 24.0,
@@ -51,7 +82,7 @@ class _HomeUserState extends State<HomeUser> {
                       ),
                       SizedBox(height: 8.0),
                       Text(
-                        'email@example.com',
+                        _emailState,
                         style: TextStyle(
                           color: Colors.white,
                           fontSize: 18.0,

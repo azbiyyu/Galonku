@@ -1,4 +1,6 @@
 import 'dart:io';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:galonku/DesignSystem/_appBar.dart';
@@ -16,13 +18,15 @@ class SettingsUser extends StatefulWidget {
 
 class _SettingDepotState extends State<SettingsUser> {
   bool isEditing = false;
+  String documentId = '';
+  String currentImageUrl = '';
+  String imageUrl = '';
+  int idx = 0;
 
   TextEditingController _usernameController = TextEditingController();
   TextEditingController _emailController = TextEditingController();
   TextEditingController _alamatController = TextEditingController();
-  TextEditingController _produkController = TextEditingController();
-  TextEditingController _bukaController = TextEditingController();
-  TextEditingController _tutupController = TextEditingController();
+
 
   @override
   void initState() {
@@ -32,43 +36,104 @@ class _SettingDepotState extends State<SettingsUser> {
 
   void loadUserData() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    setState(() {
-      _usernameController.text = prefs.getString('username') ?? '';
-      _emailController.text = prefs.getString('email') ?? '';
-      _alamatController.text = prefs.getString('alamat') ?? '';
-      _produkController.text = prefs.getString('produk') ?? '';
-      _bukaController.text = prefs.getString('buka') ?? '';
-      _tutupController.text = prefs.getString('tutup') ?? '';
-    });
+    String email = prefs.getString('email') ?? '';
+    QuerySnapshot snapshot = await FirebaseFirestore.instance
+        .collection('user')
+        .where('email', isEqualTo: email)
+        .get();
+
+    if (snapshot.docs.isNotEmpty) {
+      DocumentSnapshot document = snapshot.docs.first;
+      Map<String, dynamic>? data = 
+        document.data() as Map<String, dynamic>?;
+
+      if(data != null){
+        setState(() {
+          documentId = document.id;
+        _usernameController.text = data['username'] ?? '';
+        _emailController.text = prefs.getString('email') ?? '';
+        _alamatController.text = data['alamat'] ?? '';
+        currentImageUrl = data['images'] ?? imageUrl;
+        });
+      }
+    }
+    
   }
 
   void toggleEditing() async {
     if (isEditing) {
-      SharedPreferences prefs = await SharedPreferences.getInstance();
-      String username = _usernameController.text;
-      String email = _emailController.text;
-      String alamat = _alamatController.text;
-      String produk = _produkController.text;
-      String buka = _bukaController.text;
-      String tutup = _tutupController.text;
+      await FirebaseFirestore.instance
+          .collection('user')
+          .doc(documentId)
+          .update({
+        'username': _usernameController.text,
+        'email': _emailController.text,
+        'alamat': _alamatController.text,
+      });
 
-      await prefs.setString('username', username);
-      await prefs.setString('email', email);
-      await prefs.setString('alamat', alamat);
-      await prefs.setString('produk', produk);
-      await prefs.setString('buka', buka);
-      await prefs.setString('tutup', tutup);
-
+      // ignore: use_build_context_synchronously
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Data berhasil disimpan')),
       );
     }
-
     setState(() {
       isEditing = !isEditing;
     });
   }
+  Future<void> pickImage() async {
+      List<String> profil = ['images'];
+      String field = profil[idx];
+      DocumentSnapshot depotSnapshot = await FirebaseFirestore.instance
+      .collection('user')
+      .doc(documentId)
+      .get();
+      if (depotSnapshot.exists) {
+      Map<String, dynamic>? data = depotSnapshot.data() as Map<String, dynamic>?;
+        if (data != null && data.containsKey(field)) {
+          String fieldValue = data[field];
+          // Check if fieldValue is a valid URL
+          if (fieldValue.startsWith('gs://') || fieldValue.startsWith('https://')) {
+            Reference referenceToDelete = FirebaseStorage.instance.refFromURL(fieldValue);
+            try {
+              await referenceToDelete.delete();
+              print('Data berhasil dihapus dari Firebase Storage');
+            } catch (e) {
+              print('Error saat menghapus data dari Firebase Storage: $e');
+            }
+          } else {
+            print('Invalid URL: $fieldValue');
+          }
+        }
+      }
 
+      ImagePicker imagePicker = ImagePicker();
+      XFile? file = await imagePicker.pickImage(source: ImageSource.gallery);
+      if (file == null) return;
+      String uniqueFileName = DateTime.now().millisecondsSinceEpoch.toString();
+
+      Reference referenceRoot = FirebaseStorage.instance.ref();
+      Reference referenceDirImages = referenceRoot.child('images');
+      Reference referenceImageToUpload =
+          referenceDirImages.child(uniqueFileName);
+
+      try {
+        await referenceImageToUpload.putFile(File(file.path));
+        imageUrl = await referenceImageToUpload.getDownloadURL();
+      } catch (e) {
+        print('Error: $e');
+      }
+
+    await FirebaseFirestore.instance
+        .collection('user')
+        .doc(documentId)
+        .update({
+          'images': imageUrl,
+      });
+
+    setState(() {
+      currentImageUrl = imageUrl;
+    });
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -79,16 +144,16 @@ class _SettingDepotState extends State<SettingsUser> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               GestureDetector(
-                onTap: () {
-                  // Logika ketika tombol edit foto ditekan
+                onLongPress: () {
+                  pickImage();
                 },
                 child: CircleAvatar(
                   radius: 80,
                   backgroundColor: Colors.grey,
-                  child: Icon(
-                    Icons.edit,
-                    color: Colors.white,
-                  ),
+                  backgroundImage:
+                      currentImageUrl != '' ? NetworkImage(currentImageUrl) : null,
+                  child:
+                      currentImageUrl == '' ? Icon(Icons.edit, color: Colors.white) : null,
                 ),
               ),
               SizedBox(height: 20),
@@ -133,7 +198,7 @@ class _SettingDepotState extends State<SettingsUser> {
                           borderSide: BorderSide(color: Colors.grey),
                         ),
                       ),
-                      enabled: isEditing,
+                      enabled: false,
                     ),
                     SizedBox(height: 10),
                     TextFormField(
@@ -155,10 +220,12 @@ class _SettingDepotState extends State<SettingsUser> {
                 padding: const EdgeInsets.symmetric(horizontal: 16),
                 child: ElevatedButton(
                   onPressed: () async {
+                    currentImageUrl = '';
                     SharedPreferences prefs = await SharedPreferences.getInstance();
                     prefs.remove('email');
                     prefs.remove('role');
                     prefs.setBool('isLoggedIn', false);
+                    // ignore: use_build_context_synchronously
                     Navigator.pushNamed(context, LoginRole.nameRoute);
                   },
                   style: ElevatedButton.styleFrom(

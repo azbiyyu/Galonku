@@ -104,11 +104,30 @@ class _SettingDepotState extends State<SettingsDepot> {
   }
 
   Future<void> pickImage() async {
-    if (currentImageUrl.isNotEmpty) {
-      Reference referenceToDelete =
-          FirebaseStorage.instance.refFromURL(currentImageUrl);
-      await referenceToDelete.delete();
-    }
+      List<String> profil = ['images'];
+      String field = profil[idx];
+      DocumentSnapshot depotSnapshot = await FirebaseFirestore.instance
+      .collection('user')
+      .doc(depotDocumentId)
+      .get();
+      if (depotSnapshot.exists) {
+      Map<String, dynamic>? data = depotSnapshot.data() as Map<String, dynamic>?;
+        if (data != null && data.containsKey(field)) {
+          String fieldValue = data[field];
+          // Check if fieldValue is a valid URL
+          if (fieldValue.startsWith('gs://') || fieldValue.startsWith('https://')) {
+            Reference referenceToDelete = FirebaseStorage.instance.refFromURL(fieldValue);
+            try {
+              await referenceToDelete.delete();
+              print('Data berhasil dihapus dari Firebase Storage');
+            } catch (e) {
+              print('Error saat menghapus data dari Firebase Storage: $e');
+            }
+          } else {
+            print('Invalid URL: $fieldValue');
+          }
+        }
+      }
 
     ImagePicker imagePicker = ImagePicker();
     XFile? file = await imagePicker.pickImage(source: ImageSource.gallery);
@@ -276,7 +295,7 @@ class _SettingDepotState extends State<SettingsDepot> {
                           borderSide: BorderSide(color: Colors.grey),
                         ),
                       ),
-                      enabled: isEditing,
+                      enabled: false,
                     ),
                     SizedBox(height: 10),
                     TextFormField(
@@ -414,6 +433,8 @@ class _SettingDepotState extends State<SettingsDepot> {
                 padding: const EdgeInsets.symmetric(horizontal: 16),
                 child: ElevatedButton(
                   onPressed: () async {
+                    imageUrlKatalog = '';
+                    currentImageUrl = '';
                     SharedPreferences prefs =
                         await SharedPreferences.getInstance();
                     await prefs.remove('email');

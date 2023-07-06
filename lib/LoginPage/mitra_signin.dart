@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:galonku/DesignSystem/_syarat_ketentuan.dart';
+import 'package:galonku/LoginPage/mitra_input.dart';
 import 'package:galonku/Models/_button_primary.dart';
 import 'package:galonku/Models/_group_syarat_ketentuan.dart';
 import 'package:galonku/Models/_heading.dart';
@@ -59,11 +60,20 @@ class _MitraSignInState extends State<MitraSignIn> {
       _preferences.setString('email', _controllerEmail.text);
       _preferences.setString('password', _controllerPassword.text);
       // ignore: use_build_context_synchronously
-      Navigator.push(
-        context,
-        MaterialPageRoute(
-            builder: (context) => Verifikasi(isFromUserSignIn: true)),
-      );
+      // Navigator.push(
+      //   context,
+      //   MaterialPageRoute(
+      //       builder: (context) => Verifikasi(isFromUserSignIn: true)),
+      // );
+      _preferences.getString('role');
+      // ignore: unrelated_type_equality_checks
+      if(_preferences == 'mitra'){
+        // ignore: use_build_context_synchronously
+        Navigator.pushNamed(context, MitraInput.nameRoute);
+      }else{
+         // ignore: use_build_context_synchronously
+         Navigator.pushNamed(context, MitraInput.nameRoute);
+      }
     } on FirebaseAuthException catch (e) {
       if (e.code == 'user-not-found') {
         setState(() {
@@ -101,12 +111,21 @@ class _MitraSignInState extends State<MitraSignIn> {
         });
       }
     }
-    // ignore: use_build_context_synchronously
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-          builder: (context) => Verifikasi(isFromUserSignIn: true)),
-    );
+    // // ignore: use_build_context_synchronously
+    // Navigator.push(
+    //   context,
+    //   MaterialPageRoute(
+    //       builder: (context) => Verifikasi(isFromUserSignIn: true)),
+    // );
+    _preferences.getString('role');
+      // ignore: unrelated_type_equality_checks
+      if(_preferences == 'mitra'){
+        // ignore: use_build_context_synchronously
+        Navigator.pushNamed(context, MitraInput.nameRoute);
+      }else{
+         // ignore: use_build_context_synchronously
+         Navigator.pushNamed(context, MitraInput.nameRoute);
+      }
   }
 
   @override

@@ -22,7 +22,7 @@ class _VerifikasiState extends State<Verifikasi> {
   String _verificationId = "";
   bool _isPhoneNumberInputted = false;
   Timer? _timer;
-  Duration _timerDuration = const Duration(minutes: 2);
+  Duration _timerDuration = const Duration(minutes: 3);
   bool _isOtpCodeInputted = false;
   bool _isResendDisabled = false;
 
@@ -57,6 +57,7 @@ class _VerifikasiState extends State<Verifikasi> {
         _timerDuration = const Duration(minutes: 2); // Reset ulang durasi
       });
     };
+
     _timer?.cancel();
     _timer = Timer(_timerDuration, () {
       Fluttertoast.showToast(
@@ -104,7 +105,7 @@ class _VerifikasiState extends State<Verifikasi> {
       if (widget.isFromUserSignIn) {
         Navigator.pushReplacement(
           context,
-          MaterialPageRoute(builder: (context) => MitraInput()),
+          MaterialPageRoute(builder: (context) =>MitraInput()),
         );
       } else {
         Navigator.pushReplacement(
@@ -128,9 +129,9 @@ class _VerifikasiState extends State<Verifikasi> {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      home: Scaffold(
-        body: SafeArea(
+    return Scaffold(
+      body: SafeArea(
+        child: SingleChildScrollView(
           child: Padding(
             padding: EdgeInsets.all(16.0),
             child: Column(
