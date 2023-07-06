@@ -8,6 +8,7 @@ import 'package:galonku/LandingPage/login_role.dart';
 import 'package:galonku/LoginPage/mitra_signin.dart';
 import 'package:galonku/Models/_button_sinkronise.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:galonku/Pop_up/Pop_up.dart';
 // import 'package:firebase_auth_project/auth.dart';
@@ -23,6 +24,8 @@ class MitraLogin extends StatefulWidget {
 class _MitraLoginState extends State<MitraLogin> {
   bool _obscureText = true;
   bool isLogged = true;
+  final FirebaseAuth _auth = FirebaseAuth.instance;
+  final GoogleSignIn _googleSignIn = GoogleSignIn();
 
   // string error
   String? errorMessage = ' ';
@@ -31,7 +34,33 @@ class _MitraLoginState extends State<MitraLogin> {
   // controller edit
   final TextEditingController _controllerEmail = TextEditingController();
   final TextEditingController _controllerPassword = TextEditingController();
+   // Method untuk login dengan Google
+  Future<void> signInWithGoogle() async {
+    try {
+      final GoogleSignInAccount? googleSignInAccount = await _googleSignIn.signIn();
+      final GoogleSignInAuthentication? googleAuth = await googleSignInAccount?.authentication;
 
+      if (googleAuth != null) {
+        final OAuthCredential credential = GoogleAuthProvider.credential(
+          accessToken: googleAuth.accessToken,
+          idToken: googleAuth.idToken,
+        );
+
+        final UserCredential userCredential = await _auth.signInWithCredential(credential);
+        // Mendapatkan email dari user yang login dengan Google
+        final String? email = userCredential.user?.email;
+
+        // Menyimpan email ke SharedPreferences
+        SharedPreferences preferences = await SharedPreferences.getInstance();
+        preferences.setString('email', email ?? '');
+        // Tambahkan logika yang diinginkan setelah berhasil sign-in dengan Google
+        // ignore: use_build_context_synchronously
+        Navigator.pushReplacementNamed(context, HomePageDepot.nameRoute);
+      }
+    } catch (e) {
+      print('Error saat sign-in dengan Google: $e');
+    }
+  }
   // method untuk sign in
   Future<void> signInwithEmailAndPassword() async {
     try {
@@ -80,7 +109,7 @@ class _MitraLoginState extends State<MitraLogin> {
                 BtnSinkronise(
                   image: "images/google_logo.png",
                   text: "Sinkronasi Dengan Google",
-                  onPressed: () {},
+                  onPressed: signInWithGoogle,
                 ),
                 SizedBox(height: 10),
                 BtnSinkronise(

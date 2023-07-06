@@ -1,10 +1,12 @@
 import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:galonku/DesignSystem/_appBar.dart';
 import 'package:galonku/LandingPage/login_role.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -23,6 +25,9 @@ class _SettingDepotState extends State<SettingsUser> {
   String imageUrl = '';
   int idx = 0;
 
+  final GoogleSignIn _googleSignIn = GoogleSignIn();
+  final FirebaseAuth _auth = FirebaseAuth.instance;
+
   TextEditingController _usernameController = TextEditingController();
   TextEditingController _emailController = TextEditingController();
   TextEditingController _alamatController = TextEditingController();
@@ -32,6 +37,10 @@ class _SettingDepotState extends State<SettingsUser> {
   void initState() {
     super.initState();
     loadUserData();
+  }
+  Future<void> signOutFromGoogle() async {
+    await _googleSignIn.signOut();
+    await _auth.signOut();
   }
 
   void loadUserData() async {
@@ -225,6 +234,7 @@ class _SettingDepotState extends State<SettingsUser> {
                     prefs.remove('email');
                     prefs.remove('role');
                     prefs.setBool('isLoggedIn', false);
+                    signOutFromGoogle();
                     // ignore: use_build_context_synchronously
                     Navigator.pushNamed(context, LoginRole.nameRoute);
                   },

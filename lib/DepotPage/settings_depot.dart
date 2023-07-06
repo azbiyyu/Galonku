@@ -1,7 +1,9 @@
 import 'dart:io';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 // import 'package:carousel_slider/carousel_slider.dart';
 import 'package:firebase_storage/firebase_storage.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -26,6 +28,10 @@ class _SettingDepotState extends State<SettingsDepot> {
   TextEditingController _produkController = TextEditingController();
   TextEditingController _bukaController = TextEditingController();
   TextEditingController _tutupController = TextEditingController();
+
+
+  final GoogleSignIn _googleSignIn = GoogleSignIn();
+  final FirebaseAuth _auth = FirebaseAuth.instance;
 
   String depotDocumentId = '';
   String imageUrl = '';
@@ -218,7 +224,11 @@ class _SettingDepotState extends State<SettingsDepot> {
       }
     });
   }
-
+  // Fungsi logout dari Google Sign-In
+  Future<void> signOutFromGoogle() async {
+    await _googleSignIn.signOut();
+    await _auth.signOut();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -435,6 +445,7 @@ class _SettingDepotState extends State<SettingsDepot> {
                   onPressed: () async {
                     imageUrlKatalog = '';
                     currentImageUrl = '';
+                    signOutFromGoogle();
                     SharedPreferences prefs =
                         await SharedPreferences.getInstance();
                     await prefs.remove('email');

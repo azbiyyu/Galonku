@@ -6,7 +6,8 @@ import 'package:galonku/Models/_group_syarat_ketentuan.dart';
 import 'package:galonku/Models/_heading.dart';
 import 'package:galonku/LoginPage/mitra_login.dart';
 import 'package:galonku/Models/_button_sinkronise.dart';
-import 'package:galonku/LoginPage/verifikasi.dart';
+// import 'package:galonku/LoginPage/verifikasi.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:galonku/Pop_up/Pop_up.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -21,6 +22,8 @@ class MitraSignIn extends StatefulWidget {
 }
 
 class _MitraSignInState extends State<MitraSignIn> {
+  final GoogleSignIn _googleSignIn = GoogleSignIn();
+  final FirebaseAuth _auth = FirebaseAuth.instance;
   bool _obscureText = true;
   late SharedPreferences _preferences;
 
@@ -37,6 +40,32 @@ class _MitraSignInState extends State<MitraSignIn> {
   void initState() {
     super.initState();
     initializeSharedPreferences();
+  }
+  Future<void> signInWithGoogle() async {
+    try {
+      final GoogleSignInAccount? googleSignInAccount = await _googleSignIn.signIn();
+      final GoogleSignInAuthentication? googleAuth = await googleSignInAccount?.authentication;
+
+      if (googleAuth != null) {
+        final OAuthCredential credential = GoogleAuthProvider.credential(
+          accessToken: googleAuth.accessToken,
+          idToken: googleAuth.idToken,
+        );
+
+        final UserCredential userCredential = await _auth.signInWithCredential(credential);
+        // Mendapatkan email dari user yang login dengan Google
+        final String? email = userCredential.user?.email;
+
+        // Menyimpan email ke SharedPreferences
+        SharedPreferences preferences = await SharedPreferences.getInstance();
+        preferences.setString('email', email ?? '');
+        // Tambahkan logika yang diinginkan setelah berhasil sign-in dengan Google
+        // ignore: use_build_context_synchronously
+        Navigator.pushReplacementNamed(context, MitraInput.nameRoute);
+      }
+    } catch (e) {
+      print('Error saat sign-in dengan Google: $e');
+    }
   }
 
   Future<void> initializeSharedPreferences() async {
@@ -153,7 +182,7 @@ class _MitraSignInState extends State<MitraSignIn> {
                   BtnSinkronise(
                     image: "images/google_logo.png",
                     text: "Sinkronasi Dengan Google",
-                    onPressed: () {},
+                    onPressed: signInWithGoogle,
                   ),
                   SizedBox(height: 10),
                   BtnSinkronise(
