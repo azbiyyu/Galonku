@@ -112,6 +112,7 @@ class _UserSignInState extends State<UserSignIn> {
   // method untuk sign in
   Future<void> signInwithEmailAndPassword() async {
     try {
+      // ignore: avoid_types_as_parameter_names
       await Auth(updateLoggedInStatus: (bool) => true).SignWithEmailAndPassword(
         email: _controllerEmail.text,
         password: _controllerPassword.text,
@@ -143,6 +144,7 @@ class _UserSignInState extends State<UserSignIn> {
   // method create user
   Future<void> createUserWithEmailAndPassword() async {
     try {
+      // ignore: avoid_types_as_parameter_names
       await Auth(updateLoggedInStatus: (bool) => true)
           .CreateUserWithEmailAndPassword(
               email: _controllerEmail.text, password: _controllerPassword.text);

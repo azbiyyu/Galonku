@@ -1,3 +1,5 @@
+// ignore_for_file: sized_box_for_whitespace
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:galonku/DesignSystem/_appBar.dart';
@@ -99,6 +101,7 @@ class _HomeUserState extends State<HomeUser> {
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
               Expanded(
+                // ignore: sized_box_for_whitespace
                 child: Container(
                   width: 150.0, // Atur lebar Container
                   height: 200.0, // Atur tinggi Container

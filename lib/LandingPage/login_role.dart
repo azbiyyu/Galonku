@@ -1,17 +1,16 @@
-import 'dart:ffi';
-
 import 'package:flutter/material.dart';
 import 'package:galonku/LoginPage/mitra_login.dart';
 import 'package:galonku/LoginPage/user_login.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import '../DepotPage/home_page_depot.dart';
-import '../DepotPage/home_page_user.dart';
+// import '../DepotPage/home_page_depot.dart';
+// import '../DepotPage/home_page_user.dart';
 
 class LoginRole extends StatefulWidget {
   static const nameRoute = '/loginrole';
 
   @override
+  // ignore: library_private_types_in_public_api
   _LoginRoleState createState() => _LoginRoleState();
 }
 

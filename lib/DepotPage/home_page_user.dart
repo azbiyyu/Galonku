@@ -1,13 +1,12 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:galonku/DepotPage/chat_user.dart';
 import 'package:galonku/DepotPage/home_user.dart';
 import 'package:galonku/DepotPage/pesanan_user.dart';
-import 'package:galonku/DepotPage/settings_depot.dart';
+// import 'package:galonku/DepotPage/settings_depot.dart';
 import 'package:galonku/DepotPage/settings_user.dart';
-import 'package:galonku/LandingPage/login_role.dart';
+// import 'package:galonku/LandingPage/login_role.dart';
 import '../GoogleMaps/GoogleMaps.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+// import 'package:shared_preferences/shared_preferences.dart';
 
 class HomePageUser extends StatefulWidget {
   const HomePageUser({Key? key}) : super(key: key);

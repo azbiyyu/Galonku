@@ -119,6 +119,7 @@ class _MitraSignInState extends State<MitraSignIn> {
   // method untuk sign in
   Future<void> signInwithEmailAndPassword() async {
     try {
+      // ignore: avoid_types_as_parameter_names
       await Auth(updateLoggedInStatus: (bool) => true).SignWithEmailAndPassword(
         email: _controllerEmail.text,
         password: _controllerPassword.text,

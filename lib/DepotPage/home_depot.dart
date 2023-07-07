@@ -6,6 +6,7 @@ class HomeDepot extends StatefulWidget {
   static const nameRoute = '/homedepot';
 
   @override
+  // ignore: library_private_types_in_public_api
   _HomeDepotState createState() => _HomeDepotState();
 }
 
@@ -83,6 +84,7 @@ class _HomeDepotState extends State<HomeDepot> {
                   ),
                 ),
               ),
+              // ignore: avoid_unnecessary_containers
               Container(
                 child: Row(
                   children: [
