@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:geolocator/geolocator.dart';
@@ -9,6 +10,8 @@ class GoogleMapPage extends StatefulWidget {
 }
 
 class _GoogleMapPageState extends State<GoogleMapPage> {
+  List<Marker> _markers = [];
+
   final Completer<GoogleMapController> _controller =
       Completer<GoogleMapController>();
 
@@ -27,6 +30,7 @@ class _GoogleMapPageState extends State<GoogleMapPage> {
   void initState() {
     super.initState();
     _getCurrentLocation();
+    _getMarkersFromFirestore();
   }
 
   Future<void> _getCurrentLocation() async {
@@ -51,13 +55,45 @@ class _GoogleMapPageState extends State<GoogleMapPage> {
     controller.animateCamera(CameraUpdate.newCameraPosition(_currentPosition));
   }
 
+  Future<void> _getMarkersFromFirestore() async {
+    QuerySnapshot querySnapshot =
+        await FirebaseFirestore.instance.collection('user').get();
+
+    List<Marker> markers = [];
+
+    for (var document in querySnapshot.docs) {
+      Map<String, dynamic> data = document.data() as Map<String, dynamic>;
+
+      if (data.containsKey('lokasi')) {
+        dynamic lokasiValue = data['lokasi'];
+        // print(lokasiValue);
+        // Lakukan sesuatu dengan nilai 'lokasi' di sini, seperti membuat Marker
+        // Contoh: Membuat Marker dengan posisi berdasarkan nilai 'lokasi'
+        if (lokasiValue is GeoPoint) {
+          Marker marker = Marker(
+            markerId: MarkerId(document.id),
+            position: LatLng(lokasiValue.latitude, lokasiValue.longitude),
+            infoWindow: InfoWindow(title: data['username']),
+            icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueBlue),
+          );
+
+          markers.add(marker);
+        }
+      }
+    }
+
+    setState(() {
+      _markers = markers;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: GoogleMap(
         mapType: MapType.normal,
         initialCameraPosition: _currentPosition,
-        markers: Set<Marker>.of([_currentLocationMarker]),
+        markers: <Marker>{_currentLocationMarker, ..._markers},
         onMapCreated: (GoogleMapController controller) {
           _controller.complete(controller);
         },

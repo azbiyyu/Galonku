@@ -19,6 +19,7 @@ import 'package:galonku/LoginPage/user_signin.dart';
 import 'package:galonku/LoginPage/verifikasi.dart';
 import 'package:provider/provider.dart';
 import 'Controllers/shared_preferences_helper.dart';
+import 'DepotPage/EditLocationPage.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -69,6 +70,7 @@ class _MyAppState extends State<MyApp> {
         SettingsUser.nameRoute: (context) => SettingsUser(),
         LupaSandi.nameRoute:(context) => LupaSandi(),
         SyaratKetentuan.nameRoute:(context) => SyaratKetentuan(),
+        EditLocationPage.nameRoute: (context) => EditLocationPage(),
       },
       onGenerateRoute: (settings) {
         if(settings.name == '/landingpage'){

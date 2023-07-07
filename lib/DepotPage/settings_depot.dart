@@ -3,6 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 // import 'package:carousel_slider/carousel_slider.dart';
 import 'package:firebase_storage/firebase_storage.dart';
+import 'package:galonku/DepotPage/EditLocationPage.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -354,6 +355,12 @@ class _SettingDepotState extends State<SettingsDepot> {
                   ],
                 ),
               ),
+              ElevatedButton(
+                onPressed: () {
+                  Navigator.pushNamed(context, EditLocationPage.nameRoute);
+                },
+                  child: Text('Edit Lokasi'),
+                ),
               SizedBox(height: 20),
               Column(
                 children: [
