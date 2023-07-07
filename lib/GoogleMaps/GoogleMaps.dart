@@ -3,6 +3,10 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+
+import '../DepotPage/detail_depot.dart';
+
 
 class GoogleMapPage extends StatefulWidget {
   @override
@@ -125,6 +129,15 @@ class _GoogleMapPageState extends State<GoogleMapPage>
     });
   }
 
+  void _goToDetailDepot() {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => DetailDepot(), // Ganti dengan halaman DetailDepot yang sesuai
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     double fabTopMargin = _isDropdownOpen ? 90.0 : 16.0;
@@ -157,7 +170,7 @@ class _GoogleMapPageState extends State<GoogleMapPage>
                   children: [
                     IconButton(
                       onPressed: _closeDropdown,
-                      icon: Icon(Icons.close),
+                     icon: Icon(Icons.close),
                     ),
                     SizedBox(height: 16),
                     Text(
@@ -183,6 +196,15 @@ class _GoogleMapPageState extends State<GoogleMapPage>
                           );
                         },
                       ),
+                    ),
+                    SizedBox(height: 16),
+                    ElevatedButton(
+                      onPressed: () async {
+                        SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
+                        sharedPreferences.setString('data', _selectedUsername);
+                        _goToDetailDepot();
+                      },
+                      child: Text('Detail Depot'),
                     ),
                   ],
                 ),

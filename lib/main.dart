@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:galonku/DepotPage/detail_depot.dart';
 import 'package:galonku/DepotPage/home_page_depot.dart';
 import 'package:galonku/DepotPage/home_page_user.dart';
 import 'package:galonku/DepotPage/home_user.dart';
@@ -71,6 +72,7 @@ class _MyAppState extends State<MyApp> {
         LupaSandi.nameRoute:(context) => LupaSandi(),
         SyaratKetentuan.nameRoute:(context) => SyaratKetentuan(),
         EditLocationPage.nameRoute: (context) => EditLocationPage(),
+        DetailDepot.nameRoute: (context) => DetailDepot(),
       },
       onGenerateRoute: (settings) {
         if(settings.name == '/landingpage'){
