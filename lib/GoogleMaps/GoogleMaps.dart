@@ -9,6 +9,7 @@ import '../DepotPage/detail_depot.dart';
 
 class GoogleMapPage extends StatefulWidget {
   @override
+  // ignore: library_private_types_in_public_api
   _GoogleMapPageState createState() => _GoogleMapPageState();
 }
 
@@ -25,10 +26,10 @@ class _GoogleMapPageState extends State<GoogleMapPage>
       Completer<GoogleMapController>();
 
   CameraPosition _currentPosition = CameraPosition(
-    bearing: 90,
-    target: LatLng(0.0, 0.0),
-    tilt: 59.440717697143555,
-    zoom: 19.151926040649414,
+    bearing: 0,
+    target: LatLng(-3.105305, 117.591325),
+    tilt: 20,
+    zoom: 3,
   );
 
   Marker _currentLocationMarker = Marker(
@@ -164,7 +165,7 @@ class _GoogleMapPageState extends State<GoogleMapPage>
             duration: const Duration(milliseconds: 300),
             left: 0,
             right: 0,
-            bottom: _isDropdownOpen ? 0.0 : -200.0,
+            bottom: _isDropdownOpen ? 0.0 : -500.0,
             child: GestureDetector(
               onTap: _closeDropdown,
               child: Container(
