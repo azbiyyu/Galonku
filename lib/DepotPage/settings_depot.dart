@@ -12,7 +12,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:galonku/DesignSystem/_appBar.dart';
 import 'package:galonku/LandingPage/login_role.dart';
 
-
 class SettingsDepot extends StatefulWidget {
   const SettingsDepot({Key? key});
   static const nameRoute = '/settingsdepot';
@@ -30,7 +29,6 @@ class _SettingDepotState extends State<SettingsDepot> {
   TextEditingController _produkController = TextEditingController();
   TextEditingController _bukaController = TextEditingController();
   TextEditingController _tutupController = TextEditingController();
-
 
   PageController _pageController = PageController();
   int _currentPage = 0;
@@ -111,30 +109,33 @@ class _SettingDepotState extends State<SettingsDepot> {
   }
 
   Future<void> pickImage() async {
-      List<String> profil = ['images'];
-      String field = profil[idx];
-      DocumentSnapshot depotSnapshot = await FirebaseFirestore.instance
-      .collection('user')
-      .doc(depotDocumentId)
-      .get();
-      if (depotSnapshot.exists) {
-      Map<String, dynamic>? data = depotSnapshot.data() as Map<String, dynamic>?;
-        if (data != null && data.containsKey(field)) {
-          String fieldValue = data[field];
-          // Check if fieldValue is a valid URL
-          if (fieldValue.startsWith('gs://') || fieldValue.startsWith('https://')) {
-            Reference referenceToDelete = FirebaseStorage.instance.refFromURL(fieldValue);
-            try {
-              await referenceToDelete.delete();
-              print('Data berhasil dihapus dari Firebase Storage');
-            } catch (e) {
-              print('Error saat menghapus data dari Firebase Storage: $e');
-            }
-          } else {
-            print('Invalid URL: $fieldValue');
+    List<String> profil = ['images'];
+    String field = profil[idx];
+    DocumentSnapshot depotSnapshot = await FirebaseFirestore.instance
+        .collection('user')
+        .doc(depotDocumentId)
+        .get();
+    if (depotSnapshot.exists) {
+      Map<String, dynamic>? data =
+          depotSnapshot.data() as Map<String, dynamic>?;
+      if (data != null && data.containsKey(field)) {
+        String fieldValue = data[field];
+        // Check if fieldValue is a valid URL
+        if (fieldValue.startsWith('gs://') ||
+            fieldValue.startsWith('https://')) {
+          Reference referenceToDelete =
+              FirebaseStorage.instance.refFromURL(fieldValue);
+          try {
+            await referenceToDelete.delete();
+            print('Data berhasil dihapus dari Firebase Storage');
+          } catch (e) {
+            print('Error saat menghapus data dari Firebase Storage: $e');
           }
+        } else {
+          print('Invalid URL: $fieldValue');
         }
       }
+    }
 
     ImagePicker imagePicker = ImagePicker();
     XFile? file = await imagePicker.pickImage(source: ImageSource.gallery);
@@ -226,7 +227,6 @@ class _SettingDepotState extends State<SettingsDepot> {
     });
   }
 
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -243,10 +243,12 @@ class _SettingDepotState extends State<SettingsDepot> {
                 child: CircleAvatar(
                   radius: 80,
                   backgroundColor: Colors.grey,
-                  backgroundImage:
-                      currentImageUrl != '' ? NetworkImage(currentImageUrl) : null,
-                  child:
-                      currentImageUrl == '' ? Icon(Icons.edit, color: Colors.white) : null,
+                  backgroundImage: currentImageUrl != ''
+                      ? NetworkImage(currentImageUrl)
+                      : null,
+                  child: currentImageUrl == ''
+                      ? Icon(Icons.edit, color: Colors.white)
+                      : null,
                 ),
               ),
               SizedBox(height: 20),
@@ -320,7 +322,7 @@ class _SettingDepotState extends State<SettingsDepot> {
               ),
               SizedBox(height: 20),
               Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16),
+                padding: const EdgeInsets.symmetric(horizontal: 20),
                 child: Row(
                   children: [
                     Expanded(
@@ -353,47 +355,106 @@ class _SettingDepotState extends State<SettingsDepot> {
               ),
               SizedBox(height: 20),
               Column(
-                    children: [
-                      SizedBox(height: 20),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        children: [
-                          GestureDetector(
-                            onLongPress: () => pickImageKatalog(0),
-                            child: CircleAvatar(
-                              radius: 80,
-                              backgroundColor: Colors.grey,
-                              backgroundImage: currentImageUrlKatalog != '' ? NetworkImage(currentImageUrlKatalog) : null,
-                              child:
-                                currentImageUrlKatalog == '' ? Icon(Icons.edit, color: Colors.white) : null,
+                children: [
+                  SizedBox(height: 20),
+                  Container(
+                    height: 180,
+                    child: ListView(
+                      scrollDirection: Axis.horizontal,
+                      children: [
+                        GestureDetector(
+                          onLongPress: () => pickImageKatalog(0),
+                          child: Container(
+                            width: 180,
+                            height: 180,
+                            margin: EdgeInsets.symmetric(horizontal: 8),
+                            decoration: BoxDecoration(
+                              color: Colors.grey,
+                              borderRadius: BorderRadius.circular(8),
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Colors.grey.withOpacity(0.5),
+                                  spreadRadius: 2,
+                                  blurRadius: 5,
+                                  offset: Offset(0, 3),
+                                ),
+                              ],
+                            ),
+                            child: ClipRRect(
+                              borderRadius: BorderRadius.circular(8),
+                              child: currentImageUrlKatalog != ''
+                                  ? Image.network(
+                                      currentImageUrlKatalog,
+                                      fit: BoxFit.cover,
+                                    )
+                                  : Icon(Icons.edit, color: Colors.white),
                             ),
                           ),
-                          GestureDetector(
-                           onLongPress: () => pickImageKatalog(1),
-                            child: CircleAvatar(
-                              radius: 80,
-                              backgroundColor: Colors.grey,
-                              backgroundImage: currentImageUrlKatalog2 != '' ? NetworkImage(currentImageUrlKatalog2) : null,
-                              child:
-                                currentImageUrlKatalog2 == '' ? Icon(Icons.edit, color: Colors.white) : null,
+                        ),
+                        GestureDetector(
+                          onLongPress: () => pickImageKatalog(1),
+                          child: Container(
+                            width: 180,
+                            height: 180,
+                            margin: EdgeInsets.symmetric(horizontal: 8),
+                            decoration: BoxDecoration(
+                              color: Colors.grey,
+                              borderRadius: BorderRadius.circular(8),
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Colors.grey.withOpacity(0.5),
+                                  spreadRadius: 2,
+                                  blurRadius: 5,
+                                  offset: Offset(0, 3),
+                                ),
+                              ],
+                            ),
+                            child: ClipRRect(
+                              borderRadius: BorderRadius.circular(8),
+                              child: currentImageUrlKatalog2 != ''
+                                  ? Image.network(
+                                      currentImageUrlKatalog2,
+                                      fit: BoxFit.cover,
+                                    )
+                                  : Icon(Icons.edit, color: Colors.white),
                             ),
                           ),
-                          GestureDetector(
-                            onLongPress: () => pickImageKatalog(2),
-                            child: CircleAvatar(
-                              radius: 80,
-                              backgroundColor: Colors.grey,
-                              backgroundImage: currentImageUrlKatalog3 != '' ? NetworkImage(currentImageUrlKatalog3) : null,
-                              child:
-                                currentImageUrlKatalog3 == '' ? Icon(Icons.edit, color: Colors.white) : null,
+                        ),
+                        GestureDetector(
+                          onLongPress: () => pickImageKatalog(2),
+                          child: Container(
+                            width: 180,
+                            height: 180,
+                            margin: EdgeInsets.symmetric(horizontal: 8),
+                            decoration: BoxDecoration(
+                              color: Colors.grey,
+                              borderRadius: BorderRadius.circular(8),
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Colors.grey.withOpacity(0.5),
+                                  spreadRadius: 2,
+                                  blurRadius: 5,
+                                  offset: Offset(0, 3),
+                                ),
+                              ],
+                            ),
+                            child: ClipRRect(
+                              borderRadius: BorderRadius.circular(8),
+                              child: currentImageUrlKatalog3 != ''
+                                  ? Image.network(
+                                      currentImageUrlKatalog3,
+                                      fit: BoxFit.cover,
+                                    )
+                                  : Icon(Icons.edit, color: Colors.white),
                             ),
                           ),
-                        ],
-                      ),
-                      SizedBox(height: 20),
-                    ],
+                        ),
+                      ],
+                    ),
                   ),
-
+                  SizedBox(height: 20),
+                ],
+              ),
               SizedBox(height: 20),
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 16),
@@ -414,7 +475,7 @@ class _SettingDepotState extends State<SettingsDepot> {
                   child: Container(
                     width: double.infinity,
                     alignment: Alignment.center,
-                    child: Text(isEditing ? 'Simpan' : 'Logout'),
+                    child: Text(isEditing ? 'Logout' : 'Logout'),
                   ),
                 ),
               ),
