@@ -22,7 +22,7 @@ class DetailDepot extends StatelessWidget {
       return {};
     }
   }
-
+  // ini detail depot
   @override
   Widget build(BuildContext context) {
     return Scaffold(
