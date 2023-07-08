@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:galonku/DepotPage/pesan_galon_lokasi.dart';
 import 'package:galonku/DesignSystem/_button_primary.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -247,7 +248,13 @@ class _DetailDepotState extends State<DetailDepot> {
                             },
                           ),
                           SizedBox(height: 20),
-                          BtnPrimary(text: "Pesan Galon"),
+                          BtnPrimary(
+                            text: "Pesan Galon",
+                            onPressed: () {
+                              Navigator.pushNamed(
+                                  context, PesanGalonLokasi.nameRoute);
+                            },
+                          ),
                           SizedBox(height: 20),
                         ],
                       ),

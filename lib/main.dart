@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:galonku/DepotPage/bayar_galon.dart';
 import 'package:galonku/DepotPage/chat_page_user.dart';
 import 'package:galonku/DepotPage/detail_depot.dart';
 import 'package:galonku/DepotPage/home_page_depot.dart';
 import 'package:galonku/DepotPage/home_page_user.dart';
 import 'package:galonku/DepotPage/home_user.dart';
+import 'package:galonku/DepotPage/pesan_galon_lokasi.dart';
+import 'package:galonku/DepotPage/pesan_galon_produk.dart';
 import 'package:galonku/DepotPage/pesanan_depot.dart';
 import 'package:galonku/DepotPage/pesanan_user.dart';
 import 'package:galonku/DepotPage/settings_depot.dart';
@@ -77,6 +80,9 @@ class _MyAppState extends State<MyApp> {
         EditLocationPage.nameRoute: (context) => EditLocationPage(),
         DetailDepot.nameRoute: (context) => DetailDepot(),
         ChatPageUser.nameRoute: (context) => ChatPageUser(),
+        PesanGalonLokasi.nameRoute:(context) => PesanGalonLokasi(),
+        PesanGalonProduk.nameRoute:(context) => PesanGalonProduk(),
+        BayarGalon.nameRoute:(context) => BayarGalon(),
       },
       onGenerateRoute: (settings) {
         if (settings.name == '/landingpage') {
