@@ -1,7 +1,7 @@
 import 'dart:io';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-// import 'package:carousel_slider/carousel_slider.dart';
+import 'package:carousel_slider/carousel_slider.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:galonku/DepotPage/EditLocationPage.dart';
 import 'package:google_sign_in/google_sign_in.dart';
@@ -30,10 +30,8 @@ class _SettingDepotState extends State<SettingsDepot> {
   TextEditingController _bukaController = TextEditingController();
   TextEditingController _tutupController = TextEditingController();
 
-
-  final GoogleSignIn _googleSignIn = GoogleSignIn();
-  final FirebaseAuth _auth = FirebaseAuth.instance;
-
+  PageController _pageController = PageController();
+  int _currentPage = 0;
   String depotDocumentId = '';
   String imageUrl = '';
   String imageUrlKatalog = '';
@@ -111,30 +109,33 @@ class _SettingDepotState extends State<SettingsDepot> {
   }
 
   Future<void> pickImage() async {
-      List<String> profil = ['images'];
-      String field = profil[idx];
-      DocumentSnapshot depotSnapshot = await FirebaseFirestore.instance
-      .collection('user')
-      .doc(depotDocumentId)
-      .get();
-      if (depotSnapshot.exists) {
-      Map<String, dynamic>? data = depotSnapshot.data() as Map<String, dynamic>?;
-        if (data != null && data.containsKey(field)) {
-          String fieldValue = data[field];
-          // Check if fieldValue is a valid URL
-          if (fieldValue.startsWith('gs://') || fieldValue.startsWith('https://')) {
-            Reference referenceToDelete = FirebaseStorage.instance.refFromURL(fieldValue);
-            try {
-              await referenceToDelete.delete();
-              print('Data berhasil dihapus dari Firebase Storage');
-            } catch (e) {
-              print('Error saat menghapus data dari Firebase Storage: $e');
-            }
-          } else {
-            print('Invalid URL: $fieldValue');
+    List<String> profil = ['images'];
+    String field = profil[idx];
+    DocumentSnapshot depotSnapshot = await FirebaseFirestore.instance
+        .collection('user')
+        .doc(depotDocumentId)
+        .get();
+    if (depotSnapshot.exists) {
+      Map<String, dynamic>? data =
+          depotSnapshot.data() as Map<String, dynamic>?;
+      if (data != null && data.containsKey(field)) {
+        String fieldValue = data[field];
+        // Check if fieldValue is a valid URL
+        if (fieldValue.startsWith('gs://') ||
+            fieldValue.startsWith('https://')) {
+          Reference referenceToDelete =
+              FirebaseStorage.instance.refFromURL(fieldValue);
+          try {
+            await referenceToDelete.delete();
+            print('Data berhasil dihapus dari Firebase Storage');
+          } catch (e) {
+            print('Error saat menghapus data dari Firebase Storage: $e');
           }
+        } else {
+          print('Invalid URL: $fieldValue');
         }
       }
+    }
 
     ImagePicker imagePicker = ImagePicker();
     XFile? file = await imagePicker.pickImage(source: ImageSource.gallery);
@@ -143,8 +144,7 @@ class _SettingDepotState extends State<SettingsDepot> {
 
     Reference referenceRoot = FirebaseStorage.instance.ref();
     Reference referenceDirImages = referenceRoot.child('images');
-    Reference referenceImageToUpload =
-        referenceDirImages.child(uniqueFileName);
+    Reference referenceImageToUpload = referenceDirImages.child(uniqueFileName);
 
     try {
       await referenceImageToUpload.putFile(File(file.path));
@@ -165,9 +165,7 @@ class _SettingDepotState extends State<SettingsDepot> {
     });
   }
 
-
   Future<void> pickImageKatalog(int index) async {
-
     List<String> katalog = ['katalog1', 'katalog2', 'katalog3'];
     ImagePicker imagePicker2 = ImagePicker();
     XFile? file2 = await imagePicker2.pickImage(source: ImageSource.gallery);
@@ -177,58 +175,56 @@ class _SettingDepotState extends State<SettingsDepot> {
     Reference referenceRootKatalog = FirebaseStorage.instance.ref();
     Reference referenceDirImagesKatalog = referenceRootKatalog.child('katalog');
     Reference referenceImageToUploadKatalog =
-      referenceDirImagesKatalog.child(uniqueFileName2);
+        referenceDirImagesKatalog.child(uniqueFileName2);
 
     try {
       await referenceImageToUploadKatalog.putFile(File(file2.path));
-        katalogUrl = await referenceImageToUploadKatalog.getDownloadURL();
+      katalogUrl = await referenceImageToUploadKatalog.getDownloadURL();
     } catch (e) {
       print("error : $e");
     }
     DocumentSnapshot depotSnapshot = await FirebaseFirestore.instance
-      .collection('user')
-      .doc(depotDocumentId)
-      .get();
+        .collection('user')
+        .doc(depotDocumentId)
+        .get();
 
     if (depotSnapshot.exists) {
-  Map<String, dynamic>? data = depotSnapshot.data() as Map<String, dynamic>?;
-  if (data != null && data.containsKey(field)) {
-    String fieldValue = data[field];
-    // Check if fieldValue is a valid URL
-    if (fieldValue.startsWith('gs://') || fieldValue.startsWith('https://')) {
-      Reference referenceToDelete = FirebaseStorage.instance.refFromURL(fieldValue);
-      try {
-        await referenceToDelete.delete();
-        print('Data berhasil dihapus dari Firebase Storage');
-      } catch (e) {
-        print('Error saat menghapus data dari Firebase Storage: $e');
+      Map<String, dynamic>? data =
+          depotSnapshot.data() as Map<String, dynamic>?;
+      if (data != null && data.containsKey(field)) {
+        String fieldValue = data[field];
+        // Check if fieldValue is a valid URL
+        if (fieldValue.startsWith('gs://') ||
+            fieldValue.startsWith('https://')) {
+          Reference referenceToDelete =
+              FirebaseStorage.instance.refFromURL(fieldValue);
+          try {
+            await referenceToDelete.delete();
+            print('Data berhasil dihapus dari Firebase Storage');
+          } catch (e) {
+            print('Error saat menghapus data dari Firebase Storage: $e');
+          }
+        } else {
+          print('Invalid URL: $fieldValue');
+        }
       }
-    } else {
-      print('Invalid URL: $fieldValue');
     }
-  }
-}
     await FirebaseFirestore.instance
         .collection('user')
         .doc(depotDocumentId)
         .update({
-          field : katalogUrl,
+      field: katalogUrl,
     });
 
     setState(() {
-      if(index == 0){
+      if (index == 0) {
         currentImageUrlKatalog = katalogUrl;
-      }else if(index == 1){
+      } else if (index == 1) {
         currentImageUrlKatalog2 = katalogUrl;
-      }else if(index == 2){
+      } else if (index == 2) {
         currentImageUrlKatalog3 = katalogUrl;
       }
     });
-  }
-  // Fungsi logout dari Google Sign-In
-  Future<void> signOutFromGoogle() async {
-    await _googleSignIn.signOut();
-    await _auth.signOut();
   }
 
   @override
@@ -247,10 +243,12 @@ class _SettingDepotState extends State<SettingsDepot> {
                 child: CircleAvatar(
                   radius: 80,
                   backgroundColor: Colors.grey,
-                  backgroundImage:
-                      currentImageUrl != '' ? NetworkImage(currentImageUrl) : null,
-                  child:
-                      currentImageUrl == '' ? Icon(Icons.edit, color: Colors.white) : null,
+                  backgroundImage: currentImageUrl != ''
+                      ? NetworkImage(currentImageUrl)
+                      : null,
+                  child: currentImageUrl == ''
+                      ? Icon(Icons.edit, color: Colors.white)
+                      : null,
                 ),
               ),
               SizedBox(height: 20),
@@ -306,7 +304,7 @@ class _SettingDepotState extends State<SettingsDepot> {
                           borderSide: BorderSide(color: Colors.grey),
                         ),
                       ),
-                      enabled: false,
+                      enabled: isEditing,
                     ),
                     SizedBox(height: 10),
                     TextFormField(
@@ -324,7 +322,7 @@ class _SettingDepotState extends State<SettingsDepot> {
               ),
               SizedBox(height: 20),
               Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16),
+                padding: const EdgeInsets.symmetric(horizontal: 20),
                 child: Row(
                   children: [
                     Expanded(
@@ -355,34 +353,35 @@ class _SettingDepotState extends State<SettingsDepot> {
                   ],
                 ),
               ),
-              ElevatedButton(
-                onPressed: () {
-                  Navigator.pushNamed(context, EditLocationPage.nameRoute);
-                },
-                  child: Text('Edit Lokasi'),
-                ),
               SizedBox(height: 20),
               Column(
                 children: [
                   SizedBox(height: 20),
-                  SingleChildScrollView(
-                    scrollDirection: Axis.horizontal,
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  Container(
+                    height: 180,
+                    child: ListView(
+                      scrollDirection: Axis.horizontal,
                       children: [
                         GestureDetector(
                           onLongPress: () => pickImageKatalog(0),
                           child: Container(
-                            width: 160,
-                            height: 160,
+                            width: 180,
+                            height: 180,
+                            margin: EdgeInsets.symmetric(horizontal: 8),
                             decoration: BoxDecoration(
-                              border: Border.all(
-                                color: Colors.black,
-                                width: 2,
-                              ),
+                              color: Colors.grey,
+                              borderRadius: BorderRadius.circular(8),
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Colors.grey.withOpacity(0.5),
+                                  spreadRadius: 2,
+                                  blurRadius: 5,
+                                  offset: Offset(0, 3),
+                                ),
+                              ],
                             ),
                             child: ClipRRect(
-                              borderRadius: BorderRadius.circular(8.0),
+                              borderRadius: BorderRadius.circular(8),
                               child: currentImageUrlKatalog != ''
                                   ? Image.network(
                                       currentImageUrlKatalog,
@@ -395,16 +394,23 @@ class _SettingDepotState extends State<SettingsDepot> {
                         GestureDetector(
                           onLongPress: () => pickImageKatalog(1),
                           child: Container(
-                            width: 160,
-                            height: 160,
+                            width: 180,
+                            height: 180,
+                            margin: EdgeInsets.symmetric(horizontal: 8),
                             decoration: BoxDecoration(
-                              border: Border.all(
-                                color: Colors.black,
-                                width: 2,
-                              ),
+                              color: Colors.grey,
+                              borderRadius: BorderRadius.circular(8),
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Colors.grey.withOpacity(0.5),
+                                  spreadRadius: 2,
+                                  blurRadius: 5,
+                                  offset: Offset(0, 3),
+                                ),
+                              ],
                             ),
                             child: ClipRRect(
-                              borderRadius: BorderRadius.circular(8.0),
+                              borderRadius: BorderRadius.circular(8),
                               child: currentImageUrlKatalog2 != ''
                                   ? Image.network(
                                       currentImageUrlKatalog2,
@@ -417,16 +423,23 @@ class _SettingDepotState extends State<SettingsDepot> {
                         GestureDetector(
                           onLongPress: () => pickImageKatalog(2),
                           child: Container(
-                            width: 160,
-                            height: 160,
+                            width: 180,
+                            height: 180,
+                            margin: EdgeInsets.symmetric(horizontal: 8),
                             decoration: BoxDecoration(
-                              border: Border.all(
-                                color: Colors.black,
-                                width: 2,
-                              ),
+                              color: Colors.grey,
+                              borderRadius: BorderRadius.circular(8),
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Colors.grey.withOpacity(0.5),
+                                  spreadRadius: 2,
+                                  blurRadius: 5,
+                                  offset: Offset(0, 3),
+                                ),
+                              ],
                             ),
                             child: ClipRRect(
-                              borderRadius: BorderRadius.circular(8.0),
+                              borderRadius: BorderRadius.circular(8),
                               child: currentImageUrlKatalog3 != ''
                                   ? Image.network(
                                       currentImageUrlKatalog3,
@@ -442,17 +455,11 @@ class _SettingDepotState extends State<SettingsDepot> {
                   SizedBox(height: 20),
                 ],
               ),
-
-
-
               SizedBox(height: 20),
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 16),
                 child: ElevatedButton(
                   onPressed: () async {
-                    imageUrlKatalog = '';
-                    currentImageUrl = '';
-                    signOutFromGoogle();
                     SharedPreferences prefs =
                         await SharedPreferences.getInstance();
                     await prefs.remove('email');
@@ -468,7 +475,7 @@ class _SettingDepotState extends State<SettingsDepot> {
                   child: Container(
                     width: double.infinity,
                     alignment: Alignment.center,
-                    child: Text(isEditing ? 'Simpan' : 'Logout'),
+                    child: Text(isEditing ? 'Logout' : 'Logout'),
                   ),
                 ),
               ),
