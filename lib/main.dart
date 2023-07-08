@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:galonku/DepotPage/chat_page_user.dart';
 import 'package:galonku/DepotPage/detail_depot.dart';
 import 'package:galonku/DepotPage/home_page_depot.dart';
 import 'package:galonku/DepotPage/home_page_user.dart';
@@ -46,7 +47,7 @@ class _MyAppState extends State<MyApp> {
   void initState() {
     super.initState();
   }
-  
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -63,19 +64,22 @@ class _MyAppState extends State<MyApp> {
         MitraInput.nameRoute: (context) => MitraInput(),
         HomePageUser.nameRoute: (context) => HomePageUser(),
         HomePageDepot.nameRoute: (context) => HomePageDepot(),
-        Verifikasi.nameRoute: (context) => Verifikasi(isFromUserSignIn: true,),
+        Verifikasi.nameRoute: (context) => Verifikasi(
+              isFromUserSignIn: true,
+            ),
         PesananDepot.nameRoute: (context) => PesananDepot(),
         PesananUser.nameRoute: (context) => PesananUser(),
         HomeUser.nameRoute: (context) => HomeUser(),
         SettingsDepot.nameRoute: (context) => SettingsDepot(),
         SettingsUser.nameRoute: (context) => SettingsUser(),
-        LupaSandi.nameRoute:(context) => LupaSandi(),
-        SyaratKetentuan.nameRoute:(context) => SyaratKetentuan(),
+        LupaSandi.nameRoute: (context) => LupaSandi(),
+        SyaratKetentuan.nameRoute: (context) => SyaratKetentuan(),
         EditLocationPage.nameRoute: (context) => EditLocationPage(),
         DetailDepot.nameRoute: (context) => DetailDepot(),
+        ChatPageUser.nameRoute: (context) => ChatPageUser(),
       },
       onGenerateRoute: (settings) {
-        if(settings.name == '/landingpage'){
+        if (settings.name == '/landingpage') {
           return MaterialPageRoute(builder: (context) => LoginRole());
         }
         return null;
