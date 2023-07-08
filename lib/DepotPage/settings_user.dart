@@ -244,7 +244,7 @@ class _SettingDepotState extends State<SettingsUser> {
                   child: Container(
                     width: double.infinity,
                     alignment: Alignment.center,
-                    child: Text(isEditing ? 'Simpan' : 'Logout'),
+                    child: Text(isEditing ? 'Logout' : 'Logout'),
                   ),
                 ),
               ),

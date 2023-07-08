@@ -1,10 +1,7 @@
 import 'dart:io';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:carousel_slider/carousel_slider.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:galonku/DepotPage/EditLocationPage.dart';
-import 'package:google_sign_in/google_sign_in.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -30,8 +27,6 @@ class _SettingDepotState extends State<SettingsDepot> {
   TextEditingController _bukaController = TextEditingController();
   TextEditingController _tutupController = TextEditingController();
 
-  PageController _pageController = PageController();
-  int _currentPage = 0;
   String depotDocumentId = '';
   String imageUrl = '';
   String imageUrlKatalog = '';
@@ -351,6 +346,20 @@ class _SettingDepotState extends State<SettingsDepot> {
                       ),
                     ),
                   ],
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 20),
+                child: ElevatedButton(
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => EditLocationPage(),
+                      ),
+                    );
+                  },
+                  child: Text('Edit Lokasi'),
                 ),
               ),
               SizedBox(height: 20),
