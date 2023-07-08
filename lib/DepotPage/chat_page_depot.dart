@@ -56,14 +56,7 @@ class _ChatPageDepotState extends State<ChatPageDepot> {
     setState(() {
       _chatMessages.add({'role': 'A', 'message': message});
     });
-
-    // Tampilkan pop-up
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text('Pesan terkirim: $message'),
-      ),
-    );
-
+   
     // Bersihkan input teks
     _messageController.clear();
   }
@@ -96,24 +89,31 @@ class _ChatPageDepotState extends State<ChatPageDepot> {
           ),
           Expanded(
             child: ListView.builder(
-              itemCount: _chatMessages.length,
-              itemBuilder: (context, index) {
-                String role = _chatMessages[index]['role']!;
-                String message = _chatMessages[index]['message']!;
+  itemCount: _chatMessages.length,
+  itemBuilder: (context, index) {
+    String role = _chatMessages[index]['role']!;
+    String message = _chatMessages[index]['message']!;
 
-                return ListTile(
-                  title: Align(
-                    alignment: Alignment.centerRight,
-                    child: Text('Nama user', textAlign: TextAlign.right),
-                  ),
-                  subtitle: Align(
-                    alignment: Alignment.centerRight,
-                    child: Text(message, textAlign: TextAlign.right),
-                  ),
-                  contentPadding: EdgeInsets.fromLTRB(0, 0, 16, 0),
-                );
-              },
-            ),
+    return Align(
+      alignment: role == 'A' ? Alignment.centerRight : Alignment.centerLeft,
+      child: Padding(
+        padding: EdgeInsets.symmetric(vertical: 4, horizontal: 8),
+        child: Container(
+          padding: EdgeInsets.all(12),
+          decoration: BoxDecoration(
+            color: role == 'A' ? Colors.blue : Colors.grey,
+            borderRadius: BorderRadius.circular(8),
+          ),
+          child: Text(
+            message,
+            style: TextStyle(color: Colors.white),
+          ),
+        ),
+      ),
+    );
+  },
+)
+
           ),
           Container(
             padding: EdgeInsets.symmetric(horizontal: 10.0),
