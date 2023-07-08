@@ -1,9 +1,46 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:galonku/DesignSystem/_button_primary.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-class DetailDepot extends StatelessWidget {
+class CommentCard extends StatelessWidget {
+  final bool isLiked;
+  final VoidCallback onTap;
+
+  const CommentCard({
+    Key? key,
+    required this.isLiked,
+    required this.onTap,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Card(
+      child: ListTile(
+        leading: Icon(Icons.person),
+        title: Text('Nama'),
+        subtitle: Text('Komentar'),
+        trailing: InkWell(
+          onTap: onTap,
+          child: Icon(
+            isLiked ? Icons.favorite : Icons.favorite_border,
+            color: isLiked ? Colors.red : null,
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class DetailDepot extends StatefulWidget {
   static const nameRoute = '/detaildepot';
+
+  @override
+  State<DetailDepot> createState() => _DetailDepotState();
+}
+
+class _DetailDepotState extends State<DetailDepot> {
+  bool _isLiked = false;
 
   Future<String> _getUsername() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -22,7 +59,7 @@ class DetailDepot extends StatelessWidget {
       return {};
     }
   }
-  // ini detail depot
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -31,7 +68,8 @@ class DetailDepot extends StatelessWidget {
       ),
       body: FutureBuilder<String>(
         future: _getUsername(),
-        builder: (BuildContext context, AsyncSnapshot<String> usernameSnapshot) {
+        builder:
+            (BuildContext context, AsyncSnapshot<String> usernameSnapshot) {
           if (usernameSnapshot.connectionState == ConnectionState.waiting) {
             return Center(
               child: CircularProgressIndicator(),
@@ -46,7 +84,8 @@ class DetailDepot extends StatelessWidget {
               future: _getDepotData(username),
               builder: (BuildContext context,
                   AsyncSnapshot<Map<String, dynamic>> depotDataSnapshot) {
-                if (depotDataSnapshot.connectionState == ConnectionState.waiting) {
+                if (depotDataSnapshot.connectionState ==
+                    ConnectionState.waiting) {
                   return Center(
                     child: CircularProgressIndicator(),
                   );
@@ -63,76 +102,155 @@ class DetailDepot extends StatelessWidget {
                   String buka = depotData['buka'] ?? '';
                   String tutup = depotData['tutup'] ?? '';
 
-                  return Padding(
-                    padding: const EdgeInsets.all(16.0),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          'Foto Katalog',
-                          style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-                        ),
-                        SizedBox(height: 16),
-                        Container(
-                          height: 150,
-                          child: ListView(
-                            scrollDirection: Axis.horizontal,
-                            children: [
-                              Container(
-                                margin: EdgeInsets.only(right: 16),
-                                width: 150,
-                                decoration: BoxDecoration(
-                                  image: DecorationImage(
-                                    image: NetworkImage(katalog1),
-                                    fit: BoxFit.cover,
+                  return SingleChildScrollView(
+                    child: Padding(
+                      padding: const EdgeInsets.all(20.0),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Card(
+                            child: Padding(
+                              padding: const EdgeInsets.all(20.0),
+                              child: Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceEvenly,
+                                children: [
+                                  CircleAvatar(
+                                    radius: 20,
+                                    backgroundColor: Colors.white,
+                                    backgroundImage: AssetImage(
+                                      'images/google_logo.png',
+                                    ), //ganti ambil, pp dari database
                                   ),
-                                ),
-                              ),
-                              Container(
-                                margin: EdgeInsets.only(right: 16),
-                                width: 150,
-                                decoration: BoxDecoration(
-                                  image: DecorationImage(
-                                    image: NetworkImage(katalog2),
-                                    fit: BoxFit.cover,
+                                  SizedBox(width: 20),
+                                  Expanded(
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          username,
+                                          style: TextStyle(
+                                            fontSize: 20,
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                        ),
+                                        Text('Rating'),
+                                        Text(
+                                          'Keterangan Buka/Tutup',
+                                          style: TextStyle(color: Colors.green),
+                                        ),
+                                      ],
+                                    ),
                                   ),
-                                ),
-                              ),
-                              Container(
-                                margin: EdgeInsets.only(right: 16),
-                                width: 150,
-                                decoration: BoxDecoration(
-                                  image: DecorationImage(
-                                    image: NetworkImage(katalog3),
-                                    fit: BoxFit.cover,
+                                  InkWell(
+                                    onTap: () {
+                                      // Tambahkan logika navigasi ke halaman tujuan di sini
+                                    },
+                                    child: CircleAvatar(
+                                      radius: 20,
+                                      backgroundColor: Colors.white,
+                                      backgroundImage: AssetImage(
+                                        'images/logo_chat.png',
+                                      ),
+                                    ),
                                   ),
-                                ),
+                                ],
                               ),
-                            ],
+                            ),
                           ),
-                        ),
-                        SizedBox(height: 16),
-                        Text(
-                          'Username',
-                          style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-                        ),
-                        SizedBox(height: 8),
-                        Text(username),
-                        SizedBox(height: 16),
-                        Text(
-                          'Jam Buka - Tutup',
-                          style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-                        ),
-                        SizedBox(height: 8),
-                        Text('$buka - $tutup'),
-                        SizedBox(height: 16),
-                        Text(
-                          'Alamat',
-                          style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-                        ),
-                        SizedBox(height: 8),
-                        Text(alamat),
-                      ],
+                          SizedBox(height: 20),
+                          Text(
+                            'Foto Katalog',
+                            style: TextStyle(
+                              fontSize: 20,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          SizedBox(height: 16),
+                          Container(
+                            height: 150,
+                            child: ListView(
+                              scrollDirection: Axis.horizontal,
+                              children: [
+                                Container(
+                                  margin: EdgeInsets.only(right: 16),
+                                  width: 150,
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(8),
+                                    image: DecorationImage(
+                                      image: NetworkImage(katalog1),
+                                      fit: BoxFit.cover,
+                                    ),
+                                  ),
+                                ),
+                                Container(
+                                  margin: EdgeInsets.only(right: 16),
+                                  width: 150,
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(8),
+                                    image: DecorationImage(
+                                      image: NetworkImage(katalog2),
+                                      fit: BoxFit.cover,
+                                    ),
+                                  ),
+                                ),
+                                Container(
+                                  margin: EdgeInsets.only(right: 16),
+                                  width: 150,
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(8),
+                                    image: DecorationImage(
+                                      image: NetworkImage(katalog3),
+                                      fit: BoxFit.cover,
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                          SizedBox(height: 20),
+                          Text(
+                            'Jam Buka - Tutup',
+                            style: TextStyle(
+                              fontSize: 20,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          SizedBox(height: 8),
+                          Text('$buka - $tutup'),
+                          SizedBox(height: 20),
+                          Text(
+                            'Alamat',
+                            style: TextStyle(
+                              fontSize: 20,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          SizedBox(height: 8),
+                          Text(alamat),
+                          SizedBox(height: 20),
+                          Text(
+                            'Kolom Komentar',
+                            style: TextStyle(
+                              fontSize: 20,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          // ...
+                          CommentCard(
+                            isLiked: _isLiked,
+                            onTap: () {
+                              setState(() {
+                                _isLiked = !_isLiked;
+                              });
+                            },
+                          ),
+                          SizedBox(height: 20),
+                          BtnPrimary(text: "Pesan Galon"),
+                          SizedBox(height: 20),
+                        ],
+                      ),
                     ),
                   );
                 }

@@ -146,14 +146,19 @@ class _GoogleMapPageState extends State<GoogleMapPage>
     return Scaffold(
       body: Stack(
         children: [
-          GoogleMap(
-            zoomControlsEnabled: false,
-            mapType: MapType.normal,
-            initialCameraPosition: _currentPosition,
-            markers: <Marker>{_currentLocationMarker, ..._markers},
-            onMapCreated: (GoogleMapController controller) {
-              _controller.complete(controller);
-            },
+          ConstrainedBox(
+            constraints: BoxConstraints(
+              maxHeight: MediaQuery.of(context).size.height,
+            ),
+            child: GoogleMap(
+              zoomControlsEnabled: false,
+              mapType: MapType.normal,
+              initialCameraPosition: _currentPosition,
+              markers: <Marker>{_currentLocationMarker, ..._markers},
+              onMapCreated: (GoogleMapController controller) {
+                _controller.complete(controller);
+              },
+            ),
           ),
           AnimatedPositioned(
             duration: const Duration(milliseconds: 300),
@@ -163,11 +168,17 @@ class _GoogleMapPageState extends State<GoogleMapPage>
             child: GestureDetector(
               onTap: _closeDropdown,
               child: Container(
-                color: Colors.white,
-                height: 200,
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.only(
+                    topLeft: Radius.circular(16),
+                    topRight: Radius.circular(16),
+                  ),
+                ),
                 padding: const EdgeInsets.symmetric(horizontal: 16),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisSize: MainAxisSize.min,
                   children: [
                     IconButton(
                       onPressed: _closeDropdown,
@@ -175,20 +186,25 @@ class _GoogleMapPageState extends State<GoogleMapPage>
                     ),
                     SizedBox(height: 16),
                     Text(
-                      _selectedUsername,
-                      style: TextStyle(fontSize: 16),
+                      _selectedUsername + " Depot",
+                      style: TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
                     SizedBox(height: 16),
-                    Expanded(
+                    SizedBox(
+                      height: 100,
                       child: ListView.builder(
                         scrollDirection: Axis.horizontal,
                         itemCount: _katalogs.length,
                         itemBuilder: (context, index) {
                           return Container(
                             margin: EdgeInsets.only(right: 16),
-                            width: 100,
+                            width: 150,
                             height: 100,
                             decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(8),
                               image: DecorationImage(
                                 image: NetworkImage(_katalogs[index]),
                                 fit: BoxFit.cover,
@@ -208,6 +224,7 @@ class _GoogleMapPageState extends State<GoogleMapPage>
                       },
                       child: Text('Detail Depot'),
                     ),
+                    SizedBox(height: 16),
                   ],
                 ),
               ),
