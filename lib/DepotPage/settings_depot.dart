@@ -1,7 +1,10 @@
 import 'dart:io';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:firebase_storage/firebase_storage.dart';
+import 'package:galonku/DepotPage/EditLocationPage.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -27,6 +30,7 @@ class _SettingDepotState extends State<SettingsDepot> {
   TextEditingController _produkController = TextEditingController();
   TextEditingController _bukaController = TextEditingController();
   TextEditingController _tutupController = TextEditingController();
+
 
   PageController _pageController = PageController();
   int _currentPage = 0;
@@ -107,11 +111,30 @@ class _SettingDepotState extends State<SettingsDepot> {
   }
 
   Future<void> pickImage() async {
-    if (currentImageUrl.isNotEmpty) {
-      Reference referenceToDelete =
-          FirebaseStorage.instance.refFromURL(currentImageUrl);
-      await referenceToDelete.delete();
-    }
+      List<String> profil = ['images'];
+      String field = profil[idx];
+      DocumentSnapshot depotSnapshot = await FirebaseFirestore.instance
+      .collection('user')
+      .doc(depotDocumentId)
+      .get();
+      if (depotSnapshot.exists) {
+      Map<String, dynamic>? data = depotSnapshot.data() as Map<String, dynamic>?;
+        if (data != null && data.containsKey(field)) {
+          String fieldValue = data[field];
+          // Check if fieldValue is a valid URL
+          if (fieldValue.startsWith('gs://') || fieldValue.startsWith('https://')) {
+            Reference referenceToDelete = FirebaseStorage.instance.refFromURL(fieldValue);
+            try {
+              await referenceToDelete.delete();
+              print('Data berhasil dihapus dari Firebase Storage');
+            } catch (e) {
+              print('Error saat menghapus data dari Firebase Storage: $e');
+            }
+          } else {
+            print('Invalid URL: $fieldValue');
+          }
+        }
+      }
 
     ImagePicker imagePicker = ImagePicker();
     XFile? file = await imagePicker.pickImage(source: ImageSource.gallery);
@@ -203,203 +226,203 @@ class _SettingDepotState extends State<SettingsDepot> {
     });
   }
 
+
   @override
   Widget build(BuildContext context) {
-  final List<String> imageUrls = [
-    currentImageUrlKatalog ?? '',
-    currentImageUrlKatalog2 ?? '',
-    currentImageUrlKatalog3 ?? '',
-  ];
-
-  return Scaffold(
-    appBar: CustomAppBar(title: "Mitra Galonku"),
-    body: SafeArea(
-      child: SingleChildScrollView(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            GestureDetector(
-              onLongPress: () {
-                pickImage();
-              },
-              child: CircleAvatar(
-                radius: 80,
-                backgroundColor: Colors.grey,
-                backgroundImage: currentImageUrl != ''
-                    ? NetworkImage(currentImageUrl)
-                    : null,
-                child: currentImageUrl == ''
-                    ? Icon(Icons.edit, color: Colors.white)
-                    : null,
-              ),
-            ),
-            SizedBox(height: 20),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 20),
-              child: Align(
-                alignment: Alignment.topRight,
-                child: InkWell(
-                  onTap: toggleEditing,
-                  child: Text(
-                    isEditing ? "Simpan" : "Edit Data",
-                    style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 12,
-                      color: Colors.blue[700],
-                    ),
-                  ),
-                ),
-              ),
-            ),
-            SizedBox(height: 20),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 20),
-              child: Column(
-                children: [
-                  TextFormField(
-                    controller: _usernameController,
-                    decoration: InputDecoration(
-                      labelText: 'Username',
-                      border: OutlineInputBorder(
-                        borderSide: BorderSide(color: Colors.grey),
-                      ),
-                    ),
-                    enabled: isEditing,
-                  ),
-                  SizedBox(height: 10),
-                  TextFormField(
-                    controller: _emailController,
-                    decoration: InputDecoration(
-                      labelText: 'Email',
-                      border: OutlineInputBorder(
-                        borderSide: BorderSide(color: Colors.grey),
-                      ),
-                    ),
-                    enabled: isEditing,
-                  ),
-                  SizedBox(height: 10),
-                  TextFormField(
-                    controller: _alamatController,
-                    decoration: InputDecoration(
-                      labelText: 'Alamat',
-                      border: OutlineInputBorder(
-                        borderSide: BorderSide(color: Colors.grey),
-                      ),
-                    ),
-                    enabled: isEditing,
-                  ),
-                  SizedBox(height: 10),
-                  TextFormField(
-                    controller: _produkController,
-                    decoration: InputDecoration(
-                      labelText: 'Produk',
-                      border: OutlineInputBorder(
-                        borderSide: BorderSide(color: Colors.grey),
-                      ),
-                    ),
-                    enabled: isEditing,
-                  ),
-                ],
-              ),
-            ),
-            SizedBox(height: 20),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16),
-              child: Row(
-                children: [
-                  Expanded(
-                    child: TextFormField(
-                      controller: _bukaController,
-                      decoration: InputDecoration(
-                        labelText: 'Buka',
-                        border: OutlineInputBorder(
-                          borderSide: BorderSide(color: Colors.grey),
-                        ),
-                      ),
-                      enabled: isEditing,
-                    ),
-                  ),
-                  SizedBox(width: 10),
-                  Expanded(
-                    child: TextFormField(
-                      controller: _tutupController,
-                      decoration: InputDecoration(
-                        labelText: 'Tutup',
-                        border: OutlineInputBorder(
-                          borderSide: BorderSide(color: Colors.grey),
-                        ),
-                      ),
-                      enabled: isEditing,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            SizedBox(height: 20),
-            // Column(
-            //   children: [
-            //     SizedBox(height: 20),
-            //     CarouselSlider.builder(
-            //       itemCount: imageUrls.length,
-            //       itemBuilder: (BuildContext context, int index) {
-            //         return GestureDetector(
-            //           onLongPress: () => pickImageKatalog(index),
-            //           child: Container(
-            //             width: 160,
-            //             height: 160,
-            //             decoration: BoxDecoration(
-            //               borderRadius: BorderRadius.circular(8),
-            //               image: imageUrls[index] != ''
-            //                   ? DecorationImage(
-            //                       image: NetworkImage(imageUrls[index]),
-            //                       fit: BoxFit.cover,
-            //                     )
-            //                   : null,
-            //             ),
-            //             child: imageUrls[index] == ''
-            //                 ? Icon(Icons.edit, color: Colors.white)
-            //                 : null,
-            //           ),
-            //         );
-            //       },
-            //       options: CarouselOptions(
-            //         height: 160,
-            //         aspectRatio: 1.0,
-            //         enlargeCenterPage: true,
-            //         enableInfiniteScroll: false,
-            //       ),
-            //     ),
-            //     SizedBox(height: 20),
-            //   ],
-            // ),
-            SizedBox(height: 20),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16),
-              child: ElevatedButton(
-                onPressed: () async {
-                  SharedPreferences prefs =
-                      await SharedPreferences.getInstance();
-                  await prefs.remove('email');
-                  await prefs.remove('password');
-                  await prefs.remove('role');
-                  prefs.setBool('isLoggedIn', false);
-                  Navigator.pushNamed(context, LoginRole.nameRoute);
+    return Scaffold(
+      appBar: CustomAppBar(title: "Mitra Galonku"),
+      body: SafeArea(
+        child: SingleChildScrollView(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              GestureDetector(
+                onLongPress: () {
+                  pickImage();
                 },
-                style: ElevatedButton.styleFrom(
-                  padding: EdgeInsets.symmetric(vertical: 16),
-                ),
-                child: Container(
-                  width: double.infinity,
-                  alignment: Alignment.center,
-                  child: Text(isEditing ? 'Simpan' : 'Logout'),
+                child: CircleAvatar(
+                  radius: 80,
+                  backgroundColor: Colors.grey,
+                  backgroundImage:
+                      currentImageUrl != '' ? NetworkImage(currentImageUrl) : null,
+                  child:
+                      currentImageUrl == '' ? Icon(Icons.edit, color: Colors.white) : null,
                 ),
               ),
-            ),
-            SizedBox(height: 20),
-          ],
+              SizedBox(height: 20),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 20),
+                child: Align(
+                  alignment: Alignment.topRight,
+                  child: InkWell(
+                    onTap: toggleEditing,
+                    child: Text(
+                      isEditing ? "Simpan" : "Edit Data",
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 12,
+                        color: Colors.blue[700],
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+              SizedBox(height: 20),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 20),
+                child: Column(
+                  children: [
+                    TextFormField(
+                      controller: _usernameController,
+                      decoration: InputDecoration(
+                        labelText: 'Username',
+                        border: OutlineInputBorder(
+                          borderSide: BorderSide(color: Colors.grey),
+                        ),
+                      ),
+                      enabled: isEditing,
+                    ),
+                    SizedBox(height: 10),
+                    TextFormField(
+                      controller: _emailController,
+                      decoration: InputDecoration(
+                        labelText: 'Email',
+                        border: OutlineInputBorder(
+                          borderSide: BorderSide(color: Colors.grey),
+                        ),
+                      ),
+                      enabled: isEditing,
+                    ),
+                    SizedBox(height: 10),
+                    TextFormField(
+                      controller: _alamatController,
+                      decoration: InputDecoration(
+                        labelText: 'Alamat',
+                        border: OutlineInputBorder(
+                          borderSide: BorderSide(color: Colors.grey),
+                        ),
+                      ),
+                      enabled: isEditing,
+                    ),
+                    SizedBox(height: 10),
+                    TextFormField(
+                      controller: _produkController,
+                      decoration: InputDecoration(
+                        labelText: 'Produk',
+                        border: OutlineInputBorder(
+                          borderSide: BorderSide(color: Colors.grey),
+                        ),
+                      ),
+                      enabled: isEditing,
+                    ),
+                  ],
+                ),
+              ),
+              SizedBox(height: 20),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16),
+                child: Row(
+                  children: [
+                    Expanded(
+                      child: TextFormField(
+                        controller: _bukaController,
+                        decoration: InputDecoration(
+                          labelText: 'Buka',
+                          border: OutlineInputBorder(
+                            borderSide: BorderSide(color: Colors.grey),
+                          ),
+                        ),
+                        enabled: isEditing,
+                      ),
+                    ),
+                    SizedBox(width: 10),
+                    Expanded(
+                      child: TextFormField(
+                        controller: _tutupController,
+                        decoration: InputDecoration(
+                          labelText: 'Tutup',
+                          border: OutlineInputBorder(
+                            borderSide: BorderSide(color: Colors.grey),
+                          ),
+                        ),
+                        enabled: isEditing,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              SizedBox(height: 20),
+              Column(
+                    children: [
+                      SizedBox(height: 20),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: [
+                          GestureDetector(
+                            onLongPress: () => pickImageKatalog(0),
+                            child: CircleAvatar(
+                              radius: 80,
+                              backgroundColor: Colors.grey,
+                              backgroundImage: currentImageUrlKatalog != '' ? NetworkImage(currentImageUrlKatalog) : null,
+                              child:
+                                currentImageUrlKatalog == '' ? Icon(Icons.edit, color: Colors.white) : null,
+                            ),
+                          ),
+                          GestureDetector(
+                           onLongPress: () => pickImageKatalog(1),
+                            child: CircleAvatar(
+                              radius: 80,
+                              backgroundColor: Colors.grey,
+                              backgroundImage: currentImageUrlKatalog2 != '' ? NetworkImage(currentImageUrlKatalog2) : null,
+                              child:
+                                currentImageUrlKatalog2 == '' ? Icon(Icons.edit, color: Colors.white) : null,
+                            ),
+                          ),
+                          GestureDetector(
+                            onLongPress: () => pickImageKatalog(2),
+                            child: CircleAvatar(
+                              radius: 80,
+                              backgroundColor: Colors.grey,
+                              backgroundImage: currentImageUrlKatalog3 != '' ? NetworkImage(currentImageUrlKatalog3) : null,
+                              child:
+                                currentImageUrlKatalog3 == '' ? Icon(Icons.edit, color: Colors.white) : null,
+                            ),
+                          ),
+                        ],
+                      ),
+                      SizedBox(height: 20),
+                    ],
+                  ),
+
+              SizedBox(height: 20),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16),
+                child: ElevatedButton(
+                  onPressed: () async {
+                    SharedPreferences prefs =
+                        await SharedPreferences.getInstance();
+                    await prefs.remove('email');
+                    await prefs.remove('password');
+                    await prefs.remove('role');
+                    prefs.setBool('isLoggedIn', false);
+                    // ignore: use_build_context_synchronously
+                    Navigator.pushNamed(context, LoginRole.nameRoute);
+                  },
+                  style: ElevatedButton.styleFrom(
+                    padding: EdgeInsets.symmetric(vertical: 16),
+                  ),
+                  child: Container(
+                    width: double.infinity,
+                    alignment: Alignment.center,
+                    child: Text(isEditing ? 'Simpan' : 'Logout'),
+                  ),
+                ),
+              ),
+              SizedBox(height: 20),
+            ],
+          ),
         ),
       ),
-    ),
-  );
-}
+    );
+  }
 }

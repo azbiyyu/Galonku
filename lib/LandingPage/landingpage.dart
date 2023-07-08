@@ -1,8 +1,8 @@
 import 'package:carousel_slider/carousel_controller.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
-import 'package:galonku/DepotPage/home_page_depot.dart';
-import 'package:galonku/DepotPage/home_page_user.dart';
+// import 'package:galonku/DepotPage/home_page_depot.dart';
+// import 'package:galonku/DepotPage/home_page_user.dart';
 import 'package:galonku/LandingPage/login_role.dart';
 import '../Models/_card_carousel.dart';
 import 'package:shared_preferences/shared_preferences.dart';
