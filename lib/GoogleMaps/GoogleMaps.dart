@@ -7,7 +7,6 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import '../DepotPage/detail_depot.dart';
 
-
 class GoogleMapPage extends StatefulWidget {
   @override
   _GoogleMapPageState createState() => _GoogleMapPageState();
@@ -97,7 +96,8 @@ class _GoogleMapPageState extends State<GoogleMapPage>
             markerId: MarkerId(document.id),
             position: LatLng(lokasiValue.latitude, lokasiValue.longitude),
             infoWindow: InfoWindow(title: data['username']),
-            icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueBlue),
+            icon:
+                BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueBlue),
             onTap: () async {
               setState(() {
                 _isDropdownOpen = true;
@@ -133,7 +133,8 @@ class _GoogleMapPageState extends State<GoogleMapPage>
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => DetailDepot(), // Ganti dengan halaman DetailDepot yang sesuai
+        builder: (context) =>
+            DetailDepot(), // Ganti dengan halaman DetailDepot yang sesuai
       ),
     );
   }
@@ -170,7 +171,7 @@ class _GoogleMapPageState extends State<GoogleMapPage>
                   children: [
                     IconButton(
                       onPressed: _closeDropdown,
-                     icon: Icon(Icons.close),
+                      icon: Icon(Icons.close),
                     ),
                     SizedBox(height: 16),
                     Text(
@@ -200,7 +201,8 @@ class _GoogleMapPageState extends State<GoogleMapPage>
                     SizedBox(height: 16),
                     ElevatedButton(
                       onPressed: () async {
-                        SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
+                        SharedPreferences sharedPreferences =
+                            await SharedPreferences.getInstance();
                         sharedPreferences.setString('data', _selectedUsername);
                         _goToDetailDepot();
                       },
