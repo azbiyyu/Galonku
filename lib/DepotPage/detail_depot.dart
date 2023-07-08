@@ -116,7 +116,7 @@ class _DetailDepotState extends State<DetailDepot> {
                                     MainAxisAlignment.spaceEvenly,
                                 children: [
                                   CircleAvatar(
-                                    radius: 50,
+                                    radius: 20,
                                     backgroundColor: Colors.white,
                                     backgroundImage: AssetImage(
                                       'images/google_logo.png',
@@ -148,7 +148,7 @@ class _DetailDepotState extends State<DetailDepot> {
                                       // Tambahkan logika navigasi ke halaman tujuan di sini
                                     },
                                     child: CircleAvatar(
-                                      radius: 50,
+                                      radius: 20,
                                       backgroundColor: Colors.white,
                                       backgroundImage: AssetImage(
                                         'images/logo_chat.png',
