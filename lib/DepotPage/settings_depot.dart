@@ -1,6 +1,6 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
-// import 'package:carousel_slider/carousel_slider.dart';
+import 'package:carousel_slider/carousel_slider.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -8,6 +8,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 // import 'package:flutter/widgets.dart';
 import 'package:galonku/DesignSystem/_appBar.dart';
 import 'package:galonku/LandingPage/login_role.dart';
+
 
 class SettingsDepot extends StatefulWidget {
   const SettingsDepot({Key? key});
@@ -26,7 +27,6 @@ class _SettingDepotState extends State<SettingsDepot> {
   TextEditingController _produkController = TextEditingController();
   TextEditingController _bukaController = TextEditingController();
   TextEditingController _tutupController = TextEditingController();
-
 
   PageController _pageController = PageController();
   int _currentPage = 0;
@@ -120,8 +120,7 @@ class _SettingDepotState extends State<SettingsDepot> {
 
     Reference referenceRoot = FirebaseStorage.instance.ref();
     Reference referenceDirImages = referenceRoot.child('images');
-    Reference referenceImageToUpload =
-        referenceDirImages.child(uniqueFileName);
+    Reference referenceImageToUpload = referenceDirImages.child(uniqueFileName);
 
     try {
       await referenceImageToUpload.putFile(File(file.path));
@@ -142,9 +141,7 @@ class _SettingDepotState extends State<SettingsDepot> {
     });
   }
 
-
   Future<void> pickImageKatalog(int index) async {
-
     List<String> katalog = ['katalog1', 'katalog2', 'katalog3'];
     ImagePicker imagePicker2 = ImagePicker();
     XFile? file2 = await imagePicker2.pickImage(source: ImageSource.gallery);
@@ -154,252 +151,255 @@ class _SettingDepotState extends State<SettingsDepot> {
     Reference referenceRootKatalog = FirebaseStorage.instance.ref();
     Reference referenceDirImagesKatalog = referenceRootKatalog.child('katalog');
     Reference referenceImageToUploadKatalog =
-      referenceDirImagesKatalog.child(uniqueFileName2);
+        referenceDirImagesKatalog.child(uniqueFileName2);
 
     try {
       await referenceImageToUploadKatalog.putFile(File(file2.path));
-        katalogUrl = await referenceImageToUploadKatalog.getDownloadURL();
+      katalogUrl = await referenceImageToUploadKatalog.getDownloadURL();
     } catch (e) {
       print("error : $e");
     }
     DocumentSnapshot depotSnapshot = await FirebaseFirestore.instance
-      .collection('user')
-      .doc(depotDocumentId)
-      .get();
+        .collection('user')
+        .doc(depotDocumentId)
+        .get();
 
     if (depotSnapshot.exists) {
-  Map<String, dynamic>? data = depotSnapshot.data() as Map<String, dynamic>?;
-  if (data != null && data.containsKey(field)) {
-    String fieldValue = data[field];
-    // Check if fieldValue is a valid URL
-    if (fieldValue.startsWith('gs://') || fieldValue.startsWith('https://')) {
-      Reference referenceToDelete = FirebaseStorage.instance.refFromURL(fieldValue);
-      try {
-        await referenceToDelete.delete();
-        print('Data berhasil dihapus dari Firebase Storage');
-      } catch (e) {
-        print('Error saat menghapus data dari Firebase Storage: $e');
+      Map<String, dynamic>? data =
+          depotSnapshot.data() as Map<String, dynamic>?;
+      if (data != null && data.containsKey(field)) {
+        String fieldValue = data[field];
+        // Check if fieldValue is a valid URL
+        if (fieldValue.startsWith('gs://') ||
+            fieldValue.startsWith('https://')) {
+          Reference referenceToDelete =
+              FirebaseStorage.instance.refFromURL(fieldValue);
+          try {
+            await referenceToDelete.delete();
+            print('Data berhasil dihapus dari Firebase Storage');
+          } catch (e) {
+            print('Error saat menghapus data dari Firebase Storage: $e');
+          }
+        } else {
+          print('Invalid URL: $fieldValue');
+        }
       }
-    } else {
-      print('Invalid URL: $fieldValue');
     }
-  }
-}
     await FirebaseFirestore.instance
         .collection('user')
         .doc(depotDocumentId)
         .update({
-          field : katalogUrl,
+      field: katalogUrl,
     });
 
     setState(() {
-      if(index == 0){
+      if (index == 0) {
         currentImageUrlKatalog = katalogUrl;
-      }else if(index == 1){
+      } else if (index == 1) {
         currentImageUrlKatalog2 = katalogUrl;
-      }else if(index == 2){
+      } else if (index == 2) {
         currentImageUrlKatalog3 = katalogUrl;
       }
     });
   }
 
-
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: CustomAppBar(title: "Mitra Galonku"),
-      body: SafeArea(
-        child: SingleChildScrollView(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              GestureDetector(
-                onLongPress: () {
-                  pickImage();
-                },
-                child: CircleAvatar(
-                  radius: 80,
-                  backgroundColor: Colors.grey,
-                  backgroundImage:
-                      currentImageUrl != '' ? NetworkImage(currentImageUrl) : null,
-                  child:
-                      currentImageUrl == '' ? Icon(Icons.edit, color: Colors.white) : null,
-                ),
-              ),
-              SizedBox(height: 20),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 20),
-                child: Align(
-                  alignment: Alignment.topRight,
-                  child: InkWell(
-                    onTap: toggleEditing,
-                    child: Text(
-                      isEditing ? "Simpan" : "Edit Data",
-                      style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        fontSize: 12,
-                        color: Colors.blue[700],
-                      ),
-                    ),
-                  ),
-                ),
-              ),
-              SizedBox(height: 20),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 20),
-                child: Column(
-                  children: [
-                    TextFormField(
-                      controller: _usernameController,
-                      decoration: InputDecoration(
-                        labelText: 'Username',
-                        border: OutlineInputBorder(
-                          borderSide: BorderSide(color: Colors.grey),
-                        ),
-                      ),
-                      enabled: isEditing,
-                    ),
-                    SizedBox(height: 10),
-                    TextFormField(
-                      controller: _emailController,
-                      decoration: InputDecoration(
-                        labelText: 'Email',
-                        border: OutlineInputBorder(
-                          borderSide: BorderSide(color: Colors.grey),
-                        ),
-                      ),
-                      enabled: isEditing,
-                    ),
-                    SizedBox(height: 10),
-                    TextFormField(
-                      controller: _alamatController,
-                      decoration: InputDecoration(
-                        labelText: 'Alamat',
-                        border: OutlineInputBorder(
-                          borderSide: BorderSide(color: Colors.grey),
-                        ),
-                      ),
-                      enabled: isEditing,
-                    ),
-                    SizedBox(height: 10),
-                    TextFormField(
-                      controller: _produkController,
-                      decoration: InputDecoration(
-                        labelText: 'Produk',
-                        border: OutlineInputBorder(
-                          borderSide: BorderSide(color: Colors.grey),
-                        ),
-                      ),
-                      enabled: isEditing,
-                    ),
-                  ],
-                ),
-              ),
-              SizedBox(height: 20),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16),
-                child: Row(
-                  children: [
-                    Expanded(
-                      child: TextFormField(
-                        controller: _bukaController,
-                        decoration: InputDecoration(
-                          labelText: 'Buka',
-                          border: OutlineInputBorder(
-                            borderSide: BorderSide(color: Colors.grey),
-                          ),
-                        ),
-                        enabled: isEditing,
-                      ),
-                    ),
-                    SizedBox(width: 10),
-                    Expanded(
-                      child: TextFormField(
-                        controller: _tutupController,
-                        decoration: InputDecoration(
-                          labelText: 'Tutup',
-                          border: OutlineInputBorder(
-                            borderSide: BorderSide(color: Colors.grey),
-                          ),
-                        ),
-                        enabled: isEditing,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              SizedBox(height: 20),
-              Column(
-                    children: [
-                      SizedBox(height: 20),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        children: [
-                          GestureDetector(
-                            onLongPress: () => pickImageKatalog(0),
-                            child: CircleAvatar(
-                              radius: 80,
-                              backgroundColor: Colors.grey,
-                              backgroundImage: currentImageUrlKatalog != '' ? NetworkImage(currentImageUrlKatalog) : null,
-                              child:
-                                currentImageUrlKatalog == '' ? Icon(Icons.edit, color: Colors.white) : null,
-                            ),
-                          ),
-                          GestureDetector(
-                           onLongPress: () => pickImageKatalog(1),
-                            child: CircleAvatar(
-                              radius: 80,
-                              backgroundColor: Colors.grey,
-                              backgroundImage: currentImageUrlKatalog2 != '' ? NetworkImage(currentImageUrlKatalog2) : null,
-                              child:
-                                currentImageUrlKatalog2 == '' ? Icon(Icons.edit, color: Colors.white) : null,
-                            ),
-                          ),
-                          GestureDetector(
-                            onLongPress: () => pickImageKatalog(2),
-                            child: CircleAvatar(
-                              radius: 80,
-                              backgroundColor: Colors.grey,
-                              backgroundImage: currentImageUrlKatalog3 != '' ? NetworkImage(currentImageUrlKatalog3) : null,
-                              child:
-                                currentImageUrlKatalog3 == '' ? Icon(Icons.edit, color: Colors.white) : null,
-                            ),
-                          ),
-                        ],
-                      ),
-                      SizedBox(height: 20),
-                    ],
-                  ),
+  final List<String> imageUrls = [
+    currentImageUrlKatalog ?? '',
+    currentImageUrlKatalog2 ?? '',
+    currentImageUrlKatalog3 ?? '',
+  ];
 
-              SizedBox(height: 20),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16),
-                child: ElevatedButton(
-                  onPressed: () async {
-                    SharedPreferences prefs =
-                        await SharedPreferences.getInstance();
-                    await prefs.remove('email');
-                    await prefs.remove('password');
-                    await prefs.remove('role');
-                    prefs.setBool('isLoggedIn', false);
-                    // ignore: use_build_context_synchronously
-                    Navigator.pushNamed(context, LoginRole.nameRoute);
-                  },
-                  style: ElevatedButton.styleFrom(
-                    padding: EdgeInsets.symmetric(vertical: 16),
-                  ),
-                  child: Container(
-                    width: double.infinity,
-                    alignment: Alignment.center,
-                    child: Text(isEditing ? 'Simpan' : 'Logout'),
+  return Scaffold(
+    appBar: CustomAppBar(title: "Mitra Galonku"),
+    body: SafeArea(
+      child: SingleChildScrollView(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            GestureDetector(
+              onLongPress: () {
+                pickImage();
+              },
+              child: CircleAvatar(
+                radius: 80,
+                backgroundColor: Colors.grey,
+                backgroundImage: currentImageUrl != ''
+                    ? NetworkImage(currentImageUrl)
+                    : null,
+                child: currentImageUrl == ''
+                    ? Icon(Icons.edit, color: Colors.white)
+                    : null,
+              ),
+            ),
+            SizedBox(height: 20),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 20),
+              child: Align(
+                alignment: Alignment.topRight,
+                child: InkWell(
+                  onTap: toggleEditing,
+                  child: Text(
+                    isEditing ? "Simpan" : "Edit Data",
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 12,
+                      color: Colors.blue[700],
+                    ),
                   ),
                 ),
               ),
-              SizedBox(height: 20),
-            ],
-          ),
+            ),
+            SizedBox(height: 20),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 20),
+              child: Column(
+                children: [
+                  TextFormField(
+                    controller: _usernameController,
+                    decoration: InputDecoration(
+                      labelText: 'Username',
+                      border: OutlineInputBorder(
+                        borderSide: BorderSide(color: Colors.grey),
+                      ),
+                    ),
+                    enabled: isEditing,
+                  ),
+                  SizedBox(height: 10),
+                  TextFormField(
+                    controller: _emailController,
+                    decoration: InputDecoration(
+                      labelText: 'Email',
+                      border: OutlineInputBorder(
+                        borderSide: BorderSide(color: Colors.grey),
+                      ),
+                    ),
+                    enabled: isEditing,
+                  ),
+                  SizedBox(height: 10),
+                  TextFormField(
+                    controller: _alamatController,
+                    decoration: InputDecoration(
+                      labelText: 'Alamat',
+                      border: OutlineInputBorder(
+                        borderSide: BorderSide(color: Colors.grey),
+                      ),
+                    ),
+                    enabled: isEditing,
+                  ),
+                  SizedBox(height: 10),
+                  TextFormField(
+                    controller: _produkController,
+                    decoration: InputDecoration(
+                      labelText: 'Produk',
+                      border: OutlineInputBorder(
+                        borderSide: BorderSide(color: Colors.grey),
+                      ),
+                    ),
+                    enabled: isEditing,
+                  ),
+                ],
+              ),
+            ),
+            SizedBox(height: 20),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16),
+              child: Row(
+                children: [
+                  Expanded(
+                    child: TextFormField(
+                      controller: _bukaController,
+                      decoration: InputDecoration(
+                        labelText: 'Buka',
+                        border: OutlineInputBorder(
+                          borderSide: BorderSide(color: Colors.grey),
+                        ),
+                      ),
+                      enabled: isEditing,
+                    ),
+                  ),
+                  SizedBox(width: 10),
+                  Expanded(
+                    child: TextFormField(
+                      controller: _tutupController,
+                      decoration: InputDecoration(
+                        labelText: 'Tutup',
+                        border: OutlineInputBorder(
+                          borderSide: BorderSide(color: Colors.grey),
+                        ),
+                      ),
+                      enabled: isEditing,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            SizedBox(height: 20),
+            // Column(
+            //   children: [
+            //     SizedBox(height: 20),
+            //     CarouselSlider.builder(
+            //       itemCount: imageUrls.length,
+            //       itemBuilder: (BuildContext context, int index) {
+            //         return GestureDetector(
+            //           onLongPress: () => pickImageKatalog(index),
+            //           child: Container(
+            //             width: 160,
+            //             height: 160,
+            //             decoration: BoxDecoration(
+            //               borderRadius: BorderRadius.circular(8),
+            //               image: imageUrls[index] != ''
+            //                   ? DecorationImage(
+            //                       image: NetworkImage(imageUrls[index]),
+            //                       fit: BoxFit.cover,
+            //                     )
+            //                   : null,
+            //             ),
+            //             child: imageUrls[index] == ''
+            //                 ? Icon(Icons.edit, color: Colors.white)
+            //                 : null,
+            //           ),
+            //         );
+            //       },
+            //       options: CarouselOptions(
+            //         height: 160,
+            //         aspectRatio: 1.0,
+            //         enlargeCenterPage: true,
+            //         enableInfiniteScroll: false,
+            //       ),
+            //     ),
+            //     SizedBox(height: 20),
+            //   ],
+            // ),
+            SizedBox(height: 20),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16),
+              child: ElevatedButton(
+                onPressed: () async {
+                  SharedPreferences prefs =
+                      await SharedPreferences.getInstance();
+                  await prefs.remove('email');
+                  await prefs.remove('password');
+                  await prefs.remove('role');
+                  prefs.setBool('isLoggedIn', false);
+                  Navigator.pushNamed(context, LoginRole.nameRoute);
+                },
+                style: ElevatedButton.styleFrom(
+                  padding: EdgeInsets.symmetric(vertical: 16),
+                ),
+                child: Container(
+                  width: double.infinity,
+                  alignment: Alignment.center,
+                  child: Text(isEditing ? 'Simpan' : 'Logout'),
+                ),
+              ),
+            ),
+            SizedBox(height: 20),
+          ],
         ),
       ),
-    );
-  }
+    ),
+  );
+}
 }
