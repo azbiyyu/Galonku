@@ -24,7 +24,7 @@ class _MitraInputState extends State<MitraInput> {
   LatLng _selectedLocation = LatLng(0, 0);
   Set<Marker> _markers = {};
   CameraPosition _initialCameraPosition =
-      CameraPosition(target: LatLng(0, 0), zoom: 14);
+      CameraPosition(target: LatLng(-3.105305, 117.591325), zoom: 3);
 
   void _onCameraMove(CameraPosition position) {
     setState(() {
@@ -311,6 +311,7 @@ class _MitraInputState extends State<MitraInput> {
                 Container(
                   height: 200,
                   child: GoogleMap(
+                    zoomControlsEnabled: false,
                     onMapCreated: _onMapCreated,
                     onTap: _onMapTap,
                     markers: _markers,

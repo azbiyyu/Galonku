@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:galonku/DepotPage/chat_page_depot.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -18,6 +19,7 @@ class _GoogleMapPageState extends State<GoogleMapPage>
   List<Marker> _markers = [];
   bool _isDropdownOpen = false;
   String _selectedUsername = '';
+  String _selectedEmail = '';
   late AnimationController _animationController;
   late Animation<double> _animation;
   List<String> _katalogs = [];
@@ -103,6 +105,7 @@ class _GoogleMapPageState extends State<GoogleMapPage>
               setState(() {
                 _isDropdownOpen = true;
                 _selectedUsername = data['username'];
+                _selectedEmail = data['email'];
                 _katalogs = [
                   data['katalog1'],
                   data['katalog2'],
@@ -135,14 +138,21 @@ class _GoogleMapPageState extends State<GoogleMapPage>
       context,
       MaterialPageRoute(
         builder: (context) =>
-            DetailDepot(), // Ganti dengan halaman DetailDepot yang sesuai
+            DetailDepot(email: _selectedEmail), // Ganti dengan halaman DetailDepot yang sesuai
       ),
     );
   }
-
+  void _goToChatPage() {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => ChatPageDepot(email: _selectedEmail),
+      ),
+    );
+  }
   @override
   Widget build(BuildContext context) {
-    double fabTopMargin = _isDropdownOpen ? 90.0 : 16.0;
+    double fabTopMargin = _isDropdownOpen ? 16.0 : 16.0;
 
     return Scaffold(
       body: Stack(
@@ -216,16 +226,25 @@ class _GoogleMapPageState extends State<GoogleMapPage>
                       ),
                     ),
                     SizedBox(height: 16),
-                    ElevatedButton(
-                      onPressed: () async {
-                        SharedPreferences sharedPreferences =
-                            await SharedPreferences.getInstance();
-                        sharedPreferences.setString('data', _selectedUsername);
-                        _goToDetailDepot();
-                      },
-                      child: Text('Detail Depot'),
-                    ),
-                    SizedBox(height: 16),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        ElevatedButton(
+                          onPressed: () async {
+                            SharedPreferences sharedPreferences =
+                              await SharedPreferences.getInstance();
+                            sharedPreferences.setString('data', _selectedUsername);
+                            _goToDetailDepot();
+                          },
+                          child: Text('Detail Depot'),
+                        ),
+                        IconButton(
+                          onPressed: _goToChatPage,
+                         icon: Icon(Icons.chat),
+                         iconSize: 20,
+                         )
+                      ],
+                    )
                   ],
                 ),
               ),
@@ -242,6 +261,7 @@ class _GoogleMapPageState extends State<GoogleMapPage>
           icon: const Icon(Icons.my_location),
         ),
       ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.endTop,
     );
   }
 

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:galonku/DepotPage/bayar_galon.dart';
+import 'package:galonku/DepotPage/chat_page_depot.dart';
 import 'package:galonku/DepotPage/chat_page_user.dart';
 import 'package:galonku/DepotPage/detail_depot.dart';
 import 'package:galonku/DepotPage/home_page_depot.dart';
@@ -53,6 +54,8 @@ class _MyAppState extends State<MyApp> {
 
   @override
   Widget build(BuildContext context) {
+    String selectedusername = '';
+    String selectedemail = '';
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       home: LandingPage(),
@@ -78,8 +81,10 @@ class _MyAppState extends State<MyApp> {
         LupaSandi.nameRoute: (context) => LupaSandi(),
         SyaratKetentuan.nameRoute: (context) => SyaratKetentuan(),
         EditLocationPage.nameRoute: (context) => EditLocationPage(),
-        DetailDepot.nameRoute: (context) => DetailDepot(),
+        DetailDepot.nameRoute: (context) => DetailDepot(email: selectedemail),
         ChatPageUser.nameRoute: (context) => ChatPageUser(),
+        // ignore: equal_keys_in_map
+        ChatPageDepot.nameRoute:(context) => ChatPageDepot(email: selectedusername),
         PesanGalonLokasi.nameRoute:(context) => PesanGalonLokasi(),
         PesanGalonProduk.nameRoute:(context) => PesanGalonProduk(),
         BayarGalon.nameRoute:(context) => BayarGalon(),
