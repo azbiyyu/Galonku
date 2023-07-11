@@ -233,6 +233,8 @@ class _SettingDepotState extends State<SettingsUser> {
                     SharedPreferences prefs = await SharedPreferences.getInstance();
                     prefs.remove('email');
                     prefs.remove('role');
+                    prefs.remove('data_email');
+                    prefs.remove('data');
                     prefs.setBool('isLoggedIn', false);
                     signOutFromGoogle();
                     // ignore: use_build_context_synchronously

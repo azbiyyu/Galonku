@@ -5,7 +5,6 @@ import 'package:galonku/DepotPage/chat_list.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
 import '../DepotPage/chat_page.dart';
 import '../DepotPage/detail_depot.dart';
 
@@ -129,8 +128,10 @@ class _GoogleMapPageState extends State<GoogleMapPage>
   void _closeDropdown() {
     setState(() {
       _isDropdownOpen = false;
-      _selectedUsername = '';
       _katalogs = [];
+      _selectedEmail = '';
+      _selectedUsername = '';
+      
     });
   }
 
@@ -138,7 +139,8 @@ class _GoogleMapPageState extends State<GoogleMapPage>
     SharedPreferences sharedPreferences =
       await SharedPreferences.getInstance();
     sharedPreferences.setString('data_email', _selectedEmail);
-    sharedPreferences.setString('data', _selectedUsername);
+    sharedPreferences.setString('username_detail', _selectedUsername);
+    // ignore: use_build_context_synchronously
     Navigator.push(
       context,
       MaterialPageRoute(
@@ -157,9 +159,14 @@ class _GoogleMapPageState extends State<GoogleMapPage>
   }
   @override
   Widget build(BuildContext context) {
-    double fabTopMargin = _isDropdownOpen ? 16.0 : 16.0;
-
     return Scaffold(
+      appBar: AppBar(
+        title: Center(child: Text("Cari Depot")),
+        backgroundColor: Color.fromARGB(255, 52, 83, 209),
+        actions: <Widget>[
+          IconButton(onPressed: () {}, icon: Icon(Icons.search)),
+        ],
+      ),
       body: Stack(
         children: [
           ConstrainedBox(
@@ -200,15 +207,35 @@ class _GoogleMapPageState extends State<GoogleMapPage>
                       onPressed: _closeDropdown,
                       icon: Icon(Icons.close),
                     ),
-                    SizedBox(height: 16),
-                    Text(
-                      _selectedUsername + " Depot",
-                      style: TextStyle(
-                        fontSize: 20,
-                        fontWeight: FontWeight.bold,
-                      ),
+                    Row(
+                      children: [
+                        SizedBox(width: 16),
+                        Text(
+                          _selectedUsername + " Depot",
+                          style: TextStyle(
+                            fontSize: 20,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        Spacer(), // Menambahkan spacer untuk mengisi ruang kosong
+                        IconButton(
+                          onPressed: () async {
+                            SharedPreferences srf = await SharedPreferences.getInstance();
+                            String mail = srf.getString('email') ?? '';
+                            if (mail == _selectedEmail) {
+                              // ignore: use_build_context_synchronously
+                              Navigator.pushNamed(context, ChatList.nameRoute);
+                            } else {
+                              _goToChatPage();
+                            }
+                          },
+                          icon: Image(image: AssetImage('images/logo_chat.png')),
+                          iconSize: 20,
+                        ),
+                        SizedBox(width: 16),
+                      ],
                     ),
-                    SizedBox(height: 16),
+
                     SizedBox(
                       height: 100,
                       child: ListView.builder(
@@ -240,20 +267,6 @@ class _GoogleMapPageState extends State<GoogleMapPage>
                           },
                           child: Text('Detail Depot'),
                         ),
-                        IconButton(
-                          onPressed: () async{
-                            SharedPreferences srf = await SharedPreferences.getInstance();
-                            String mail = srf.getString('email') ?? '';
-                            if(mail == _selectedEmail){
-                              // ignore: use_build_context_synchronously
-                              Navigator.pushNamed(context, ChatList.nameRoute);
-                            }else{
-                              _goToChatPage();
-                            }
-                          },
-                         icon: Icon(Icons.chat),
-                         iconSize: 20,
-                         )
                       ],
                     )
                   ],
@@ -265,7 +278,7 @@ class _GoogleMapPageState extends State<GoogleMapPage>
       ),
       floatingActionButton: AnimatedContainer(
         duration: const Duration(milliseconds: 300),
-        margin: EdgeInsets.only(top: fabTopMargin, right: 16.0),
+        margin: EdgeInsets.only(top: 80, right: 10.0),
         child: FloatingActionButton.extended(
           onPressed: _goToCurrentLocation,
           label: const Text('Pusatkan'),

@@ -27,18 +27,17 @@ class _ChatPageState extends State<ChatPage> {
   }
 
   Future<void> _getUsername() async {
-    SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
-    String usernameChat = sharedPreferences.getString('username_chat') ?? '';
+    String emailChat = widget.email;
     // ignore: unnecessary_null_comparison
-    if(usernameChat != null){
+    if(emailChat != null){
       setState(() {
-        _username = "$usernameChat Depot";
+        _username = "$emailChat Depot";
       });
     }else{
       try {
         QuerySnapshot querySnapshot = await FirebaseFirestore.instance
             .collection('user')  // Ganti dengan koleksi yang sesuai
-            .where('email', isEqualTo: widget.email)
+            .where('email', isEqualTo: emailChat)
             .get();
 
         if (querySnapshot.docs.isNotEmpty) {

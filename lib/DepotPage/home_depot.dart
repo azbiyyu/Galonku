@@ -3,7 +3,6 @@ import 'dart:ffi';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:faker/faker.dart';
-import 'package:galonku/DepotPage/app_state.dart';
 import 'package:galonku/DesignSystem/_appBar.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -19,7 +18,6 @@ class _HomeDepotState extends State<HomeDepot> {
   bool isROSelected = false;
   bool isMineralSelected = false;
   bool isBukaTutup = false;
-  late AppState appState;
 
   @override
   void initState() {
@@ -39,18 +37,18 @@ class _HomeDepotState extends State<HomeDepot> {
     final docUser = querySnapshot.docs.first;
     final docId = docUser.id;
 
-    bool updatedIsBukaTutup = !docUser.data()['statusBuka']; // Toggle nilai is_buka
+    bool updatedIsBukaTutup = !docUser.data()['is_buka']; // Toggle nilai is_buka
 
     await collectionUser.doc(docId).update({
-      'statusBuka': updatedIsBukaTutup,
+      'is_buka': updatedIsBukaTutup,
+    });
+    setState(() {
+      isBukaTutup = updatedIsBukaTutup;
     });
   } else {
     print("data tidak ada");
   }
 }
-
-
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -103,9 +101,8 @@ class _HomeDepotState extends State<HomeDepot> {
                         setState(() {
                           var status = !isBukaTutup;
                           _saveData(status);
-                          isBukaTutup = true;
-                        });
-                        
+                          // isBukaTutup = true;
+                        });  
                       },
                       activeColor: Colors.blue,
                     ),

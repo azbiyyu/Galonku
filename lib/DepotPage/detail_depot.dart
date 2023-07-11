@@ -100,7 +100,7 @@ class _DetailDepotState extends State<DetailDepot> {
             String tutup = depotData['tutup'] ?? '';
             String username = depotData['username'] ?? '';
             String email = depotData['email'] ?? '';
-            bool is_buka = depotData['statusBuka'] ?? '';
+            bool is_buka = depotData['statusBuka'] ?? false;
 
             // ignore: unrelated_type_equality_checks
             if(is_buka == true){
@@ -149,11 +149,14 @@ class _DetailDepotState extends State<DetailDepot> {
                             ),
                             InkWell(
                               onTap: () async {
-                                SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
-                                sharedPreferences.setString('data_email_chat', email);
-                                sharedPreferences.setString('username_chat', username);
-                                // Tambahkan logika navigasi ke halaman tujuan di sini
-                                Navigator.pushNamed(context, ChatPage.nameRoute);
+                                // ignore: use_build_context_synchronously
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) =>
+                                        ChatPage(email: widget.email), // Ganti dengan halaman DetailDepot yang sesuai
+                                  ),
+                                );
                               },
                               child: CircleAvatar(
                                 radius: 20,

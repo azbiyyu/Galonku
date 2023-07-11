@@ -26,6 +26,8 @@ class _SettingDepotState extends State<SettingsDepot> {
   TextEditingController _produkController = TextEditingController();
   TextEditingController _bukaController = TextEditingController();
   TextEditingController _tutupController = TextEditingController();
+  TextEditingController _hargaROController = TextEditingController();
+  TextEditingController _hargaAquaController = TextEditingController();
 
   String depotDocumentId = '';
   String imageUrl = '';
@@ -37,6 +39,8 @@ class _SettingDepotState extends State<SettingsDepot> {
   String katalogUrl = '';
   int idx = 0;
   bool isKatalogUploaded = false;
+  bool isMineral = false;
+  bool isRO = false;
 
   @override
   void initState() {
@@ -68,10 +72,16 @@ class _SettingDepotState extends State<SettingsDepot> {
           _produkController.text = depotData['produk'] ?? '';
           _bukaController.text = depotData['buka'] ?? '';
           _tutupController.text = depotData['tutup'] ?? '';
+          _hargaROController.text = depotData['harga_ro'] ?? '';
+          _hargaAquaController.text = depotData['harga_aqua'] ?? '';
           currentImageUrl = depotData['images'] ?? imageUrl;
           currentImageUrlKatalog = depotData['katalog1'] ?? '';
           currentImageUrlKatalog2 = depotData['katalog2'] ?? '';
           currentImageUrlKatalog3 = depotData['katalog3'] ?? '';
+
+
+          isMineral = depotData['Mineral'] ?? false;
+          isRO = depotData['RO'] ?? false;
         });
       }
     }
@@ -90,6 +100,8 @@ class _SettingDepotState extends State<SettingsDepot> {
         'produk': _produkController.text,
         'buka': _bukaController.text,
         'tutup': _tutupController.text,
+        'harga_ro': _hargaROController.text,
+        'harga_aqua': _hargaAquaController.text,
       });
 
       // ignore: use_build_context_synchronously
@@ -288,7 +300,7 @@ class _SettingDepotState extends State<SettingsDepot> {
                           borderSide: BorderSide(color: Colors.grey),
                         ),
                       ),
-                      enabled: isEditing,
+                      enabled: false,
                     ),
                     SizedBox(height: 10),
                     TextFormField(
@@ -343,6 +355,41 @@ class _SettingDepotState extends State<SettingsDepot> {
                           ),
                         ),
                         enabled: isEditing,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              SizedBox(height: 10),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 20),
+                child: Row(
+                  children: [
+                    Expanded(
+                      child: TextFormField(
+                        controller: _hargaROController,
+                         keyboardType: TextInputType.number,
+                        decoration: InputDecoration(
+                          labelText: 'Harga RO',
+                          border: OutlineInputBorder(
+                            borderSide: BorderSide(color: Colors.grey),
+                          ),
+                        ),
+                        enabled: isEditing && isRO,
+                      ),
+                    ),
+                    SizedBox(width: 10),
+                    Expanded(
+                      child: TextFormField(
+                        controller: _hargaAquaController,
+                        keyboardType: TextInputType.number,
+                        decoration: InputDecoration(
+                          labelText: 'Harga Aqua',
+                          border: OutlineInputBorder(
+                            borderSide: BorderSide(color: Colors.grey),
+                          ),
+                        ),
+                        enabled: isEditing && isMineral,
                       ),
                     ),
                   ],
@@ -474,6 +521,8 @@ class _SettingDepotState extends State<SettingsDepot> {
                     await prefs.remove('email');
                     await prefs.remove('password');
                     await prefs.remove('role');
+                    await prefs.remove('data_email');
+                    await prefs.remove('data');
                     prefs.setBool('isLoggedIn', false);
                     // ignore: use_build_context_synchronously
                     Navigator.pushNamed(context, LoginRole.nameRoute);
