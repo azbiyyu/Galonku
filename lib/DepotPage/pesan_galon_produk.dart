@@ -1,6 +1,8 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:galonku/DepotPage/bayar_galon.dart';
 import 'package:galonku/Models/_button_primary.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class PesanGalonProduk extends StatefulWidget {
   final String email;
@@ -17,6 +19,41 @@ class _PesanGalonProdukState extends State<PesanGalonProduk> {
   bool _codChecked = false;
   bool _eWalletChecked = false;
   bool _rekeningChecked = false;
+  String harga_ro = '';
+  String harga_aqua = '';
+  String kirimEmail = '';
+  @override
+  void initState() {
+    super.initState();
+    _loadData();
+    kirimEmail = widget.email;
+  }
+  void _loadData() async {
+  QuerySnapshot querySnapshot = await FirebaseFirestore.instance
+      .collection('user')
+      .where('email', isEqualTo: widget.email)
+      .get();
+
+  if (querySnapshot.docs.isNotEmpty) {
+    // Retrieve the document snapshot
+    DocumentSnapshot documentSnapshot = querySnapshot.docs[0];
+
+    // Get the field values from the document
+    Map<String, dynamic>? userData = documentSnapshot.data() as Map<String, dynamic>?;
+    if (userData != null) {
+      String? hargaAqua = userData['harga_aqua'] as String?;
+      String? hargaRO = userData['harga_ro'] as String?;
+
+      setState(() {
+        harga_aqua = hargaAqua ?? 'Harga Aqua tidak tersedia';
+        harga_ro = hargaRO ?? 'Harga RO tidak tersedia';
+      });
+    }
+  } else {
+    print("Data tidak ditemukan");
+  }
+}
+
 
   @override
   Widget build(BuildContext context) {
@@ -39,7 +76,7 @@ class _PesanGalonProdukState extends State<PesanGalonProduk> {
                   subtitle: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text('Harga: Rp. 5000'),
+                      Text('Harga: Rp. $harga_aqua'),
                       Text(_mineralCount > 0 ? 'Ready' : 'Habis'),
                     ],
                   ),
@@ -92,7 +129,7 @@ class _PesanGalonProdukState extends State<PesanGalonProduk> {
                   subtitle: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text('Harga: Rp. 7000'),
+                      Text('Harga: Rp. $harga_ro'),
                       Text(_roCount > 0 ? 'Ready' : 'Habis'),
                     ],
                   ),
