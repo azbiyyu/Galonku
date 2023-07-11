@@ -262,7 +262,13 @@ class _DetailDepotState extends State<DetailDepot> {
                     BtnPrimary(
                       text: "Pesan Galon",
                       onPressed: () {
-                        Navigator.pushNamed(context, PesanGalonLokasi.nameRoute);
+                        Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) =>
+                                        PesanGalonLokasi(email: widget.email),
+                                  ),
+                                );
                       },
                     ),
                     SizedBox(height: 20),

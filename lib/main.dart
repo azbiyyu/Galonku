@@ -85,8 +85,8 @@ class _MyAppState extends State<MyApp> {
         DetailDepot.nameRoute: (context) => DetailDepot(email: selectedemail),
         // ignore: equal_keys_in_map
         ChatPage.nameRoute:(context) => ChatPage(email: selectedusername),
-        PesanGalonLokasi.nameRoute:(context) => PesanGalonLokasi(),
-        PesanGalonProduk.nameRoute:(context) => PesanGalonProduk(),
+        PesanGalonLokasi.nameRoute:(context) => PesanGalonLokasi(email: selectedemail),
+        PesanGalonProduk.nameRoute:(context) => PesanGalonProduk(email: selectedemail),
         BayarGalon.nameRoute:(context) => BayarGalon(),
         ChatList.nameRoute:(context) => ChatList()
       },

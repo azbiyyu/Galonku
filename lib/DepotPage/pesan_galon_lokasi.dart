@@ -1,9 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:galonku/DepotPage/pesan_galon_produk.dart';
 import 'package:galonku/Models/_button_primary.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+
+
 
 class PesanGalonLokasi extends StatefulWidget {
-  const PesanGalonLokasi({Key? key});
+  final String email;
+  const PesanGalonLokasi({Key? key, required  this.email});
   static const nameRoute = '/PesanGalonLokasi';
   @override
   State<PesanGalonLokasi> createState() => _PesanGalonLokasiState();
@@ -12,12 +17,41 @@ class PesanGalonLokasi extends StatefulWidget {
 class _PesanGalonLokasiState extends State<PesanGalonLokasi> {
   TextEditingController _alamatController = TextEditingController();
 
-  List<String> _historyAlamat = [
-    'Alamat 1',
-    'Alamat 2',
-    'Alamat 3',
-    'Alamat 4',
-  ];
+  List<String> _historyAlamat = [];
+  int _selectedAddressIndex = -1;
+  String kirimEmail = '';
+  @override
+  void initState() {
+    super.initState();
+    _loadHistoryData();
+    kirimEmail = widget.email;
+  }
+
+  void _loadHistoryData() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String userEmail = prefs.getString('email') ?? '';
+
+    QuerySnapshot querySnapshot = await FirebaseFirestore.instance
+        .collection('history')
+        .where('email', isEqualTo: userEmail)
+        .orderBy('timestamp', descending: true)
+        .limit(4)
+        .get();
+
+    List<String> loadedHistory = [];
+    if (querySnapshot.docs.isNotEmpty) {
+      for (var doc in querySnapshot.docs) {
+        loadedHistory.add(doc['address']);
+      }
+    }
+
+    setState(() {
+      _historyAlamat = loadedHistory;
+      
+    });
+  }
+
+
 
   @override
   void dispose() {
@@ -52,6 +86,11 @@ class _PesanGalonLokasiState extends State<PesanGalonLokasi> {
                     Expanded(
                       child: TextField(
                         controller: _alamatController,
+                        onChanged: (value) {
+                          setState(() {
+                            _selectedAddressIndex = -1;
+                          });
+                        },
                         decoration: InputDecoration(
                           hintText: 'Masukkan alamat',
                           border: InputBorder.none,
@@ -96,7 +135,8 @@ class _PesanGalonLokasiState extends State<PesanGalonLokasi> {
                       leading: Icon(Icons.location_on),
                       title: Text(_historyAlamat[index]),
                       onTap: () {
-                        // Action when history address is tapped
+                        _selectedAddressIndex = index;
+                        _alamatController.text = _historyAlamat[_selectedAddressIndex];
                       },
                     ),
                   );
@@ -107,8 +147,36 @@ class _PesanGalonLokasiState extends State<PesanGalonLokasi> {
               ),
               BtnPrimary(
                 text: "Order",
-                onPressed: () {
-                  Navigator.pushNamed(context, PesanGalonProduk.nameRoute);
+                onPressed: () async {
+                  String enteredAddress = _alamatController.text.trim();
+                  if(enteredAddress.isNotEmpty && !_historyAlamat.contains(enteredAddress)){
+                    SharedPreferences prefs = await SharedPreferences.getInstance();
+                    String email = prefs.getString('email') ?? '';
+
+                    DocumentReference docRef = FirebaseFirestore.instance.collection('history').doc();
+                    docRef.set({
+                      'documentId': docRef.id,
+                      'address': enteredAddress,
+                      'timestamp': Timestamp.now(),
+                      'email': email,
+                    });
+
+                    setState(() {
+                      if (_historyAlamat.length >= 4) {
+                        _historyAlamat.removeLast();
+                      }
+                      _historyAlamat.insert(0, enteredAddress);
+                      _alamatController.clear();
+                    });
+                  }  
+                  // ignore: use_build_context_synchronously
+                  Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) =>
+                                        PesanGalonProduk(email: kirimEmail), // Ganti dengan halaman DetailDepot yang sesuai
+                                  ),
+                                );
                 },
               )
             ],

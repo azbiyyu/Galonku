@@ -3,7 +3,8 @@ import 'package:galonku/DepotPage/bayar_galon.dart';
 import 'package:galonku/Models/_button_primary.dart';
 
 class PesanGalonProduk extends StatefulWidget {
-  const PesanGalonProduk({Key? key});
+  final String email;
+  const PesanGalonProduk({Key? key, required this.email});
   static const nameRoute = '/PesanGalonProduk';
 
   @override
