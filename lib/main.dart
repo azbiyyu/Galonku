@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:galonku/DepotPage/bayar_galon.dart';
-import 'package:galonku/DepotPage/chat_page_depot.dart';
-import 'package:galonku/DepotPage/chat_page_user.dart';
+import 'package:galonku/DepotPage/chat_list.dart';
+import 'package:galonku/DepotPage/chat_page.dart';
 import 'package:galonku/DepotPage/detail_depot.dart';
 import 'package:galonku/DepotPage/home_page_depot.dart';
 import 'package:galonku/DepotPage/home_page_user.dart';
@@ -26,6 +26,7 @@ import 'package:galonku/LoginPage/verifikasi.dart';
 import 'package:provider/provider.dart';
 import 'Controllers/shared_preferences_helper.dart';
 import 'DepotPage/EditLocationPage.dart';
+import 'LandingPage/splash_screen.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -58,7 +59,7 @@ class _MyAppState extends State<MyApp> {
     String selectedemail = '';
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      home: LandingPage(),
+      home: SplashScreen(),
       initialRoute: '/',
       routes: {
         LandingPage.nameRoute: (context) => LandingPage(),
@@ -82,12 +83,12 @@ class _MyAppState extends State<MyApp> {
         SyaratKetentuan.nameRoute: (context) => SyaratKetentuan(),
         EditLocationPage.nameRoute: (context) => EditLocationPage(),
         DetailDepot.nameRoute: (context) => DetailDepot(email: selectedemail),
-        ChatPageUser.nameRoute: (context) => ChatPageUser(),
         // ignore: equal_keys_in_map
-        ChatPageDepot.nameRoute:(context) => ChatPageDepot(email: selectedusername),
+        ChatPage.nameRoute:(context) => ChatPage(email: selectedusername),
         PesanGalonLokasi.nameRoute:(context) => PesanGalonLokasi(),
         PesanGalonProduk.nameRoute:(context) => PesanGalonProduk(),
         BayarGalon.nameRoute:(context) => BayarGalon(),
+        ChatList.nameRoute:(context) => ChatList()
       },
       onGenerateRoute: (settings) {
         if (settings.name == '/landingpage') {

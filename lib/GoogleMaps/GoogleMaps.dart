@@ -1,11 +1,12 @@
 import 'dart:async';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:galonku/DepotPage/chat_page_depot.dart';
+import 'package:galonku/DepotPage/chat_list.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../DepotPage/chat_page.dart';
 import '../DepotPage/detail_depot.dart';
 
 class GoogleMapPage extends StatefulWidget {
@@ -133,7 +134,11 @@ class _GoogleMapPageState extends State<GoogleMapPage>
     });
   }
 
-  void _goToDetailDepot() {
+  void _goToDetailDepot() async {
+    SharedPreferences sharedPreferences =
+      await SharedPreferences.getInstance();
+    sharedPreferences.setString('data_email', _selectedEmail);
+    sharedPreferences.setString('data', _selectedUsername);
     Navigator.push(
       context,
       MaterialPageRoute(
@@ -146,7 +151,7 @@ class _GoogleMapPageState extends State<GoogleMapPage>
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => ChatPageDepot(email: _selectedEmail),
+        builder: (context) => ChatPage(email: _selectedEmail),
       ),
     );
   }
@@ -231,15 +236,21 @@ class _GoogleMapPageState extends State<GoogleMapPage>
                       children: [
                         ElevatedButton(
                           onPressed: () async {
-                            SharedPreferences sharedPreferences =
-                              await SharedPreferences.getInstance();
-                            sharedPreferences.setString('data', _selectedUsername);
                             _goToDetailDepot();
                           },
                           child: Text('Detail Depot'),
                         ),
                         IconButton(
-                          onPressed: _goToChatPage,
+                          onPressed: () async{
+                            SharedPreferences srf = await SharedPreferences.getInstance();
+                            String mail = srf.getString('email') ?? '';
+                            if(mail == _selectedEmail){
+                              // ignore: use_build_context_synchronously
+                              Navigator.pushNamed(context, ChatList.nameRoute);
+                            }else{
+                              _goToChatPage();
+                            }
+                          },
                          icon: Icon(Icons.chat),
                          iconSize: 20,
                          )

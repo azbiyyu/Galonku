@@ -1,11 +1,8 @@
-import 'package:carousel_slider/carousel_controller.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
-// import 'package:galonku/DepotPage/home_page_depot.dart';
-// import 'package:galonku/DepotPage/home_page_user.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:galonku/LandingPage/login_role.dart';
 import '../Models/_card_carousel.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 class LandingPage extends StatefulWidget {
   static const nameRoute = '/landingpage';
@@ -17,7 +14,6 @@ class LandingPage extends StatefulWidget {
 }
 
 class _LandingPageState extends State<LandingPage> {
-  String? initialRoute;
   bool isSkipped = false;
   int _current = 0;
   final CarouselController _controller = CarouselController();
@@ -25,36 +21,15 @@ class _LandingPageState extends State<LandingPage> {
   @override
   void initState() {
     super.initState();
-    checkSkipStatus();
+    setSkipStatus();
   }
 
-  Future<void> checkSkipStatus() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    String? role = prefs.getString('role');
-    bool skipped = prefs.getBool('isSkipped') ?? false;
-    if (role == null) {
-      if (skipped) {
-        initialRoute = '/loginrole';
-      }
-    } else if (role == 'mitra') {
-      initialRoute = '/homepagedepot';
-    } else if (role == 'user') {
-      initialRoute = '/homepageuser';
-    }
 
-    if (initialRoute != null) {
-      // ignore: use_build_context_synchronously
-      Navigator.pushNamedAndRemoveUntil(
-        context,
-        initialRoute!,
-        (route) => false,
-      );
-    }
-  }
   Future<void> setSkipStatus() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     await prefs.setBool('isSkipped', true);
   }
+
   final List<Widget> landingCarousel = [
     CardCarousel(
       text: "Temukan Isi Ulang dimana Saja",
@@ -75,12 +50,14 @@ class _LandingPageState extends State<LandingPage> {
       color: Color.fromARGB(255, 42, 167, 69),
     ),
   ];
+
   Future<void> refreshPage() async {
     setState(() {
       _current = 0;
     });
     await Future.delayed(Duration(seconds: 5));
   }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -126,8 +103,8 @@ class _LandingPageState extends State<LandingPage> {
         ),
         Center(
           child: RefreshIndicator(
-              onRefresh: refreshPage,
-              child: CarouselSlider(
+            onRefresh: refreshPage,
+            child: CarouselSlider(
               items: landingCarousel,
               carouselController: _controller,
               options: CarouselOptions(
@@ -143,7 +120,7 @@ class _LandingPageState extends State<LandingPage> {
                 },
               ),
             ),
-          )
+          ),
         ),
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -189,7 +166,7 @@ class _LandingPageState extends State<LandingPage> {
               onTap: () async {
                 await setSkipStatus();
                 // ignore: use_build_context_synchronously
-                Navigator.pushNamed(context, LoginRole.nameRoute);
+                Navigator.pushReplacementNamed(context, LoginRole.nameRoute);
               },
               child: Row(
                 children: [

@@ -1,6 +1,11 @@
+import 'dart:ffi';
+
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:faker/faker.dart';
+import 'package:galonku/DepotPage/app_state.dart';
 import 'package:galonku/DesignSystem/_appBar.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class HomeDepot extends StatefulWidget {
   static const nameRoute = '/homedepot';
@@ -14,11 +19,42 @@ class _HomeDepotState extends State<HomeDepot> {
   bool isROSelected = false;
   bool isMineralSelected = false;
   bool isBukaTutup = false;
+  late AppState appState;
+
+  @override
+  void initState() {
+    super.initState();
+  }
+
+  void _saveData(bool status) async {
+  SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
+  String? mail = sharedPreferences.getString('email');
+
+  String? emailfield = mail;
+
+  final collectionUser = FirebaseFirestore.instance.collection('user');
+  final querySnapshot = await collectionUser.where('email', isEqualTo: emailfield).limit(1).get();
+
+  if (querySnapshot.docs.isNotEmpty) {
+    final docUser = querySnapshot.docs.first;
+    final docId = docUser.id;
+
+    bool updatedIsBukaTutup = !docUser.data()['statusBuka']; // Toggle nilai is_buka
+
+    await collectionUser.doc(docId).update({
+      'statusBuka': updatedIsBukaTutup,
+    });
+  } else {
+    print("data tidak ada");
+  }
+}
+
+
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: CustomAppBar(title: "Cari Depot"),
+      appBar: CustomAppBar(title: "Depot"),
       body: SafeArea(
         child: SingleChildScrollView(
           child: Column(
@@ -65,9 +101,11 @@ class _HomeDepotState extends State<HomeDepot> {
                       value: isBukaTutup,
                       onChanged: (value) {
                         setState(() {
-                          isBukaTutup = value;
+                          var status = !isBukaTutup;
+                          _saveData(status);
+                          isBukaTutup = true;
                         });
-                        // Logika ketika tombol RO diubah
+                        
                       },
                       activeColor: Colors.blue,
                     ),

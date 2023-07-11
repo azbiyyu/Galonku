@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:galonku/DepotPage/chat_user.dart';
+import 'package:galonku/DepotPage/chat_list.dart';
+// import 'package:galonku/DepotPage/chat_user.dart';
 import 'package:galonku/DepotPage/home_user.dart';
 import 'package:galonku/DepotPage/pesanan_user.dart';
 // import 'package:galonku/DepotPage/settings_depot.dart';
@@ -27,7 +28,7 @@ class _HomePageUserState extends State<HomePageUser> {
     ),
     GoogleMapPage(),
     Center(
-      child: ChatUser(),
+      child: ChatList(),
     ),
     Center(
       child: SettingsUser(),

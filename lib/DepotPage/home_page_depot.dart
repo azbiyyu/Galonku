@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:galonku/DepotPage/chat_depot.dart';
+import 'package:galonku/DepotPage/app_state.dart';
+import 'package:galonku/DepotPage/chat_list.dart';
 import 'package:galonku/DepotPage/home_depot.dart';
 import 'package:galonku/DepotPage/pesanan_depot.dart';
 import 'package:galonku/DepotPage/settings_depot.dart';
@@ -15,6 +16,7 @@ class HomePageDepot extends StatefulWidget {
 }
 
 class _HomePageUserState extends State<HomePageDepot> {
+  late final AppState appState;
   List<Widget> widgetPage = [
     Center(
       child: HomeDepot(),
@@ -24,7 +26,7 @@ class _HomePageUserState extends State<HomePageDepot> {
     ),
     GoogleMapPage(),
     Center(
-      child: ChatDepot(),
+      child: ChatList(),
     ),
     Center(
       child: SettingsDepot(),

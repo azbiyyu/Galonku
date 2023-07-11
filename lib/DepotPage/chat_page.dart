@@ -1,17 +1,19 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
-class ChatPageDepot extends StatefulWidget {
-  const ChatPageDepot({Key? key, required this.email}) : super(key: key);
-  static const String nameRoute = '/chatpageuser';
+class ChatPage extends StatefulWidget {
+  const ChatPage({Key? key, required this.email}) : super(key: key);
+  static const String nameRoute = '/chatpage';
 
   final String email;
 
   @override
-  _ChatPageDepotState createState() => _ChatPageDepotState();
+  // ignore: library_private_types_in_public_api
+  _ChatPageState createState() => _ChatPageState();
 }
 
-class _ChatPageDepotState extends State<ChatPageDepot> {
+class _ChatPageState extends State<ChatPage> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   TextEditingController _messageController = TextEditingController();
   List<Map<String, String>> _chatMessages = [];
@@ -25,26 +27,35 @@ class _ChatPageDepotState extends State<ChatPageDepot> {
   }
 
   Future<void> _getUsername() async {
-    try {
-      QuerySnapshot querySnapshot = await FirebaseFirestore.instance
-          .collection('user')  // Ganti dengan koleksi yang sesuai
-          .where('email', isEqualTo: widget.email)
-          .get();
-
-      if (querySnapshot.docs.isNotEmpty) {
-        setState(() {
-          _username = querySnapshot.docs[0]['username'];
-        });
-      } else {
-        setState(() {
-          _username = 'Username tidak ditemukan';
-        });
-      }
-    } catch (error) {
+    SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
+    String usernameChat = sharedPreferences.getString('username_chat') ?? '';
+    // ignore: unnecessary_null_comparison
+    if(usernameChat != null){
       setState(() {
-        _username = 'Error: $error';
+        _username = "$usernameChat Depot";
       });
-    } 
+    }else{
+      try {
+        QuerySnapshot querySnapshot = await FirebaseFirestore.instance
+            .collection('user')  // Ganti dengan koleksi yang sesuai
+            .where('email', isEqualTo: widget.email)
+            .get();
+
+        if (querySnapshot.docs.isNotEmpty) {
+          setState(() {
+            _username = querySnapshot.docs[0].get('username');
+          });
+        } else {
+          setState(() {
+            _username = '';
+          });
+        }
+      } catch (error) {
+        setState(() {
+          _username = 'Error: $error';
+        });
+      } 
+    }
   }
 
   void _sendMessage() {
@@ -72,7 +83,16 @@ class _ChatPageDepotState extends State<ChatPageDepot> {
     return Scaffold(
       key: _scaffoldKey,
       appBar: AppBar(
+        centerTitle: true,
         title: Text('Chat'),
+        actions: [
+          IconButton(
+            onPressed: (){
+          }, icon: Icon(Icons.search)),
+          IconButton(
+            onPressed: (){},
+            icon: Icon(Icons.more_vert))
+        ],
       ),
       body: Column(
         children: [
@@ -89,30 +109,30 @@ class _ChatPageDepotState extends State<ChatPageDepot> {
           ),
           Expanded(
             child: ListView.builder(
-  itemCount: _chatMessages.length,
-  itemBuilder: (context, index) {
-    String role = _chatMessages[index]['role']!;
-    String message = _chatMessages[index]['message']!;
+              itemCount: _chatMessages.length,
+              itemBuilder: (context, index) {
+                String role = _chatMessages[index]['role']!;
+                String message = _chatMessages[index]['message']!;
 
-    return Align(
-      alignment: role == 'A' ? Alignment.centerRight : Alignment.centerLeft,
-      child: Padding(
-        padding: EdgeInsets.symmetric(vertical: 4, horizontal: 8),
-        child: Container(
-          padding: EdgeInsets.all(12),
-          decoration: BoxDecoration(
-            color: role == 'A' ? Colors.blue : Colors.grey,
-            borderRadius: BorderRadius.circular(8),
-          ),
-          child: Text(
-            message,
-            style: TextStyle(color: Colors.white),
-          ),
-        ),
-      ),
-    );
-  },
-)
+                return Align(
+                  alignment: role == 'A' ? Alignment.centerRight : Alignment.centerLeft,
+                  child: Padding(
+                    padding: EdgeInsets.symmetric(vertical: 4, horizontal: 8),
+                    child: Container(
+                      padding: EdgeInsets.all(12),
+                      decoration: BoxDecoration(
+                        color: role == 'A' ? Colors.blue : Colors.grey,
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      child: Text(
+                        message,
+                        style: TextStyle(color: Colors.white),
+                      ),
+                    ),
+                  ),
+                );
+              },
+            )
 
           ),
           Container(

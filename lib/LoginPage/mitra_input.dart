@@ -16,10 +16,15 @@ class MitraInput extends StatefulWidget {
 class _MitraInputState extends State<MitraInput> {
   bool _isROSelected = false;
   bool _isMineralSelected = false;
+  bool _isOnline = false;
+  bool _isStatusBukaHidden = false;
+
   final usernameController = TextEditingController();
   final alamatController = TextEditingController();
   final bukaController = TextEditingController();
   final tutupController = TextEditingController();
+  final hargaROController = TextEditingController();
+  final hargaAquaController = TextEditingController();
 
   LatLng _selectedLocation = LatLng(0, 0);
   Set<Marker> _markers = {};
@@ -61,7 +66,9 @@ class _MitraInputState extends State<MitraInput> {
     return usernameController.text.isNotEmpty &&
         alamatController.text.isNotEmpty &&
         bukaController.text.isNotEmpty &&
-        tutupController.text.isNotEmpty;
+        tutupController.text.isNotEmpty &&
+        hargaROController.text.isNotEmpty &&
+        hargaAquaController.text.isNotEmpty;
   }
 
   void _saveData() async {
@@ -72,6 +79,8 @@ class _MitraInputState extends State<MitraInput> {
       String alamatDepot = alamatController.text;
       String bukaDepot = bukaController.text;
       String tutupDepot = tutupController.text;
+      double hargaRO = double.parse(hargaROController.text);
+      double hargaAqua = double.parse(hargaAquaController.text);
       String? emailfield = mail;
 
       final collectionUser = FirebaseFirestore.instance.collection('user');
@@ -85,10 +94,14 @@ class _MitraInputState extends State<MitraInput> {
             GeoPoint(_selectedLocation.latitude, _selectedLocation.longitude),
         'Mineral': _isROSelected,
         'RO': _isMineralSelected,
+        'hargaRO': hargaRO,
+        'hargaAqua': hargaAqua,
         'images': '',
         'katalog1': '',
         'katalog2': '',
         'katalog3': '',
+        'online': _isOnline,
+        'statusBuka': !_isStatusBukaHidden,
       };
 
       try {
@@ -100,8 +113,8 @@ class _MitraInputState extends State<MitraInput> {
       } catch (error) {
         print("Failed to save data: $error");
         // Show error message or handle error accordingly
-          // ignore: use_build_context_synchronously
-          showDialog(
+        // ignore: use_build_context_synchronously
+        showDialog(
           context: context,
           builder: (BuildContext context) {
             return AlertDialog(
@@ -116,8 +129,8 @@ class _MitraInputState extends State<MitraInput> {
                 ),
               ],
             );
-        },
-      );
+          },
+        );
       }
     } else {
       showDialog(
@@ -141,197 +154,249 @@ class _MitraInputState extends State<MitraInput> {
   }
 
   @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      body: SafeArea(
-        child: SingleChildScrollView(
-          child: Container(
-            margin: EdgeInsets.all(30),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Heading(role: "Depot Air", action: "Masuk"),
-                SizedBox(height: 10),
-                Container(
-                  alignment: Alignment.centerLeft,
-                  child: Text(
-                    "Berikan Data Depot anda yang telah terdaftar sebelumnya",
-                    textAlign: TextAlign.justify,
-                    style: TextStyle(
-                      fontSize: 15,
-                    ),
+Widget build(BuildContext context) {
+  return Scaffold(
+    body: SafeArea(
+      child: SingleChildScrollView(
+        child: Container(
+          margin: EdgeInsets.all(30),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Heading(role: "Depot Air", action: "Masuk"),
+              SizedBox(height: 10),
+              Container(
+                alignment: Alignment.centerLeft,
+                child: Text(
+                  "Berikan Data Depot anda yang telah terdaftar sebelumnya",
+                  textAlign: TextAlign.justify,
+                  style: TextStyle(
+                    fontSize: 15,
                   ),
                 ),
-                Container(
-                  padding: EdgeInsets.only(top: 20),
-                  child: TextField(
-                    controller: usernameController,
-                    keyboardType: TextInputType.name,
-                    cursorColor: Colors.blue[600],
-                    decoration: InputDecoration(
-                      labelText: 'Nama',
-                      labelStyle: TextStyle(color: Colors.black),
-                      hintText: "masukkan Nama",
-                      border: OutlineInputBorder(
-                        borderSide: BorderSide(
-                          color: Color.fromARGB(66, 37, 37, 37),
-                        ),
+              ),
+              Container(
+                padding: EdgeInsets.only(top: 20),
+                child: TextField(
+                  controller: usernameController,
+                  keyboardType: TextInputType.name,
+                  cursorColor: Colors.blue[600],
+                  decoration: InputDecoration(
+                    labelText: 'Nama',
+                    labelStyle: TextStyle(color: Colors.black),
+                    hintText: "masukkan Nama",
+                    border: OutlineInputBorder(
+                      borderSide: BorderSide(
+                        color: Color.fromARGB(66, 37, 37, 37),
                       ),
                     ),
                   ),
                 ),
-                Container(
-                  padding: EdgeInsets.only(top: 20),
-                  child: TextField(
-                    controller: alamatController,
-                    keyboardType: TextInputType.streetAddress,
-                    cursorColor: Color.fromARGB(255, 252, 189, 0),
-                    decoration: InputDecoration(
-                      labelText: 'Alamat',
-                      labelStyle: TextStyle(color: Colors.black),
-                      hintText: "masukkan Alamat",
-                      border: OutlineInputBorder(
-                        borderSide: BorderSide(
-                          color: Color.fromARGB(66, 37, 37, 37),
-                        ),
+              ),
+              Container(
+                padding: EdgeInsets.only(top: 20),
+                child: TextField(
+                  controller: alamatController,
+                  keyboardType: TextInputType.streetAddress,
+                  cursorColor: Color.fromARGB(255, 252, 189, 0),
+                  decoration: InputDecoration(
+                    labelText: 'Alamat',
+                    labelStyle: TextStyle(color: Colors.black),
+                    hintText: "masukkan Alamat",
+                    border: OutlineInputBorder(
+                      borderSide: BorderSide(
+                        color: Color.fromARGB(66, 37, 37, 37),
                       ),
                     ),
                   ),
                 ),
-                Row(
+              ),
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Expanded(
+                    child: Container(
+                      padding: EdgeInsets.only(top: 20),
+                      child: TextField(
+                        controller: bukaController,
+                        keyboardType: TextInputType.text,
+                        cursorColor: Colors.blue[600],
+                        decoration: InputDecoration(
+                          labelText: 'Buka',
+                          labelStyle: TextStyle(color: Colors.black),
+                          hintText: "Jam Buka",
+                          border: OutlineInputBorder(
+                            borderSide: BorderSide(
+                              color: Color.fromARGB(66, 37, 37, 37),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                  SizedBox(width: 10),
+                  Expanded(
+                    child: Container(
+                      padding: EdgeInsets.only(top: 20),
+                      child: TextField(
+                        controller: tutupController,
+                        keyboardType: TextInputType.text,
+                        cursorColor: Colors.blue[600],
+                        decoration: InputDecoration(
+                          labelText: 'Tutup',
+                          labelStyle: TextStyle(color: Colors.black),
+                          hintText: "Jam Tutup",
+                          border: OutlineInputBorder(
+                            borderSide: BorderSide(
+                              color: Color.fromARGB(66, 37, 37, 37),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+              Container(
+                padding: EdgeInsets.only(top: 20),
+                child: Row(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Expanded(
                       child: Container(
-                        padding: EdgeInsets.only(top: 20),
-                        child: TextField(
-                          controller: bukaController,
-                          keyboardType: TextInputType.text,
-                          cursorColor: Colors.blue[600],
-                          decoration: InputDecoration(
-                            labelText: 'Buka',
-                            labelStyle: TextStyle(color: Colors.black),
-                            hintText: "Jam Buka",
-                            border: OutlineInputBorder(
-                              borderSide: BorderSide(
-                                color: Color.fromARGB(66, 37, 37, 37),
-                              ),
-                            ),
+                        decoration: BoxDecoration(
+                          color: Color.fromARGB(255, 52, 83, 209),
+                          borderRadius: BorderRadius.circular(30),
+                        ),
+                        child: CheckboxListTile(
+                          title: const Text(
+                            'RO',
+                            style: TextStyle(color: Colors.white),
                           ),
+                          value: _isROSelected,
+                          onChanged: (bool? value) {
+                            setState(() {
+                              _isROSelected = value ?? false;
+                            });
+                          },
+                          controlAffinity: ListTileControlAffinity.leading,
+                          activeColor: Colors.white, // Warna centang
+                          checkColor: Colors.black, // Warna centang
                         ),
                       ),
                     ),
                     SizedBox(width: 10),
                     Expanded(
                       child: Container(
-                        padding: EdgeInsets.only(top: 20),
-                        child: TextField(
-                          controller: tutupController,
-                          keyboardType: TextInputType.text,
-                          cursorColor: Colors.blue[600],
-                          decoration: InputDecoration(
-                            labelText: 'Tutup',
-                            labelStyle: TextStyle(color: Colors.black),
-                            hintText: "Jam Tutup",
-                            border: OutlineInputBorder(
-                              borderSide: BorderSide(
-                                color: Color.fromARGB(66, 37, 37, 37),
-                              ),
-                            ),
+                        decoration: BoxDecoration(
+                          color: Color.fromARGB(255, 52, 83, 209),
+                          borderRadius: BorderRadius.circular(30),
+                        ),
+                        child: CheckboxListTile(
+                          title: const Text(
+                            'Mineral',
+                            style: TextStyle(color: Colors.white),
                           ),
+                          value: _isMineralSelected,
+                          onChanged: (bool? value) {
+                            setState(() {
+                              _isMineralSelected = value ?? false;
+                            });
+                          },
+                          controlAffinity: ListTileControlAffinity.leading,
+                          activeColor: Colors.white, // Warna centang
+                          checkColor: Colors.black, // Warna centang
                         ),
                       ),
                     ),
+              //       Container(
+              //   padding: EdgeInsets.only(top: 20),
+              //   child: TextField(
+              //     controller: alamatController,
+              //     keyboardType: TextInputType.streetAddress,
+              //     cursorColor: Color.fromARGB(255, 252, 189, 0),
+              //     decoration: InputDecoration(
+              //       labelText: 'Alamat',
+              //       labelStyle: TextStyle(color: Colors.black),
+              //       hintText: "masukkan Alamat",
+              //       border: OutlineInputBorder(
+              //         borderSide: BorderSide(
+              //           color: Color.fromARGB(66, 37, 37, 37),
+              //         ),
+              //       ),
+              //     ),
+              //   ),
+              // ),
+                     SizedBox(height: 20),
+                      TextField(
+                        controller: hargaROController,
+                        cursorColor: Color.fromARGB(255, 252, 189, 0),
+                        keyboardType: TextInputType.number,
+                        decoration: InputDecoration(
+                          labelText: 'Harga RO',
+                          labelStyle: TextStyle(color: Colors.black),
+                          hintText: 'Masukkan Harga RO',
+                          border: OutlineInputBorder(
+                            borderSide: BorderSide(
+                              color: Color.fromARGB(66, 37, 37, 37)
+                            )
+                          )
+                        ),
+                      ),
+                      SizedBox(height: 10),
+                      TextField(
+                        controller: hargaAquaController,
+                        cursorColor: Color.fromARGB(255, 252, 189, 0),
+                        keyboardType: TextInputType.number,
+                        decoration: InputDecoration(
+                          labelStyle: TextStyle(color: Colors.black),
+                          labelText: 'Harga Aqua',
+                          hintText: 'Masukkan Harga Aqua',
+                          border: OutlineInputBorder(
+                            borderSide: BorderSide(
+                              color: Color.fromARGB(66, 37, 37, 37)
+                            )
+                          )
+                        ),
+                      ),
                   ],
                 ),
-                Container(
-                  padding: EdgeInsets.only(top: 20),
-                  child: Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Expanded(
-                        child: Container(
-                          decoration: BoxDecoration(
-                            color: Color.fromARGB(255, 52, 83, 209),
-                            borderRadius: BorderRadius.circular(30),
-                          ),
-                          child: CheckboxListTile(
-                            title: const Text(
-                              'RO',
-                              style: TextStyle(color: Colors.white),
-                            ),
-                            value: _isROSelected,
-                            onChanged: (bool? value) {
-                              setState(() {
-                                _isROSelected = value ?? false;
-                              });
-                            },
-                            controlAffinity: ListTileControlAffinity.leading,
-                            activeColor: Colors.white, // Warna centang
-                            checkColor: Colors.black, // Warna centang
-                          ),
-                        ),
-                      ),
-                      SizedBox(width: 10),
-                      Expanded(
-                        child: Container(
-                          decoration: BoxDecoration(
-                            color: Color.fromARGB(255, 52, 83, 209),
-                            borderRadius: BorderRadius.circular(30),
-                          ),
-                          child: CheckboxListTile(
-                            title: const Text(
-                              'Mineral',
-                              style: TextStyle(color: Colors.white),
-                            ),
-                            value: _isMineralSelected,
-                            onChanged: (bool? value) {
-                              setState(() {
-                                _isMineralSelected = value ?? false;
-                              });
-                            },
-                            controlAffinity: ListTileControlAffinity.leading,
-                            activeColor: Colors.white, // Warna centang
-                            checkColor: Colors.black, // Warna centang
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
+              ),
+              SizedBox(height: 20),
+              Text(
+                "Lokasi Depot",
+                style: TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
                 ),
-                SizedBox(height: 20),
-                Text(
-                  "Lokasi Depot",
-                  style: TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
-                  ),
+              ),
+              SizedBox(height: 10),
+              Container(
+                height: 200,
+                child: GoogleMap(
+                  zoomControlsEnabled: false,
+                  onMapCreated: _onMapCreated,
+                  onTap: _onMapTap,
+                  markers: _markers,
+                  initialCameraPosition: _initialCameraPosition,
+                  onCameraMove: _onCameraMove,
                 ),
-                SizedBox(height: 10),
-                Container(
-                  height: 200,
-                  child: GoogleMap(
-                    zoomControlsEnabled: false,
-                    onMapCreated: _onMapCreated,
-                    onTap: _onMapTap,
-                    markers: _markers,
-                    initialCameraPosition: _initialCameraPosition,
-                    onCameraMove: _onCameraMove,
-                  ),
+              ),
+              SizedBox(height: 20),
+              ElevatedButton(
+                onPressed: _saveData,
+                child: Text(
+                  "Simpan",
+                  style: TextStyle(fontSize: 16),
                 ),
-                SizedBox(height: 20),
-                ElevatedButton(
-                  onPressed: _saveData,
-                  child: Text(
-                    "Simpan",
-                    style: TextStyle(fontSize: 16),
-                  ),
-                ),
-              ],
-            ),
+              ),
+            ],
           ),
         ),
       ),
-    );
-  }
+    ),
+  );
 }
+}
+
+

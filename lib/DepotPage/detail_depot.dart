@@ -1,6 +1,10 @@
+import 'dart:ffi';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:galonku/DepotPage/chat_page.dart';
 import 'package:galonku/DepotPage/pesan_galon_lokasi.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../DesignSystem/_button_primary.dart';
 
@@ -53,6 +57,7 @@ class DetailDepot extends StatefulWidget {
 
 class _DetailDepotState extends State<DetailDepot> {
   bool _isLiked = false;
+  String text_buka = '';
 
   Future<Map<String, dynamic>> _getDepotData(String email) async {
     QuerySnapshot querySnapshot = await FirebaseFirestore.instance
@@ -93,7 +98,16 @@ class _DetailDepotState extends State<DetailDepot> {
             String alamat = depotData['alamat'] ?? '';
             String buka = depotData['buka'] ?? '';
             String tutup = depotData['tutup'] ?? '';
+            String username = depotData['username'] ?? '';
+            String email = depotData['email'] ?? '';
+            bool is_buka = depotData['statusBuka'] ?? '';
 
+            // ignore: unrelated_type_equality_checks
+            if(is_buka == true){
+              text_buka = 'Buka';
+            }else{
+              text_buka = 'Tutup';
+            }
             return SingleChildScrollView(
               child: Padding(
                 padding: const EdgeInsets.all(20.0),
@@ -119,7 +133,7 @@ class _DetailDepotState extends State<DetailDepot> {
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Text(
-                                    widget.email,
+                                    username + " Depot",
                                     style: TextStyle(
                                       fontSize: 20,
                                       fontWeight: FontWeight.bold,
@@ -127,15 +141,19 @@ class _DetailDepotState extends State<DetailDepot> {
                                   ),
                                   Text('Rating'),
                                   Text(
-                                    'Keterangan Buka/Tutup',
+                                    text_buka,
                                     style: TextStyle(color: Colors.green),
                                   ),
                                 ],
                               ),
                             ),
                             InkWell(
-                              onTap: () {
+                              onTap: () async {
+                                SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
+                                sharedPreferences.setString('data_email_chat', email);
+                                sharedPreferences.setString('username_chat', username);
                                 // Tambahkan logika navigasi ke halaman tujuan di sini
+                                Navigator.pushNamed(context, ChatPage.nameRoute);
                               },
                               child: CircleAvatar(
                                 radius: 20,
