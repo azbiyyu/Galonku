@@ -171,12 +171,12 @@ class _PesanGalonLokasiState extends State<PesanGalonLokasi> {
                   }  
                   // ignore: use_build_context_synchronously
                   Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) =>
-                                        PesanGalonProduk(email: kirimEmail), // Ganti dengan halaman DetailDepot yang sesuai
-                                  ),
-                                );
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) =>
+                          PesanGalonProduk(email: kirimEmail), // Ganti dengan halaman DetailDepot yang sesuai
+                    ),
+                  );
                 },
               )
             ],

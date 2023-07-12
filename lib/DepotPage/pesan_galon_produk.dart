@@ -1,8 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:galonku/DepotPage/bayar_galon.dart';
+import 'package:galonku/DepotPage/detailBayarGalon.dart';
 import 'package:galonku/Models/_button_primary.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 class PesanGalonProduk extends StatefulWidget {
   final String email;
@@ -22,6 +21,7 @@ class _PesanGalonProdukState extends State<PesanGalonProduk> {
   String harga_ro = '';
   String harga_aqua = '';
   String kirimEmail = '';
+  String total = '';
   @override
   void initState() {
     super.initState();
@@ -39,14 +39,14 @@ class _PesanGalonProdukState extends State<PesanGalonProduk> {
     DocumentSnapshot documentSnapshot = querySnapshot.docs[0];
 
     // Get the field values from the document
-    Map<String, dynamic>? userData = documentSnapshot.data() as Map<String, dynamic>?;
+    Map<String, dynamic>? userData = documentSnapshot.data() as Map<String, dynamic>;
     if (userData != null) {
-      String? hargaAqua = userData['harga_aqua'] as String?;
-      String? hargaRO = userData['harga_ro'] as String?;
+      String hargaAqua = userData['harga_aqua'] ?? '';
+      String hargaRO = userData['harga_ro'] ?? '';
 
       setState(() {
-        harga_aqua = hargaAqua ?? 'Harga Aqua tidak tersedia';
-        harga_ro = hargaRO ?? 'Harga RO tidak tersedia';
+        harga_aqua = hargaAqua;
+        harga_ro = hargaRO;
       });
     }
   } else {
@@ -327,7 +327,21 @@ class _PesanGalonProdukState extends State<PesanGalonProduk> {
               BtnPrimary(
                 text: "Bayar",
                 onPressed: () {
-                  Navigator.pushNamed(context, BayarGalon.nameRoute);
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) =>
+                          DetailBayarGalon(
+                            email: kirimEmail, 
+                            codChecked: _codChecked, 
+                            eWalletChecked: _eWalletChecked, 
+                            hargaAqua: harga_aqua, 
+                            hargaRo: harga_ro, 
+                            mineralCount: _mineralCount, 
+                            rekeningChecked: _rekeningChecked, 
+                            roCount: _roCount), // Ganti dengan halaman DetailDepot yang sesuai
+                    ),
+                  );
                 },
               ),
             ],

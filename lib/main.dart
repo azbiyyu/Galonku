@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'package:galonku/DepotPage/bayar_galon.dart';
+import 'package:galonku/DepotPage/detailBayarGalon.dart';
 import 'package:galonku/DepotPage/chat_list.dart';
 import 'package:galonku/DepotPage/chat_page.dart';
 import 'package:galonku/DepotPage/detail_depot.dart';
@@ -87,7 +87,7 @@ class _MyAppState extends State<MyApp> {
         ChatPage.nameRoute:(context) => ChatPage(email: selectedusername),
         PesanGalonLokasi.nameRoute:(context) => PesanGalonLokasi(email: selectedemail),
         PesanGalonProduk.nameRoute:(context) => PesanGalonProduk(email: selectedemail),
-        BayarGalon.nameRoute:(context) => BayarGalon(),
+        DetailBayarGalon.nameRoute:(context) => DetailBayarGalon(codChecked: false, eWalletChecked: false, email: '', hargaAqua: '', hargaRo: '', mineralCount: 0, rekeningChecked: false, roCount: 0),
         ChatList.nameRoute:(context) => ChatList()
       },
       onGenerateRoute: (settings) {

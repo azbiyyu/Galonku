@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:galonku/DepotPage/home_page_depot.dart';
-import 'package:galonku/DepotPage/settings_depot.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:shared_preferences/shared_preferences.dart';

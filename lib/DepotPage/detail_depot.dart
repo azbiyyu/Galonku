@@ -1,10 +1,7 @@
-import 'dart:ffi';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:galonku/DepotPage/chat_page.dart';
 import 'package:galonku/DepotPage/pesan_galon_lokasi.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 import '../DesignSystem/_button_primary.dart';
 
@@ -99,7 +96,7 @@ class _DetailDepotState extends State<DetailDepot> {
             String buka = depotData['buka'] ?? '';
             String tutup = depotData['tutup'] ?? '';
             String username = depotData['username'] ?? '';
-            String email = depotData['email'] ?? '';
+            // String email = depotData['email'] ?? '';
             bool is_buka = depotData['statusBuka'] ?? false;
 
             // ignore: unrelated_type_equality_checks
