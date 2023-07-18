@@ -97,10 +97,10 @@ class _DetailDepotState extends State<DetailDepot> {
             String tutup = depotData['tutup'] ?? '';
             String username = depotData['username'] ?? '';
             // String email = depotData['email'] ?? '';
-            bool is_buka = depotData['statusBuka'] ?? false;
+            bool isBuka = depotData['is_buka'] ?? false;
 
             // ignore: unrelated_type_equality_checks
-            if(is_buka == true){
+            if(isBuka == true){
               text_buka = 'Buka';
             }else{
               text_buka = 'Tutup';
@@ -130,7 +130,7 @@ class _DetailDepotState extends State<DetailDepot> {
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Text(
-                                    username + " Depot",
+                                    "$username Depot",
                                     style: TextStyle(
                                       fontSize: 20,
                                       fontWeight: FontWeight.bold,

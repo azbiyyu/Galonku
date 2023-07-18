@@ -15,16 +15,47 @@ class HomeDepot extends StatefulWidget {
 class _HomeDepotState extends State<HomeDepot> {
   bool isROSelected = false;
   bool isMineralSelected = false;
-  bool isBukaTutup = false;
+  late bool isBukaTutup = false;
+  late SharedPreferences sharedPreferences;
 
   @override
   void initState() {
     super.initState();
+    initializeSharedPreferences();
   }
+  Future<void> initializeSharedPreferences() async {
+  sharedPreferences = await SharedPreferences.getInstance();
+  String? mail = sharedPreferences.getString('email');
 
-  void _saveData(bool status) async {
+  if (mail != null) {
+    final collectionUser = FirebaseFirestore.instance.collection('user');
+    final querySnapshot = await collectionUser.where('email', isEqualTo: mail).limit(1).get();
+
+    if (querySnapshot.docs.isNotEmpty) {
+      final docUser = querySnapshot.docs.first;
+
+      bool isBuka = docUser.get('is_buka') ?? false;
+      bool isRO = docUser.get('RO') ?? false;
+      bool isMineral = docUser.get('Mineral') ?? false;
+
+      setState(() {
+        isBukaTutup = isBuka;
+        isROSelected = isRO;
+        isMineralSelected = isMineral;
+      });
+    } else {
+      print("Data tidak ditemukan");
+    }
+  } else {
+    print("Email tidak tersedia");
+  }
+}
+
+
+  Future<void> _saveData(bool status) async {
   SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
   String? mail = sharedPreferences.getString('email');
+
 
   String? emailfield = mail;
 
@@ -35,18 +66,87 @@ class _HomeDepotState extends State<HomeDepot> {
     final docUser = querySnapshot.docs.first;
     final docId = docUser.id;
 
-    bool updatedIsBukaTutup = !docUser.data()['is_buka']; // Toggle nilai is_buka
+    bool isBuka = docUser.get('is_buka') ?? false;
 
-    await collectionUser.doc(docId).update({
-      'is_buka': updatedIsBukaTutup,
-    });
-    setState(() {
-      isBukaTutup = updatedIsBukaTutup;
-    });
+    if(isBuka != status){
+       // Toggle nilai is_buka
+      await collectionUser.doc(docId).update({
+        'is_buka': status,
+      });
+      setState(() {
+        isBukaTutup = status;
+      });
+    }else{
+      print('nilai sama');
+    }
   } else {
     print("data tidak ada");
   }
 }
+Future<void> _saveROData(bool status) async {
+  SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
+  setState(() {
+    isROSelected = status;
+  });
+
+  String? mail = sharedPreferences.getString('email');
+  String? emailField = mail;
+
+  final collectionUser = FirebaseFirestore.instance.collection('user');
+  final querySnapshot = await collectionUser.where('email', isEqualTo: emailField).limit(1).get();
+
+  if (querySnapshot.docs.isNotEmpty) {
+    final docUser = querySnapshot.docs.first;
+    final docId = docUser.id;
+
+    bool isRO = docUser.get('RO') ?? false;
+
+    if (isRO != status) {
+      // Toggle nilai RO
+      await collectionUser.doc(docId).update({
+        'RO': status,
+      });
+      // Perbarui nilai pada field RO di Firestore
+    } else {
+      print('nilai sama');
+    }
+  } else {
+    print("data tidak ada");
+  }
+}
+
+Future<void> _saveMineralData(bool status) async {
+  SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
+  setState(() {
+    isMineralSelected = status;
+  });
+
+  String? mail = sharedPreferences.getString('email');
+  String? emailField = mail;
+
+  final collectionUser = FirebaseFirestore.instance.collection('user');
+  final querySnapshot = await collectionUser.where('email', isEqualTo: emailField).limit(1).get();
+
+  if (querySnapshot.docs.isNotEmpty) {
+    final docUser = querySnapshot.docs.first;
+    final docId = docUser.id;
+
+    bool isMineral = docUser.get('Mineral') ?? false;
+
+    if (isMineral != status) {
+      // Toggle nilai Mineral
+      await collectionUser.doc(docId).update({
+        'Mineral': status,
+      });
+      // Perbarui nilai pada field Mineral di Firestore
+    } else {
+      print('nilai sama');
+    }
+  } else {
+    print("data tidak ada");
+  }
+}
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -96,9 +196,9 @@ class _HomeDepotState extends State<HomeDepot> {
                     Switch(
                       value: isBukaTutup,
                       onChanged: (value) {
+                        _saveData(value);
                         setState(() {
-                          var status = !isBukaTutup;
-                          _saveData(status);
+                          isBukaTutup = value;
                           // isBukaTutup = true;
                         });  
                       },
@@ -124,10 +224,7 @@ class _HomeDepotState extends State<HomeDepot> {
                     Switch(
                       value: isROSelected,
                       onChanged: (value) {
-                        setState(() {
-                          isROSelected = value;
-                        });
-                        // Logika ketika tombol RO diubah
+                        _saveROData(value);
                       },
                       activeColor: Colors.blue,
                     ),
@@ -136,10 +233,7 @@ class _HomeDepotState extends State<HomeDepot> {
                     Switch(
                       value: isMineralSelected,
                       onChanged: (value) {
-                        setState(() {
-                          isMineralSelected = value;
-                        });
-                        // Logika ketika tombol Mineral diubah
+                        _saveMineralData(value);
                       },
                       activeColor: Colors.orange,
                     ),

@@ -72,8 +72,8 @@ class _SettingDepotState extends State<SettingsDepot> {
           _produkController.text = depotData['produk'] ?? '';
           _bukaController.text = depotData['buka'] ?? '';
           _tutupController.text = depotData['tutup'] ?? '';
-          _hargaROController.text = depotData['harga_ro'] ?? '';
-          _hargaAquaController.text = depotData['harga_aqua'] ?? '';
+          _hargaROController.text = depotData['hargaRO'].toString();
+          _hargaAquaController.text = depotData['hargaAqua'].toString();
           currentImageUrl = depotData['images'] ?? imageUrl;
           currentImageUrlKatalog = depotData['katalog1'] ?? '';
           currentImageUrlKatalog2 = depotData['katalog2'] ?? '';
@@ -100,8 +100,8 @@ class _SettingDepotState extends State<SettingsDepot> {
         'produk': _produkController.text,
         'buka': _bukaController.text,
         'tutup': _tutupController.text,
-        'harga_ro': _hargaROController.text,
-        'harga_aqua': _hargaAquaController.text,
+        'hargaRO': _hargaROController.text,
+        'hargaAqua': _hargaAquaController.text,
       });
 
       // ignore: use_build_context_synchronously

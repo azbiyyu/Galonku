@@ -66,9 +66,9 @@ class _MitraInputState extends State<MitraInput> {
     return usernameController.text.isNotEmpty &&
         alamatController.text.isNotEmpty &&
         bukaController.text.isNotEmpty &&
-        tutupController.text.isNotEmpty &&
-        hargaROController.text.isNotEmpty &&
-        hargaAquaController.text.isNotEmpty;
+        tutupController.text.isNotEmpty;
+        //hargaROController.text.isNotEmpty &&
+        //hargaAquaController.text.isNotEmpty;
   }
 
   void _saveData() async {
@@ -101,7 +101,7 @@ class _MitraInputState extends State<MitraInput> {
         'katalog2': '',
         'katalog3': '',
         'online': _isOnline,
-        'statusBuka': !_isStatusBukaHidden,
+        'is_buka': !_isStatusBukaHidden,
       };
 
       try {
@@ -257,6 +257,39 @@ Widget build(BuildContext context) {
                   ),
                 ],
               ),
+              SizedBox(height: 20),
+              TextField(
+                controller: hargaROController,
+                keyboardType: TextInputType.number,
+                cursorColor: Colors.blue[600],
+                decoration: InputDecoration(
+                  labelText: 'Harga RO',
+                  labelStyle: TextStyle(color: Colors.black),
+                  hintText: 'Masukkan Harga RO',
+                   border: OutlineInputBorder(
+                            borderSide: BorderSide(
+                              color: Color.fromARGB(66, 37, 37, 37),
+                            ),
+                          ),
+                ),
+              ),
+              SizedBox(height: 20),
+              TextField(
+                controller: hargaAquaController,
+                keyboardType: TextInputType.number,
+                cursorColor: Colors.blue[600],
+                decoration: InputDecoration(
+                  labelText: 'Harga Aqua',
+                  labelStyle: TextStyle(color: Colors.black),
+                  hintText: 'Masukkan Harga Aqua',
+                   border: OutlineInputBorder(
+                            borderSide: BorderSide(
+                              color: Color.fromARGB(66, 37, 37, 37),
+                            ),
+                          ),
+                ),
+              ),
+              SizedBox(height: 20),
               Container(
                 padding: EdgeInsets.only(top: 20),
                 child: Row(
@@ -327,38 +360,7 @@ Widget build(BuildContext context) {
               //     ),
               //   ),
               // ),
-                     SizedBox(height: 20),
-                      TextField(
-                        controller: hargaROController,
-                        cursorColor: Color.fromARGB(255, 252, 189, 0),
-                        keyboardType: TextInputType.number,
-                        decoration: InputDecoration(
-                          labelText: 'Harga RO',
-                          labelStyle: TextStyle(color: Colors.black),
-                          hintText: 'Masukkan Harga RO',
-                          border: OutlineInputBorder(
-                            borderSide: BorderSide(
-                              color: Color.fromARGB(66, 37, 37, 37)
-                            )
-                          )
-                        ),
-                      ),
-                      SizedBox(height: 10),
-                      TextField(
-                        controller: hargaAquaController,
-                        cursorColor: Color.fromARGB(255, 252, 189, 0),
-                        keyboardType: TextInputType.number,
-                        decoration: InputDecoration(
-                          labelStyle: TextStyle(color: Colors.black),
-                          labelText: 'Harga Aqua',
-                          hintText: 'Masukkan Harga Aqua',
-                          border: OutlineInputBorder(
-                            borderSide: BorderSide(
-                              color: Color.fromARGB(66, 37, 37, 37)
-                            )
-                          )
-                        ),
-                      ),
+                      
                   ],
                 ),
               ),
@@ -382,7 +384,7 @@ Widget build(BuildContext context) {
                   onCameraMove: _onCameraMove,
                 ),
               ),
-              SizedBox(height: 20),
+              SizedBox(height: 10),
               ElevatedButton(
                 onPressed: _saveData,
                 child: Text(
@@ -390,6 +392,7 @@ Widget build(BuildContext context) {
                   style: TextStyle(fontSize: 16),
                 ),
               ),
+              
             ],
           ),
         ),

@@ -87,7 +87,7 @@ class _MyAppState extends State<MyApp> {
         ChatPage.nameRoute:(context) => ChatPage(email: selectedusername),
         PesanGalonLokasi.nameRoute:(context) => PesanGalonLokasi(email: selectedemail),
         PesanGalonProduk.nameRoute:(context) => PesanGalonProduk(email: selectedemail),
-        DetailBayarGalon.nameRoute:(context) => DetailBayarGalon(codChecked: false, eWalletChecked: false, email: '', hargaAqua: '', hargaRo: '', mineralCount: 0, rekeningChecked: false, roCount: 0),
+        DetailBayarGalon.nameRoute:(context) => DetailBayarGalon(codChecked: false, eWalletChecked: false, email: '', hargaAqua: 0, hargaRo: 0, mineralCount: 0, rekeningChecked: false, roCount: 0),
         ChatList.nameRoute:(context) => ChatList()
       },
       onGenerateRoute: (settings) {

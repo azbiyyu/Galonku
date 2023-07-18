@@ -18,10 +18,12 @@ class _PesanGalonProdukState extends State<PesanGalonProduk> {
   bool _codChecked = false;
   bool _eWalletChecked = false;
   bool _rekeningChecked = false;
-  String harga_ro = '';
-  String harga_aqua = '';
+  int harga_ro = 0;
+  int harga_aqua = 0;
   String kirimEmail = '';
   String total = '';
+  bool sedia_ro = false;
+  bool sedia_mineral = false;
   @override
   void initState() {
     super.initState();
@@ -40,21 +42,49 @@ class _PesanGalonProdukState extends State<PesanGalonProduk> {
 
     // Get the field values from the document
     Map<String, dynamic>? userData = documentSnapshot.data() as Map<String, dynamic>;
-    if (userData != null) {
-      String hargaAqua = userData['harga_aqua'] ?? '';
-      String hargaRO = userData['harga_ro'] ?? '';
+    int hargaAqua = userData['hargaAqua'];
+    int hargaRO = userData['hargaRO'];
+    bool? mineral = userData['Mineral'] ?? false;
+    bool? ro = userData['RO'] ?? false;
 
-      setState(() {
-        harga_aqua = hargaAqua;
-        harga_ro = hargaRO;
-      });
-    }
+    setState(() {
+      harga_aqua = hargaAqua;
+      harga_ro = hargaRO;
+      sedia_mineral = mineral!;
+      sedia_ro = ro!;
+
+    });
   } else {
     print("Data tidak ditemukan");
   }
 }
+  void _mineralIncrement() {
+    if (sedia_mineral == false) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Produk Air Mineral tidak tersedia.'),
+        ),
+      );
+    } else {
+      setState(() {
+        _mineralCount++;
+      });
+    }
+  }
 
-
+  void _roIncrement() {
+    if (sedia_ro == false) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Produk Air RO tidak tersedia.'),
+        ),
+      );
+    } else {
+      setState(() {
+        _roCount++;
+      });
+    }
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -92,11 +122,11 @@ class _PesanGalonProdukState extends State<PesanGalonProduk> {
                       children: [
                         IconButton(
                           onPressed: () {
-                            setState(() {
-                              if (_mineralCount > 0) {
+                            !sedia_mineral ? null : (){
+                              setState(() {
                                 _mineralCount--;
-                              }
-                            });
+                              });
+                            };
                           },
                           icon: Icon(Icons.remove),
                           color: Colors.red, // Ubah warna ikon menjadi merah
@@ -110,9 +140,7 @@ class _PesanGalonProdukState extends State<PesanGalonProduk> {
                         ),
                         IconButton(
                           onPressed: () {
-                            setState(() {
-                              _mineralCount++;
-                            });
+                            _mineralIncrement();
                           },
                           icon: Icon(Icons.add),
                           color: Colors.green, // Ubah warna ikon menjadi hijau
@@ -163,9 +191,7 @@ class _PesanGalonProdukState extends State<PesanGalonProduk> {
                         ),
                         IconButton(
                           onPressed: () {
-                            setState(() {
-                              _roCount++;
-                            });
+                            _roIncrement();
                           },
                           icon: Icon(Icons.add),
                           color: Colors.green, // Ubah warna ikon menjadi hijau
@@ -186,33 +212,55 @@ class _PesanGalonProdukState extends State<PesanGalonProduk> {
               CheckboxListTile(
                 title: Text('COD'),
                 value: _codChecked,
-                onChanged: (bool? value) {
+                onChanged: _eWalletChecked || _rekeningChecked ? null : 
+                (bool? value) {
                   setState(() {
                     _codChecked = value!;
+                    if (_codChecked) {
+                      _eWalletChecked = false;
+                      _rekeningChecked = false;
+                    }
                   });
                 },
                 controlAffinity: ListTileControlAffinity.leading,
+                activeColor: _codChecked ? Colors.blue : null,
+                secondary: _eWalletChecked || _rekeningChecked ? Icon(Icons.block) : null,
               ),
               CheckboxListTile(
                 title: Text('E-Wallet'),
                 value: _eWalletChecked,
-                onChanged: (bool? value) {
+                onChanged: _codChecked || _rekeningChecked ? null :
+                (bool? value) {
                   setState(() {
                     _eWalletChecked = value!;
+                    if (_eWalletChecked) {
+                      _codChecked = false;
+                      _rekeningChecked = false;
+                    }
                   });
                 },
                 controlAffinity: ListTileControlAffinity.leading,
+                activeColor: _eWalletChecked ? Colors.blue : null,
+                secondary: _codChecked || _rekeningChecked ? Icon(Icons.block) : null,
               ),
               CheckboxListTile(
                 title: Text('Rekening'),
                 value: _rekeningChecked,
-                onChanged: (bool? value) {
+                onChanged: _codChecked || _eWalletChecked ? null :
+                (bool? value) {
                   setState(() {
                     _rekeningChecked = value!;
+                    if (_rekeningChecked) {
+                      _codChecked = false;
+                      _eWalletChecked = false;
+                    }
                   });
                 },
                 controlAffinity: ListTileControlAffinity.leading,
+                activeColor: _rekeningChecked ? Colors.blue : null,
+                secondary: _codChecked || _eWalletChecked ? Icon(Icons.block) : null,
               ),
+
               SizedBox(height: 16.0),
               Text(
                 'Biaya',
@@ -233,7 +281,7 @@ class _PesanGalonProdukState extends State<PesanGalonProduk> {
                     ),
                   ),
                   Text(
-                    'Rp. ${_mineralCount * 5000}',
+                    'Rp. ${harga_aqua * _mineralCount}',
                     style: TextStyle(
                       fontSize: 16.0,
                     ),
@@ -251,7 +299,7 @@ class _PesanGalonProdukState extends State<PesanGalonProduk> {
                     ),
                   ),
                   Text(
-                    'Rp. ${_roCount * 7000}',
+                    'Rp. ${harga_ro * _roCount}',
                     style: TextStyle(
                       fontSize: 16.0,
                     ),
@@ -313,7 +361,7 @@ class _PesanGalonProdukState extends State<PesanGalonProduk> {
                     ),
                   ),
                   Text(
-                    'Rp. ${(_mineralCount * 5000) + (_roCount * 7000) + 1000 + 500}',
+                    'Rp. ${(harga_aqua * _mineralCount) + (harga_ro * _roCount) + 1000 + 500}',
                     style: TextStyle(
                       fontSize: 18.0,
                       fontWeight: FontWeight.bold,
@@ -325,7 +373,7 @@ class _PesanGalonProdukState extends State<PesanGalonProduk> {
                 height: 50,
               ),
               BtnPrimary(
-                text: "Bayar",
+                text: "Bayar Disini",
                 onPressed: () {
                   Navigator.push(
                     context,
